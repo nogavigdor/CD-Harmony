@@ -1,0 +1,21 @@
+{
+  "name": "cdshop",
+  "version": "1.0.0",
+  "description": "CDs store",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx tailwindcss -i ./src/css/input.css -o ./dist/output.css"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "autoprefixer": "^10.4.15",
+    "tailwindcss": "^3.3.3"
+  },
+  "devDependencies": {
+    "postcss": "^8.4.29",
+    "postcss-cli": "^10.1.0"
+  }
+}
