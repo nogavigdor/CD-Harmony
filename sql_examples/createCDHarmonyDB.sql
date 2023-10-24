@@ -4,8 +4,7 @@
 
   USE CDHarmonyDB;
 
-  -- Create an ENUM type for user roles
-  CREATE TYPE user_role AS ENUM ('admin', 'customer', 'author');
+
 
   CREATE TABLE users
   (
@@ -14,7 +13,7 @@
     last_name varchar(100) NOT NULL,
     email varchar(100) NOT NULL,
     user_password varchar(100) NOT NULL,  
-    `role` user_role NOT NULL
+    `role` ENUM('admin', 'customer', 'author')
 
   ) ENGINE=InnoDB; 
 
@@ -83,19 +82,14 @@
   ) ENGINE=InnoDB;
 
   
-  -- Create an ENUM type for cd condition
-  CREATE TYPE cd_condition AS ENUM ('new', 'good as new', 'good','fair');
-    -- Create an ENUM type for cd type
-  CREATE TYPE cd_type AS ENUM ('collection', 'rare', 'special edition');
-
       CREATE TABLE cds
   (
     cd_id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
     title varchar(255) NOT NULL,
-    condition cd_condition NOT NULL,
+    condition ENUM('new', 'good as new', 'good','fair') NOT NULL,
     release_date date NOT NULL,
     cover_image varchar(255) NOT NULL,
-    `type` cd_type NOT NULL,
+     `type` ENUM('collection', 'rare', 'special edition') NOT NULL,
     artist_id int,
     product_id int,
     FOREIGN KEY (artist_id) REFERENCES artists (artist_id),
@@ -173,17 +167,14 @@
   FOREIGN KEY (user_id) REFERENCES users(user_id)
  ) ENGINE=InnoDB;
 
-   -- Create an ENUM type for order status
-  CREATE TYPE order_status AS ENUM ('pending', 'in process', 'completed');
-     -- Create an ENUM type for order status
-  CREATE TYPE payment_status AS ENUM ('unpaid', 'paid', 'refunded');
+
 
  CREATE TABLE orders 
  (
   order_id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
   created timestamp NOT NULL,
-  `status` order_status NOT NULL,
-  payment payment_status NOT NULL,
+   `status` ENUM('pending', 'in process', 'completed') NOT NULL,
+   payment ENUM('unpaid', 'paid', 'refunded') NOT NULL,
   user_id int,
   FOREIGN KEY (user_id) REFERENCES users(user_id)
  ) ENGINE=InnoDB;
