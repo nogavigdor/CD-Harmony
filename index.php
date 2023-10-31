@@ -13,7 +13,7 @@ if ($connection->connect_error) {
 }
 
 // Fetch CDs with the "pop" tag
-$sql = "SELECT p.product_id, p.title, p.product_description, i.image_path, i.image_name, a.title AS artist_name, c.release_date
+$sql = "SELECT p.product_id, p.title, p.product_description, i.image_path, i.image_name, a.title AS artist_name, c.release_date, p.units_in_stock
         FROM products p
         JOIN cds c ON p.product_id = c.product_id
         JOIN images_for_products i ON p.product_id = i.product_id
@@ -84,32 +84,35 @@ $connection->close();
 
   <main class="content">
 
-  <div class="section">
+
+<div class="section">
     <h2 class="section-title">Featured Pop CDs</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         <?php
         while ($row = $result->fetch_assoc()) {
-            echo '<a href="product_details.php?product_id=' . $row['product_id'] . '" class="hover:shadow-md hover:bg-gray-100 transition duration-300 ease-in-out transform hover:-translate-y-1">';
+            echo '<div class="hover:shadow-md hover:bg-gray-100 transition duration-300 ease-in-out transform hover:-translate-y-1">';
             echo '<div class="bg-white rounded-lg overflow-hidden shadow-lg">';
+            echo '<a href="product_details.php?product_id=' . $row['product_id'] . '">';
             echo '<img src="' . $row['image_path'] . '/' . $row['image_name'] . '" alt="' . $row['title'] . '" class="w-full h-64 object-cover">';
+            echo '</a>';
             echo '<div class="p-4">';
             echo '<h3 class="text-xl font-semibold">' . $row['title'] . '</h3>';
             echo '<p class="text-gray-600">' . $row['artist_name'] . '</p>';
+           echo '<p class="text-gray-600">Left in stock: ' . $row['units_in_stock'] . '</p>';
             echo '<a href="#" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-full inline-block">Add to Cart</a>';
             echo '</div>';
             echo '</div>';
-            echo '</a>';
+            echo '</div>';
         }
         ?>
     </div>
-    
 </div>
 
 
     <section class="section">
       <h2 class="section-title">Featured Genres</h2>
       <div class="genre-items">
-        <!-- Fictional product items go here -->
+     
         <div class="product-item">
           <img src="genre1.jpg" alt="Genre 1">
           <h3>Rock Classics</h3>
@@ -134,7 +137,7 @@ $connection->close();
     <section class="section">
       <h2 class="section-title">Latest Blog Posts</h2>
       <div class="blog-posts">
-        <!-- Fictional blog post items go here -->
+ 
         <div class="blog-post">
           <h3>Top 10 Albums of All Time</h3>
           <p>Discover the greatest albums in music history.</p>
@@ -153,7 +156,7 @@ $connection->close();
     <section class="section">
       <h2 class="section-title">Hot Deals</h2>
       <div class="deal-items">
-        <!-- Fictional deal items go here -->
+  
         <div class="product-item">
           <img src="deal1.jpg" alt="Deal 1">
           <h3>Classic Rock Collection</h3>
@@ -178,7 +181,7 @@ $connection->close();
     <section class="section">
       <h2 class="section-title">Rare Finds</h2>
       <div class="rare-items">
-        <!-- Fictional rare items go here -->
+
         <div class="product-item">
           <img src="rare1.jpg" alt="Rare 1">
           <h3>The Beatles - 'Abbey Road'</h3>
@@ -203,7 +206,7 @@ $connection->close();
     <section class="section">
       <h2 class="section-title">Personalized Recommendations</h2>
       <div class="recommendation-items">
-        <!-- Fictional recommendation items go here -->
+     
         <div class="product-item">
           <img src="recommend1.jpg" alt="Recommendation 1">
           <h3>Discover the Classics</h3>
