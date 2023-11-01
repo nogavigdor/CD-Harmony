@@ -16,6 +16,36 @@ CREATE TABLE users
     user_role ENUM('admin', 'customer', 'author')
 ) ENGINE=InnoDB;
 
+CREATE TABLE roles
+(
+    role_id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    role_name varchar(100) NOT NULL,
+    CHECK (role_name IN ('customer', 'editor', 'admin'))
+)
+
+CREATE TABLE addresses
+(
+    address_id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    first_name varchar(100) NOT NULL,
+    last_name varchar(100) NOT NULL,
+    phone varchar(20) NOT NULL,
+    street varchar(100) NOT NULL,  
+    comment varchar(300) NOT NULL,
+    address_default binary NOT NULL,
+    postal_code_id varchar(4) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (user_id),
+    FOREIGN KEY (postal_code_id) REFERENCES postal_codes (postal_code_id)
+) ENGINE=InnoDB;
+
+CREATE TABLE users_addresses 
+(
+    user_id int,
+    address_id int,
+    CONSTRAINT PK_user_address PRIMARY KEY (user_id, address_id),
+    FOREIGN KEY (user_id) REFERENCES users (user_id),
+    FOREIGN KEY (address_id) REFERENCES addresses (address_id)
+)
+
 CREATE TABLE postal_codes
 (
     postal_code_id varchar(4) NOT NULL PRIMARY KEY,
@@ -35,20 +65,7 @@ CREATE TABLE company_details
     FOREIGN KEY (postal_code_id) REFERENCES postal_codes (postal_code_id)
 ) ENGINE=InnoDB;
 
-CREATE TABLE addresses
-(
-    address_id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
-    first_name varchar(100) NOT NULL,
-    last_name varchar(100) NOT NULL,
-    phone varchar(20) NOT NULL,
-    street varchar(100) NOT NULL,  
-    comment varchar(300) NOT NULL,
-    address_default binary NOT NULL,
-    user_id int NOT NULL,
-    postal_code_id varchar(4) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users (user_id),
-    FOREIGN KEY (postal_code_id) REFERENCES postal_codes (postal_code_id)
-) ENGINE=InnoDB;
+
 
 CREATE TABLE products
 (
@@ -67,11 +84,20 @@ CREATE TABLE artists
     title varchar(255) NOT NULL
 ) ENGINE=InnoDB;
 
+CREATE TABLE conditions 
+(
+    condition_id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    title varchar(100) NOT NULL,
+    CHECK (role_name IN ('customer', 'editor', 'admin'))
+
+)
+
 CREATE TABLE cds
 (
     cd_id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
     release_date date NOT NULL,
-    cd_condition ENUM('new', 'used'),
+    cd_condition  varchar(100) NOT NULL,
+    CHECK (role_name IN ('new', 'used')),
     units_in_stock int NOT NULL,
     artist_id int,
     product_id int,
@@ -147,13 +173,29 @@ CREATE TABLE ratings
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 ) ENGINE=InnoDB;
 
+CREATE TABLE orders_status 
+(
+    order_status_id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    status_title varchar(100) NOT NULL,
+    CHECK (status_title IN ('pending', 'in process', 'completed')),
+)
+
+CREATE TABLE orders_payment 
+(
+    order_payment_id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    status_title varchar(100) NOT NULL,
+    CHECK (status_title IN ('unpaid', 'paid', 'refunded')),
+)
+
 CREATE TABLE orders
 (
     order_id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
     created timestamp NOT NULL,
-    order_status ENUM('pending', 'in process', 'completed') NOT NULL,
-    order_payment ENUM('unpaid', 'paid', 'refunded') NOT NULL,
     user_id int,
+    PK_user_address in,
+    FOREIGN KEY (order_status_id) REFERENCES orders_status(order_status_id),
+    FOREIGN KEY (order_payment_id) REFERENCES orders_payment(order_payment_id),
+    FOREIGN KEY (PK_user_address) REFERENCES users_address(PK_user_address),
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 ) ENGINE=InnoDB;
 

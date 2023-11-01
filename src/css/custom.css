@@ -32,12 +32,6 @@ h1, h2, h3 {
   --text-color: #A80000; /* Deep Crimson Red */
   --accent-color: #DAA520; /* Goldenrod Yellow */
   --secondary-background: #FFF4E0; /* Soft Cream */
-  
-  /* Color Variations */
-  --secondary-text: #006666; /* Darker Teal */
-  --alert-color: #800000; /* Dark Red */
-  --admin-elements: #004C4C; /* Dark Teal */
-  --button-color: #DAA520; /* Goldenrod Yellow */
   --menu-background: #006B6B; /* Deep Teal */
   --menu-text: #FFF4E0; /* Soft Cream on Deep Teal */
   --hover-states: #009494; /* Lighter Teal */
@@ -50,8 +44,7 @@ header {
 }
 
 .logo {
-  width:600px;
-  
+  width: 600px;
 }
 
 nav ul {
