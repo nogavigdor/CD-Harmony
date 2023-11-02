@@ -1,36 +1,32 @@
 <?php
-
-/**
- * Holds the registered routes
- *
- * @var array $routes
- */
 $routes = [];
 
-/**
- * Register a new route
- *
- * @param $action string
- * @param \Closure $callback Called when current URL matches provided action
- */
 function route($action, Closure $callback)
 {
     global $routes;
     $action = trim($action, '/');
-    //$action = preg_replace('/{[^]+}/' , '(.+)' , $action);
     $routes[$action] = $callback;
 }
 
-/**
- * Dispatch the router
- *
- * @param $action string
- */
+// Define your routes
+route('/CDshop/', function () {
+    require "views/MainView.php";
+});
+
+route('/CDshop/product_details/', function () {
+    require "views/ProductView.php";
+});
+
+
 function dispatch($action)
 {
     global $routes;
-    $action = trim($action, '/');
-    $callback = $routes[$action];
 
-    echo call_user_func($callback);
+    if (array_key_exists($action, $routes)) {
+        echo call_user_func($routes[$action]);
+    } else {
+        // Handle 404 or a default action
+        echo "404 - Not Found";
+    }
 }
+?>

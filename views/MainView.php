@@ -32,7 +32,7 @@ $result = $connection->query($sql);
 <body class="bg-background-color text-text-color font-poppins">
   <header class="bg-menu-background p-4">
     <div class="container mx-auto flex justify-between items-center">
-      <img src="./src/assets/logo_square_original_no_background.png" alt="logo" class="logo w-16 h-16">
+      <img src="./src/assets/logo_square_original_no_background.png" alt="logo" class="w-16 h-16">
       <nav>
         <ul class="flex space-x-6">
           <li class="mx-4">
@@ -46,20 +46,7 @@ $result = $connection->query($sql);
               <a href="#">Classical</a>
             </div>
           </li>
-          <li class="mx-4">
-            <a href="#" class="text-menu-text">Blog</a>
-          </li>
-          <li class="mx-4">
-            <a href="#" class="text-menu-text">Deals</a>
-          </li>
-          <li class="mx-4 dropdown relative">
-            <a href="#" class="text-menu-text">More</a>
-            <div class="submenu absolute hidden bg-menu-background top-10 left-0 w-32 text-menu-text">
-              <a href="#">Rares</a>
-              <a href="#">My Cart</a>
-              <a href="#">Recommendations</a>
-            </div>
-          </li>
+          <!-- ... other navigation items ... -->
         </ul>
       </nav>
     </div>
@@ -79,7 +66,7 @@ $result = $connection->query($sql);
         while ($row = $result->fetch_assoc()) {
             echo '<div class="hover:shadow-md hover:bg-gray-100 transition duration-300 ease-in-out transform hover:-translate-y-1">';
             echo '<div class="bg-white rounded-lg overflow-hidden shadow-lg">';
-            echo '<a href="product_details.php?product_id=' . $row['product_id'] . '">';
+            echo '<a href="product_details?product_id=' . $row['product_id'] . '">';
             echo '<img src="' . $row['image_path'] . '/' . $row['image_name'] . '" alt="' . $row['title'] . '" class="w-full h-64 object-cover">';
             echo '</a>';
             echo '<div class="p-4">';
@@ -106,6 +93,7 @@ $result = $connection->query($sql);
 
   </main>
 
-  <?php require("footer.php"); ?>     
+  <?php require("footer.php"); ?>
+
 </body>
 </html>
