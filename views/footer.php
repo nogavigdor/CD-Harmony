@@ -1,25 +1,41 @@
-<footer class="bg-menu-background text-secondary-text text-center py-4">
-  <div class="container mx-auto">
-    <div class="footer-content flex justify-between items-center">
-      <div class="footer-logo text-left">
-        <h1 class="text-2xl font-bold text-text-color">CD Harmony</h1>
-        <p>Finding Your Perfect Track</p>
+
+    <footer class="footer p-10 bg-base-200 text-base-content">
+  <nav>
+    <header class="footer-title">Services</header> 
+    <a class="link link-hover">Branding</a> 
+    <a class="link link-hover">Design</a> 
+    <a class="link link-hover">Marketing</a> 
+    <a class="link link-hover">Advertisement</a>
+  </nav> 
+  <nav>
+    <header class="footer-title">Company</header> 
+    <a class="link link-hover">About us</a> 
+    <a class="link link-hover">Contact</a> 
+    <a class="link link-hover">Jobs</a> 
+    <a class="link link-hover">Press kit</a>
+  </nav> 
+  <nav>
+    <header class="footer-title">Legal</header> 
+    <a class="link link-hover">Terms of use</a> 
+    <a class="link link-hover">Privacy policy</a> 
+    <a class="link link-hover">Cookie policy</a>
+  </nav> 
+  <div class="tabs">
+  <a class="tab">Tab 1</a> 
+  <a class="tab tab-active">Tab 2</a> 
+  <a class="tab">Tab 3</a>
+</div>
+  
+  <form>
+    <header class="footer-title">Newsletter</header> 
+    <fieldset class="form-control w-80">
+      <label class="label">
+        <span class="label-text">Enter your email address</span>
+      </label> 
+      <div class="relative">
+        <input type="text" placeholder="username@site.com" class="input input-bordered w-full pr-16" /> 
+        <button class="btn btn-primary absolute top-0 right-0 rounded-l-none">Subscribe</button>
       </div>
-      <div class="footer-contact text-center">
-        <h2 class="text-lg font-bold text-text-color">Contact Us</h2>
-        <p>123 Music Ave, Retro City, Denmark</p>
-        <p>Email: info@cdharmony.dk</p>
-      </div>
-      <div class="footer-social text-right">
-        <h2 class="text-lg font-bold text-text-color">Follow Us</h2>
-        <div class="social-icons">
-          <!-- Add social media icons and links here -->
-          <a href="#"><img src="facebook.png" alt="Facebook" class="w-6 h-6"></a>
-          <a href="#"><img src="twitter.png" alt="Twitter" class="w-6 h-6"></a>
-          <a href="#"><img src="instagram.png" alt="Instagram" class="w-6 h-6"></a>
-        </div>
-      </div>
-    </div>
-    <p class="text-menu-text text-center mt-4">&copy; 2023 CD Harmony</p>
-  </div>
+    </fieldset>
+  </form>
 </footer>

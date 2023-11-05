@@ -1,20 +1,26 @@
 {
   "name": "cdshop",
   "version": "1.0.0",
-  "description": "CDs store",
+  "description": "A web store for CDs",
   "main": "index.php",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build-tailwind": "npx tailwindcss -i ./src/css/input.css -o ./dist/output.css --watch"
+    "build-tailwind": "npx tailwindcss -i ./src/css/input.css -o ./dist/output.css --watch",
+    "build-production": "npx tailwindcss -i ./src/css/input.css -o ./dist/output.css --minify"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "CDs",
+    "store",
+    "web shop"
+  ],
+  "author": "Your Name <your@email.com>",
   "license": "ISC",
   "dependencies": {
     "autoprefixer": "^10.4.15",
     "tailwindcss": "^3.3.3"
   },
   "devDependencies": {
+    "daisyui": "^3.9.4",
     "gulp": "^4.0.2",
     "postcss": "^8.4.29",
     "postcss-cli": "^10.1.0"

@@ -1,0 +1,1 @@
+<p class="text-gray-600 mt-2"><?php echo htmlspecialchars($product['product_description']); ?></p>

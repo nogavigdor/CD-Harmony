@@ -6,6 +6,13 @@ CREATE DATABASE CDHarmonyDB;
 
 USE CDHarmonyDB;
 
+CREATE TABLE roles
+(
+    role_id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    role_name varchar(100) NOT NULL,
+    CHECK (role_name IN ('customer', 'editor', 'admin'))
+)
+
 CREATE TABLE users
 (
     user_id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
@@ -13,15 +20,11 @@ CREATE TABLE users
     last_name varchar(100) NOT NULL,
     email varchar(100) NOT NULL,
     user_password varchar(100) NOT NULL,  
-    user_role ENUM('admin', 'customer', 'author')
+    role_id int,
+    FOREIGN KEY (role_id) REFERENCES roles (role_id)
 ) ENGINE=InnoDB;
 
-CREATE TABLE roles
-(
-    role_id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
-    role_name varchar(100) NOT NULL,
-    CHECK (role_name IN ('customer', 'editor', 'admin'))
-)
+
 
 CREATE TABLE addresses
 (
@@ -88,7 +91,7 @@ CREATE TABLE conditions
 (
     condition_id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
     title varchar(100) NOT NULL,
-    CHECK (role_name IN ('customer', 'editor', 'admin'))
+    CHECK (title IN ('new', 'used'))
 
 )
 
@@ -97,10 +100,12 @@ CREATE TABLE cds
     cd_id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
     release_date date NOT NULL,
     cd_condition  varchar(100) NOT NULL,
-    CHECK (role_name IN ('new', 'used')),
+    CHECK (cd_condition IN ('new', 'used')),
     units_in_stock int NOT NULL,
     artist_id int,
     product_id int,
+    condition_id int,
+    FOREIGN KEY (condition_id) REFERENCES conditions (condition_id),
     FOREIGN KEY (artist_id) REFERENCES artists (artist_id),
     FOREIGN KEY (product_id) REFERENCES products (product_id)
 ) ENGINE=InnoDB;

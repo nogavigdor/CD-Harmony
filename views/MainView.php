@@ -1,35 +1,11 @@
-<?php
-
-$host = "localhost";
-$user = "root";
-$password = "";
-$database = "CDHarmonydb";
-
-// Create a database connection
-$connection = new mysqli($host, $user, $password, $database);
-
-// Check the connection
-if ($connection->connect_error) {
-    die("Connection failed: " . $connection->connect_error);
-}
-
-// Fetch CDs with the "pop" tag
-$sql = "SELECT p.product_id, p.title, p.product_description, i.image_path, i.image_name, a.title AS artist_name, c.release_date, p.units_in_stock
-        FROM products p
-        JOIN cds c ON p.product_id = c.product_id
-        JOIN images_for_products i ON p.product_id = i.product_id
-        JOIN products_tags pt ON p.product_id = pt.product_id
-        JOIN tags t ON pt.tag_id = t.tag_id
-        JOIN artists a ON a.artist_id = c.artist_id
-        WHERE t.title = 'pop' AND p.units_in_stock > 0";
-
-$result = $connection->query($sql);
-?>
 
 <!DOCTYPE html>
 <html>
-<?php require("header.php"); ?>
-<body class="bg-background-color text-text-color font-poppins">
+<?php
+
+require("header.php"); 
+?>
+<body class="bg-background-color text-text-color font-poppins"> 
   <header class="bg-menu-background p-4">
     <div class="container mx-auto flex justify-between items-center">
       <img src="./src/assets/logo_square_original_no_background.png" alt="logo" class="w-16 h-16">
@@ -63,21 +39,9 @@ $result = $connection->query($sql);
       <h2 class="section-title text-text-color">Featured Pop CDs</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         <?php
-        while ($row = $result->fetch_assoc()) {
-            echo '<div class="hover:shadow-md hover:bg-gray-100 transition duration-300 ease-in-out transform hover:-translate-y-1">';
-            echo '<div class="bg-white rounded-lg overflow-hidden shadow-lg">';
-            echo '<a href="product_details?product_id=' . $row['product_id'] . '">';
-            echo '<img src="' . $row['image_path'] . '/' . $row['image_name'] . '" alt="' . $row['title'] . '" class="w-full h-64 object-cover">';
-            echo '</a>';
-            echo '<div class="p-4">';
-            echo '<h3 class="text-xl font-semibold">' . $row['title'] . '</h3>';
-            echo '<p class="text-gray-600">' . $row['artist_name'] . '</p>';
-            echo '<p class="text-gray-600">Left in stock: ' . $row['units_in_stock'] . '</p>';
-            echo '<a href="#" class="mt-4 bg-button-color hover:bg-hover-states text-secondary-background py-2 px-4 rounded-full inline-block font-bold">Add to Cart</a>';
-            echo '</div>';
-            echo '</div>';
-            echo '</div>';
-        }
+
+          (new models\ProductModel)->readProducts('pop');
+
         ?>
       </div>
     </div>
@@ -93,7 +57,7 @@ $result = $connection->query($sql);
 
   </main>
 
-  <?php require("footer.php"); ?>
+  <?php require("footer.php"); ?>A
 
 </body>
 </html>
