@@ -16,6 +16,7 @@ module.exports = {
         'hover-states': '#009494',
         'border-color': '#333333',
       },
+     
     },
   },
   plugins: [require("daisyui")],

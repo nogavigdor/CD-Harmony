@@ -1,63 +1,92 @@
-
 <!DOCTYPE html>
-<html>
-<?php
+<html lang="en">
+ <?php
 
-require("header.php"); 
-?>
-<body class="bg-background-color text-text-color font-poppins"> 
-  <header class="bg-menu-background p-4">
-    <div class="container mx-auto flex justify-between items-center">
-      <img src="./src/assets/logo_square_original_no_background.png" alt="logo" class="w-16 h-16">
-      <nav>
-        <ul class="flex space-x-6">
-          <li class="mx-4">
-            <a href="#" class="text-menu-text">Home</a>
-          </li>
-          <li class="mx-4 dropdown relative">
-            <a href="#" class="text-menu-text">Genres</a>
-            <div class="submenu absolute hidden bg-menu-background top-10 left-0 w-32 text-menu-text">
-              <a href="#">Rock</a>
-              <a href="#">Jazz</a>
-              <a href="#">Classical</a>
+
+
+  include 'views/header.php';
+ ?>
+<body class="bg-#F9FBDF">
+    <!-- Header section -->
+    <header class="bg-#008080 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="<?php echo BASE_URL; ?>"><img src="./src/assets/logo_no_background.png" alt="CD Harmony Logo" class="w-64 h-64"></a>
+            <nav class="space-x-4">
+                <a href="#" class="text-white">Home</a>
+                <a href="#" class="text-white">Shop</a>
+                <a href="#" class="text-white">About</a>
+                <a href="#" class="text-white">Contact</a>
+            </nav>
+        </div>
+        <div class="container mx-auto flex justify-between items-center">
+            <div>
+                &copy; <?php echo date("Y"); ?> CD Harmony. All rights reserved.
             </div>
-          </li>
-          <!-- ... other navigation items ... -->
-        </ul>
-      </nav>
-    </div>
-  </header>
+            <div>
+                <button class="btn btn-primary">Shopping Cart</button>
+                <button class="btn btn-secondary">Log In</button>
+                <button class="btn btn-emphasis">Sign Up</button>
+            </div>
+        </div>
+    </header>
 
-  <div class="hero bg-gradient-to-b from-background-color to-secondary-background text-text-color py-20 text-center">
-    <h1 class="text-4xl font-oswald font-bold mb-4">Welcome to CD Harmony</h1>
-    <p class="text-lg mb-4">Discover a world of music.</p>
-    <a href="#" class="cta-button bg-gradient-to-b from-accent-color to-text-color py-2 px-4 rounded-full font-bold hover:bg-hover-states transition duration-300 ease-in-out">Get Started</a>
-  </div>
+    <!-- Main content section -->
+    <main class="container mx-auto p-4">
+        <!-- Pop CDs section -->
+        <section>
+            <h2 class="text-#13324E text-2xl font-bold mb-4">Pop CDs</h2>
+    
+                <?php
+                // Include the "Pop CDs" section
+                $controller = new \Controllers\ProductController();
+               $controller->showProductsByTag('pop');
+         
+                ?>
+       
+        </section>
+           <!-- Rock CDs section -->
+           <section>
+            <h2 class="text-#13324E text-2xl font-bold mb-4">Rock CDs</h2>
+    
+                <?php
+                // Include the "Pop CDs" section
+                $controller = new \Controllers\ProductController();
+               $controller->showProductsByTag('rock');
+    
+                ?>
+       
+        </section>
+         <!-- Country CDs section -->
+         <section>
+            <h2 class="text-#13324E text-2xl font-bold mb-4">Country CDs</h2>
+    
+                <?php
+                // Include the "CountryCDs" section
+                $controller = new \Controllers\ProductController();
+               $controller->showProductsByTag('country');
+                ?>
+       
+        </section>
 
-  <main class="content">
-    <div class="section">
-      <h2 class="section-title text-text-color">Featured Pop CDs</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        <?php
 
-          (new models\ProductModel)->readProducts('pop');
+        <!-- New Releases section -->
+        <section>
+            <h2 class="text-#13324E text-2xl font-bold mt-8 mb-4">New Releases</h2>
+            <div class="grid grid-cols-4 gap-4">
+                <?php
+                // Include the "New Releases" section
+                $controller->showRecentReleases();
+                ?>
+            </div>
+        </section>
 
-        ?>
-      </div>
-    </div>
+        <!-- Other content of your homepage -->
+        <!-- ... -->
+    </main>
 
-    <section class="section">
-      <h2 class="section-title text-text-color">Featured Genres</h2>
-      <div class="genre-items">
-        <!-- Add genre items here -->
-      </div>
-    </section>
-
-    <!-- Other sections go here -->
-
-  </main>
-
-  <?php require("footer.php"); ?>A
-
+    <!-- Footer section -->
+    <?php
+    include 'views/footer.php';
+    ?>
 </body>
 </html>
