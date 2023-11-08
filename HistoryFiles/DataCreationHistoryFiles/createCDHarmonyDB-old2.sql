@@ -1,3 +1,5 @@
+ 
+ 
   DROP DATABASE IF EXISTS CDHarmonyDB;
 
   CREATE DATABASE CDHarmonyDB;
@@ -13,7 +15,7 @@
     last_name varchar(100) NOT NULL,
     email varchar(100) NOT NULL,
     user_password varchar(100) NOT NULL,  
-    `role` ENUM('admin', 'customer', 'author')
+    user_role ENUM('admin', 'customer', 'author')
 
   ) ENGINE=InnoDB; 
 
@@ -44,7 +46,7 @@
     phone varchar(20) NOT NULL,
     street varchar(100) NOT NULL,  
     comment varchar(300) NOT NULL,
-    `detault` binary NOT NULL,
+    address_default binary NOT NULL,
     user_id int NOT NULL,
     postal_code_id varchar(4) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (user_id),
@@ -76,10 +78,10 @@
   (
     cd_id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
     title varchar(255) NOT NULL,
-    `condition` ENUM('new', 'good as new', 'good','fair') NOT NULL,
+    cd_condition ENUM('new', 'good as new', 'good','fair') NOT NULL,
     release_date date NOT NULL,
     cover_image varchar(255) NOT NULL,
-     `type` ENUM('collection', 'rare', 'special edition') NOT NULL,
+  --  cd_type ENUM('collection', 'rare', 'special edition') NOT NULL,
     artist_id int,
     product_id int,
     FOREIGN KEY (artist_id) REFERENCES artists (artist_id),
@@ -117,10 +119,10 @@
  (
   special_offer_id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
   title varchar(100) NOT NULL,
-  `description` varchar(300) NOT NULL,
+  special_offer_description varchar(300) NOT NULL,
   discount_precentage int NOT NULL,
-  `start_date` timestamp NOT NULL,
-  end_date timestamp NOT NULL,
+  special_offer_start_date timestamp NOT NULL,
+  special_offer_end_date timestamp NOT NULL,
   product_id int,
   FOREIGN KEY (product_id) REFERENCES products (product_id)
  ) ENGINE=InnoDB;
@@ -128,7 +130,7 @@
  CREATE TABLE images_for_products 
  (
   title varchar(100) NOT NULL,
-  url varchar(255) NOT NULL,
+  image_url varchar(255) NOT NULL,
   product_id int,
   FOREIGN KEY (product_id) REFERENCES products(product_id)
 

@@ -262,3 +262,5 @@ CREATE TABLE images_for_articles
     product_id int,
     FOREIGN KEY (product_id) REFERENCES articles(article_id)
 ) ENGINE=InnoDB;
+
+

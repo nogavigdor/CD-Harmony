@@ -1,21 +1,49 @@
 <?php 
-define("BASE_URL", "http://localhost/CDshop");
+define("BASE_URL", "http://localhost/cdharmony");
 
 require_once "router.php";
 require_once "bootstrap.php";
 
-route('/CDshop/', 'GET', function () {
+route('/cdharmony/', 'GET', function () {
     require "views/MainView.php";
 });
 
-route('/CDshop/product/(\d+)', 'GET', function ($id) {
+route('/cdharmony/product/(\d+)', 'GET', function ($id) {
     $controller = new controllers\ProductController();
     $controller->showProductDetails($id);
 });
 
-route('/CDshop/contact/', 'GET', function() {
+route('/cdharmony/contact/', 'GET', function() {
     $controller = new controllers\ContactController();
-    $controller->handleInput();
+    $controller->contactView();
+});
+
+route('/cdharmony/contact/', 'POST', function() {
+    $controller = new controllers\ContactController();
+    $controller->contactInput();
+});
+
+route('/cdharmony/login/', 'GET', function() {
+    $controller = new controllers\LoginController();
+    $controller->loginView();
+});
+route('/cdharmony/login/', 'POST', function() {
+    $controller = new controllers\LoginController();
+    $controller->loginCheck();
+});
+
+route('/cdharmony/signup/', 'GET', function() {
+    $controller = new controllers\SignupController();
+    $controller->signupView();
+});
+
+route('/cdharmony/signup/', 'POST', function() {
+    $controller = new controllers\SignupController();
+    $controller->signupCreation();
+});
+route('/cdharmony/test/', 'GET', function() {
+
+    require "views/test.php";
 });
 
 $action = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/'); // Extract the path

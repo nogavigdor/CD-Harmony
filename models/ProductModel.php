@@ -80,10 +80,29 @@ class ProductModel extends BaseModel
         $db = parent::connectToDB(); // Add this line to get the database connection
 
         $query = $db->prepare('
-            SELECT p.*, c.*
-            FROM products p 
-            INNER JOIN cds c ON p.product_id = c.product_id
-            WHERE p.product_id = :id
+                SELECT
+                p.product_id,
+                p.title as product_title,
+                p.product_description,
+                a.title AS artist_title,
+                c.release_date,
+                t.title AS tag_title,
+                ip.image_name,
+                ip.image_path,
+                SUM(CASE WHEN pc.condition_id = 1 THEN pc.quantity_in_stock ELSE 0 END) AS new_quantity,
+                SUM(CASE WHEN pc.condition_id = 2 THEN pc.quantity_in_stock ELSE 0 END) AS old_quantity,
+                MAX(CASE WHEN pc.condition_id = 1 THEN pc.price END) AS new_price,
+                MAX(CASE WHEN pc.condition_id = 2 THEN pc.price END) AS old_price
+                FROM
+                products p
+                INNER JOIN products_tags pt ON pt.product_id = p.product_id
+                INNER JOIN tags t ON t.tag_id = pt.tag_id
+                INNER JOIN cds c ON c.product_id = p.product_id
+                INNER JOIN artists a ON a.artist_id = c.artist_id
+                LEFT JOIN products_conditions pc ON pc.product_id = p.product_id
+                INNER JOIN images_for_products ip ON ip.product_id = p.product_id
+                WHERE p.product_id = :id
+
         ');
         $query->bindParam(':id', $id, \PDO::PARAM_INT);
         $query->execute();

@@ -1,3 +1,3 @@
 <?php
 
-echo uniqid('hi');
+echo uniqid()

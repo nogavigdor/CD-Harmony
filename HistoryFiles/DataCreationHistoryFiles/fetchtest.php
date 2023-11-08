@@ -92,7 +92,7 @@ if (isset($topArtistsData['artists']['artist'])) {
                 $description = isset($albumInfoData['album']['wiki']['content']) ? $albumInfoData['album']['wiki']['content'] : 'N/A';
             
                      // Extract track names and durations
-                     /*
+                     
                 $tracks = [];
 
                 if (isset($albumInfoData['album']['tracks']['track'])) {
@@ -120,7 +120,7 @@ if (isset($topArtistsData['artists']['artist'])) {
                     }
                 }
 
-                */
+                
                 // Simulate random values for the condition property
                 $conditions = ['new', 'as new', 'very good', 'good', 'fair'];
                 $condition = $conditions[array_rand($conditions)];

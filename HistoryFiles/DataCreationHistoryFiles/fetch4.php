@@ -12,7 +12,7 @@ $topArtistsUrl = $apiUrl . '?' . http_build_query([
     'method' => 'chart.getTopArtists',
     'api_key' => $apiKey,
     'format' => 'json',
-    'limit' => 50, // Adjust the limit as needed
+    'limit' => 1000, // Adjust the limit as needed
 ]);
 
 $ch = curl_init();
@@ -146,7 +146,7 @@ foreach ($curlHandles as $ch) {
                     $albumData = [
                         'artist_name' => $artistName,
                         'album_name' => $albumName,
-                        'condition' => $condition,
+                        //'condition' => $condition,
                         'release_date' => $releaseDate,
                         'description' => $description,
                         'edition_type' => $editionType,

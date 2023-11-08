@@ -35,6 +35,7 @@ function dispatch($action, $method)
     foreach ($routes as $route => $callbacks) {
         if (preg_match($route, $action, $matches) && isset($callbacks[$method])) {
             array_shift($matches); // Remove the full match from the array
+            //passes the matched value into the callback
             echo call_user_func_array($callbacks[$method], $matches);
             return;
         }

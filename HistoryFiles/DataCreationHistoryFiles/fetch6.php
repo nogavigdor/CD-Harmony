@@ -53,7 +53,7 @@ $topArtistsUrl = $apiUrl . '?' . http_build_query([
     'method' => 'chart.getTopArtists',
     'api_key' => $apiKey,
     'format' => 'json',
-    'limit' => 1000, // Adjust the limit as needed
+    'limit' => 1, // Adjust the limit as needed
 ]);
 
 $ch = curl_init();
@@ -158,7 +158,7 @@ foreach ($curlHandles as $ch) {
 
                     $releaseDate = isset($albumInfoData['album']['wiki']['published']) ? $albumInfoData['album']['wiki']['published'] : 'N/A';
                     $description = isset($albumInfoData['album']['wiki']['summary']) ? $albumInfoData['album']['wiki']['summary'] : 'N/A';
-                    $imageURL = isset($albumInfoData['album']['image'][3]['#text']) ? stripslashes($albumInfoData['album']['image'][3]['#text']) : 'N/A';
+                    $imageURL = isset($albumInfoData['album']['image'][2]['#text']) ? stripslashes($albumInfoData['album']['image'][2]['#text']) : 'N/A';
 
                     // Define $imageFilePath before the if condition
                     $imageFilePath = 'N/A';

@@ -18,7 +18,7 @@ foreach ($data as $album) {
     $artistExistsResult = mysqli_query($conn, $artistExistsQuery);
 
     if (mysqli_num_rows($artistExistsResult) == 0) {
-        // If the artist doesn't exist, insert it into the artists table
+        // If the artist doesnt exist, insert it into the artists table
         $insertArtistQuery = "INSERT INTO artists (title) VALUES ('$artist')";
         mysqli_query($conn, $insertArtistQuery);
     }

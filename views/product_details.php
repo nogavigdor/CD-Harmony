@@ -1,10 +1,10 @@
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
     <!-- Product Card -->
     <div class="bg-white shadow-lg p-4">
-        <img src="image_url_here" alt="Product Image" class="w-full h-48 object-cover object-center">
-        <h2 class="text-2xl font-semibold mt-2">CD Title</h2>
-        <p class="text-sm text-gray-600">Artist: Artist Title</p>
-        <p class="mt-2">Album Description here...</p>
+    <img src="<?= BASE_URL ?>/src/assets/images/albums/<?php echo htmlspecialchars($product->image_name) ?>" alt="Product Image" class="w-full h-40 object-cover rounded-md">
+        <h2 class="text-2xl font-semibold mt-2"><?php echo $product->product_title ?></h2>
+        <p class="text-sm text-gray-600"><?php echo $product->artist_title ?></p>
+        <p class="mt-2"><?php echo $product->product_description ?></p>
         <div class="mt-4">
             <div class="text-lg font-semibold mb-2">Price:</div>
             <div>
@@ -27,3 +27,5 @@
     </div>
     <!-- Repeat the above structure for each product -->
 </div>
+
+
