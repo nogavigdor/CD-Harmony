@@ -1,25 +1,25 @@
-/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
     './src/**/*.{html,css,js}', 
-    './*.php','./*.html',
+    './*.php',
     './views/*.php'
   ],
   theme: {
     extend: {
-      colors: {
-        'background-color': '#008080',  
-        'text-color': '#A80000',
-        'accent-color': '#DAA520',
-        'secondary-background': '#FFF4E0',
-        'menu-background': '#006B6B',
-        'menu-text': '#FFF4E0',
-        'hover-states': '#009494',
-        'border-color': '#333333',
+      fontFamily: {
+        'body': ['Poppins', 'sans'], // Use 'Poppins' for the default text font
+        'headline': ['Oswald', 'sans'], // Use 'Oswald' for headlines
+        'cta': ['Oswald', 'sans'], // Use 'Oswald' for call to action buttons
       },
-     
+      colors: {
+        'primary': '#008080',
+        'secondary': '#13324E',
+        'accent': '#DE5529',
+        'neutral': '#A80000',
+        'base-100': '#F9FBDF'  
+      },
     },
   },
- plugins: [require("daisyui")],
-}
+  plugins: [require("daisyui")],
 
+};

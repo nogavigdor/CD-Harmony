@@ -1,34 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
+
  <?php
 
 
 
   include 'views/header.php';
  ?>
-<body class="bg-#F9FBDF">
-    <!-- Header section -->
-    <header class="bg-#008080 text-white p-4">
-        <div class="container mx-auto flex justify-between items-center">
-            <a href="<?php echo BASE_URL; ?>"><img src="./src/assets/logo_no_background.png" alt="CD Harmony Logo" class="w-64 h-64"></a>
-            <nav class="space-x-4">
-                <a href="#" class="text-white">Home</a>
-                <a href="#" class="text-white">Shop</a>
-                <a href="#" class="text-white">About</a>
-                <a href="#" class="text-white">Contact</a>
-            </nav>
-        </div>
-        <div class="container mx-auto flex justify-between items-center">
-            <div>
-                &copy; <?php echo date("Y"); ?> CD Harmony. All rights reserved.
-            </div>
-            <div>
-                <button class="btn btn-primary">Shopping Cart</button>
-                <button class="btn btn-secondary">Log In</button>
-                <button class="btn btn-emphasis">Sign Up</button>
-            </div>
-        </div>
-    </header>
+
+  
 
     <!-- Main content section -->
     <main class="container mx-auto p-4">

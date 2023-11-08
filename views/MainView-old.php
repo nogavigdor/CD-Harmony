@@ -59,5 +59,4 @@ require("header.php");
 
   <?php require("footer.php"); ?>A
 
-</body>
-</html>
+

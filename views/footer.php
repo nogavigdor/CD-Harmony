@@ -1,5 +1,8 @@
 
-    <footer class="footer p-10 bg-base-200 text-base-content">
+?>
+</body>
+</html>
+  <footer class="footer p-10 bg-base-200 text-base-content">
   <nav>
     <header class="footer-title">Services</header> 
     <a class="link link-hover">Branding</a> 
@@ -37,5 +40,10 @@
         <button class="btn btn-primary absolute top-0 right-0 rounded-l-none">Subscribe</button>
       </div>
     </fieldset>
+    <div>
+                &copy; <?php echo date("Y"); ?> CD Harmony. All rights reserved.
+            </div>
   </form>
 </footer>
+</body>
+</html>
