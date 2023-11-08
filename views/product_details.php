@@ -1,3 +1,10 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<?php
+    include_once 'header.php';
+?>
+<body class="bg-#F9FBDF">
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
     <!-- Product Card -->
     <div class="bg-white shadow-lg p-4">
@@ -27,5 +34,10 @@
     </div>
     <!-- Repeat the above structure for each product -->
 </div>
+<?php
+    include_once 'footer.php';
+?>
+</body>
+</html>
 
 

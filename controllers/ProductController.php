@@ -45,7 +45,9 @@ class ProductController
             $product = $productModel->getProductDetails($id); // Call the method on the instance
 
             // Load the view to display the "New Releases" section
+
             include 'views/product_details.php';
+            
         } catch (\PDOException $ex) {
             error_log('PDO Exception: ' . $ex->getMessage());
         }
