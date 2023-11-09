@@ -41,6 +41,26 @@ route('/cdharmony/signup/', 'POST', function() {
     $controller = new controllers\SignupController();
     $controller->signupCreation();
 });
+
+route('/cdharmony/search/', 'GET', function () {
+    $controller = new controllers\SearchController();
+    $controller->searchView();
+});
+
+route('/cdharmony/search/', 'POST', function () {
+    $controller = new controllers\SearchController();
+    $controller->performSearch();
+});
+
+route('/cdharmony/admin/company/', 'GET', function () {
+    $controller = new controllers\CompanyController();
+    $controller->showCompanyDetails();
+});
+
+route('/cdharmony/admin/company/', 'POST', function () {
+    $controller = new controllers\CompanyController();
+    $controller->updateCompanyDetails();
+});
 route('/cdharmony/test/', 'GET', function() {
 
     require "views/test.php";

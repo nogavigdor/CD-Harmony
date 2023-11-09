@@ -3,11 +3,14 @@
     include_once 'header.php';
 ?>
 
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 sm:mb-16 sm:mt-16"  >
     <!-- Product Card -->
-    <div class="bg-white shadow-lg p-4">
-    <img src="<?= BASE_URL ?>/src/assets/images/albums/<?php echo htmlspecialchars($product->image_name) ?>" alt="Product Image" class="w-full h-40 object-cover rounded-md">
-        <h2 class="text-2xl font-semibold mt-2"><?php echo $product->product_title ?></h2>
+    <div class="bg-white shadow-lg p-4 mx-auto lg:flex lg:w-2/3">
+    <div class="mr-20">
+    <img  class="mx-auto sm-fw" src="<?= BASE_URL ?>/src/assets/images/albums/<?php echo htmlspecialchars($product->image_name) ?>" alt="Product Image" class="w-full h-40 object-cover rounded-md">
+    </div>
+    <div>   
+    <h2 class="text-2xl font-semibold mt-2"><?php echo $product->product_title ?></h2>
         <p class="text-sm text-gray-600"><?php echo $product->artist_title ?></p>
         <p class="mt-2"><?php echo $product->product_description ?></p>
         <div class="mt-4">
@@ -23,10 +26,11 @@
         </div>
         <div class="mt-4">
             <div class="text-lg font-semibold">Stock Quantities:</div>
-            <div>
-                <button class="px-4 py-2 bg-green-500 text-white rounded mr-2">+</button>
-                <span>10</span>
-                <button class="px-4 py-2 bg-red-500 text-white rounded ml-2">-</button>
+                <div>
+                    <button class="px-4 py-2 bg-primary text-white rounded mr-2">-</button>
+                    <span>10</span>
+                    <button class="px-4 py-2 bg-primary text-white rounded ml-2">+</button>
+                </div>
             </div>
         </div>
     </div>

@@ -1,3 +1,4 @@
+
 USE cdharmonydb;
 
 INSERT INTO `postal_codes` (`postal_code_id`, `City`) VALUES
@@ -1119,3 +1120,6 @@ INSERT INTO `postal_codes` (`postal_code_id`, `City`) VALUES
 ('9981', 'Jerup'),
 ('9982', 'Ålbæk'),
 ('9990', 'Skagen');
+
+
+INSERT INTO `company_details` (`company_details_id`, `company_name`, `street`, `email`, `phone_number`, `logo`, `opening_hours`, `postal_code_id`) VALUES (NULL, 'CD Harmony', 'Melody 1', 'info@cdharmony.dk', '52333333', '\\src\\assets\\logo_no_background.png', 'Monday - Friday 8:00 - 17:00', '6000'), (NULL, '', '', '', '', '', '', '6000');

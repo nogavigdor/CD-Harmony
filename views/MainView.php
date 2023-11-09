@@ -7,7 +7,7 @@
  ?>
 
   
-
+<body>
     <!-- Main content section -->
     <main class="container mx-auto p-4">
         <!-- Pop CDs section -->
