@@ -14,7 +14,7 @@ include_once __DIR__ . '/admin-header.php';
 ?>
 
 <main class="container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
-<h1 class="h1">contact us</h1>
+<h1 class="h1">Company Information</h1>
         <!-- Company Details Form -->
         <div class=" mt-10  grid grid-cols-1 gap-x-8 p-y-8 sm:grid-cols-6">
                 <form  action="/cdharmony/admin/company/" method="POST">

@@ -6,7 +6,7 @@
 include 'header.php';
 ?>
 <
-<h1 class="text-center text-3xl font-bold mb-6">reCAPTCHA V3 Demo</h1>
+<h1 class="text-center text-3xl font-bold mb-6">Contact Us</h1>
     <div class="flex justify-center items-center h-scree max-w-screen-lg mx-auto px-4 py-6"> <!-- Set the maximum width on large and medium screens for the container -->
         <form method="post" id="contact" class="bg-white p-6 rounded-lg shadow-lg md:w-2/3 w-full transition-transform transform hover:scale-105">
             <input type="hidden" name="recaptchaResponse" id="recaptchaResponse">
