@@ -61,9 +61,11 @@ route('/cdharmony/admin/company/', 'POST', function () {
     $controller = new controllers\CompanyController();
     $controller->updateCompanyDetails();
 });
-route('/cdharmony/test/', 'GET', function() {
 
-    require "views/test.php";
+
+route('/cdharmony/admin/', 'GET', function() {
+    $controller = new controllers\AdminController();
+    $controller->showAdmin();
 });
 
 $action = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/'); // Extract the path

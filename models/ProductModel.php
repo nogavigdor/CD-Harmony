@@ -48,7 +48,9 @@ class ProductModel extends BaseModel
             return $query->fetchAll(PDO::FETCH_OBJ);
         } catch (\PDOException $ex) {
             print($ex->getMessage());
-        }
+        }  finally {
+            parent::closeConnection();
+        }  
     }
 
 
@@ -71,6 +73,8 @@ class ProductModel extends BaseModel
         } catch (\PDOException $ex) {
             error_log('PDO Exception: ' . $ex->getMessage());
             return []; // Return an empty array or handle the error appropriately
+        } finally {
+            parent::closeConnection();
         }
     }
 
@@ -112,6 +116,8 @@ class ProductModel extends BaseModel
         return $result;
     } catch (\PDOException $ex) {
         print($ex->getMessage());
+    } finally {
+        parent::closeConnection();
     }
 }
 

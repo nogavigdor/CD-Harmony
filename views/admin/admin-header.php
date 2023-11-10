@@ -24,10 +24,11 @@
                 </button>
             </div>
             <nav class="space-x-4">
-                <a href="#" class="text-white">Home</a>
-                <a href="#" class="text-white">Shop</a>
-                <a href="#" class="text-white">About</a>
-                <a href="<?php echo BASE_URL ;?>/contact" class="text-white">Contact</a>
+                <a href="#" class="text-white">Products</a>
+                <a href="#" class="text-white">Articles</a>
+                <a href="#" class="text-white">Special Offers</a>
+                <a href="#" class="text-white">Orders</a>
+                <a href="#" class="text-white">Company details</a>
             </nav>
            
             

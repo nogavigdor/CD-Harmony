@@ -2,3 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+h1 {
+    @apply text-4xl mx-auto my-16 text-center font-bold ;
+  }
+input {
+    @apply mt-4 placeholder-gray-500;
+}
+
+label {
+    @apply mt-4;
+}
+
+
+
+.cta {
+    @apply text-cta bg-accent;
+}

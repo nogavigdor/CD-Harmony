@@ -1,5 +1,5 @@
 <?php
-// Replace these placeholders with your database credentials
+
 $host = "localhost";
 $user = "root";
 $password = "";
