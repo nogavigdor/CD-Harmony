@@ -1,7 +1,7 @@
 <?php
 namespace models;
 
-use \DataAccess\DB\DBConnector;
+use \DataAccess\DBConnector;
 
 class BaseModel extends DBConnector {
     function __construct() {}

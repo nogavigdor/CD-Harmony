@@ -2,8 +2,11 @@ module.exports = {
   content: [
     './src/**/*.{html,css,js}', 
     './*.php',
-    './views/*.php'
+    './views/*.php',
+    "./node_modules/tw-elements/dist/js/**/*.js"
   ],
+  plugins: [require("tw-elements/dist/plugin.cjs")],
+  darkMode: "class",
   theme: {
     extend: {
       fontFamily: {

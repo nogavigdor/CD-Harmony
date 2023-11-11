@@ -1,8 +1,11 @@
 <?php 
+
+require_once "bootstrap.php";
+
 define("BASE_URL", "http://localhost/cdharmony");
 
 require_once "router.php";
-require_once "bootstrap.php";
+
 
 route('/cdharmony/', 'GET', function () {
     require "views/MainView.php";
@@ -63,9 +66,18 @@ route('/cdharmony/admin/company/', 'POST', function () {
 });
 
 
+
+
+
 route('/cdharmony/admin/', 'GET', function() {
     $controller = new controllers\AdminController();
     $controller->showAdmin();
+});
+
+route('/cdharmony/admin/login', 'GET', function() {
+   // $controller = new controllers\AdminController();
+   // $controller->showAdmin();
+   require 'views/admin/login.php';
 });
 
 $action = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/'); // Extract the path

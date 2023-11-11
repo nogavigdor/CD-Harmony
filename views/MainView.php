@@ -47,15 +47,16 @@
         </section>
 
 
-        <!-- New Releases section -->
+        <!-- New Arrivals section -->
         <section>
-            <h2 class="text-#13324E text-2xl font-bold mt-8 mb-4">New Releases</h2>
-            <div class="grid grid-cols-4 gap-4">
+            <h2 class="text-#13324E text-2xl font-bold mt-8 mb-4">New Arrivals</h2>
+         
                 <?php
                 // Include the "New Releases" section
+                $controller = new \Controllers\ProductController();
                 $controller->showRecentReleases();
                 ?>
-            </div>
+          
         </section>
 
         <!-- Other content of your homepage -->

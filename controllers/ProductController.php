@@ -27,12 +27,11 @@ class ProductController
     public function showRecentReleases()
     {
         try {
-			$tag='recent';
             $productModel = new ProductModel(); // Create an instance of ProductModel
             $products = $productModel->getRecentReleases(); // Call the method on the instance
 
             // Load the view to display the "New Releases" section
-            include'views/products_section.php';
+            include 'views/products_section.php';
         } catch (\PDOException $ex) {
             error_log('PDO Exception: ' . $ex->getMessage());
         }

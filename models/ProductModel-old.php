@@ -2,16 +2,26 @@
 
 namespace models;
 
+use \DataAccess\DBConnector;
+
 use PDO; 
 
-class ProductModel extends BaseModel
+class ProductModel extends DBConnector
 {
-	function __construct() {}
+
+
+	function __construct() {
+
+        // Gets an instance of a DBConnector unsing the singleton pattern
+        $database = DBConnector::getInstance();
+
+        // Establishing a connection to the database using the DBConnector instance ($databse)
+        $this->db = $database->connectToDB();
+    }
 
     public function getProductsByTag($tag) {
         try {
-            $db = parent::connectToDB();
-            $query = $db->prepare('
+            $query = $this->db->prepare('
             SELECT DISTINCT
             p.title AS product_title,       -- Product title
             a.title AS artist_title,        -- Artist title
@@ -19,28 +29,26 @@ class ProductModel extends BaseModel
             pc.quantity_in_stock,           -- Quantity in stock
             pc.price,                       -- Product price
             con.title AS product_condition  -- Product condition
-        FROM
-            products p
-        INNER JOIN
-            cds c ON p.product_id = c.product_id
-        INNER JOIN
-            products_conditions pc ON p.product_id = pc.product_id
-        INNER JOIN
-            conditions con ON pc.condition_id = con.condition_id
-        INNER JOIN
-            products_tags pt ON p.product_id = pt.product_id
-        INNER JOIN
-            tags t ON pt.tag_id = t.tag_id
-        INNER JOIN
-            artists a ON c.artist_id = a.artist_id
-        WHERE
+            FROM
+                products p
+            INNER JOIN
+                cds c ON p.product_id = c.product_id
+            INNER JOIN
+                products_conditions pc ON p.product_id = pc.product_id
+            INNER JOIN
+                conditions con ON pc.condition_id = con.condition_id
+            INNER JOIN
+                products_tags pt ON p.product_id = pt.product_id
+            INNER JOIN
+                tags t ON pt.tag_id = t.tag_id
+            INNER JOIN
+                artists a ON c.artist_id = a.artist_id
+            WHERE
             t.title = :tag;
 
             ');
             $query->bindParam(':tag', $tag, PDO::PARAM_STR);
             $query->execute();
-            var_dump($query->queryString);
-        var_dump($tag);
             return $query->fetchAll(PDO::FETCH_OBJ);
         } catch (\PDOException $ex) {
             print($ex->getMessage());
@@ -53,9 +61,8 @@ class ProductModel extends BaseModel
         // Implement the logic to fetch recent releases here
         // For example:
         try {
-            $db = parent::connectToDB();
 
-            $query = $db->prepare('
+            $query = $this->db->prepare('
                 SELECT p.*, c.*
                 FROM products p
                 INNER JOIN cds c ON p.product_id=c.product_id
@@ -66,16 +73,17 @@ class ProductModel extends BaseModel
             return $query->fetchAll(PDO::FETCH_ASSOC);
         } catch (\PDOException $ex) {
             error_log('PDO Exception: ' . $ex->getMessage());
-            return []; // Return an empty array or handle the error appropriately
+            return []; 
+        }finally {
+            $this->db = null;
         }
     }
 
 	function getProductDetails($id)
 {
     try {
-        $db = parent::connectToDB(); // Add this line to get the database connection
 
-        $query = $db->prepare('
+        $query = $this->db->prepare('
             SELECT p.*, c.*
             FROM products p 
             INNER JOIN cds c ON p.product_id = c.product_id
@@ -89,54 +97,12 @@ class ProductModel extends BaseModel
         return $result;
     } catch (\PDOException $ex) {
         print($ex->getMessage());
+    }finally {
+        $this->db = null;
     }
 }
 
-
-
-	function readProducts($tagName)
-	{
-		try {
-			$cxn = parent::connectToDB();
-          
-
-            if ($tagName=='all') {
-                $sql = $cxn->prepare('SELECT * FROM Review ORDER BY ReviewID DESC');
-            }
-            else {
-                $sql = $cxn->prepare(
-
-                    'SELECT p.product_id, p.title, p.product_description, i.image_path, i.image_name, a.title AS artist_name, c.release_date, p.units_in_stock
-                    FROM products p
-                    JOIN cds c ON p.product_id = c.product_id
-                    JOIN images_for_products i ON p.product_id = i.product_id
-                    JOIN products_tags pt ON p.product_id = pt.product_id
-                    JOIN tags t ON pt.tag_id = t.tag_id
-                    JOIN artists a ON a.artist_id = c.artist_id
-                    WHERE t.title = :tagName AND p.units_in_stock > 0'
-                );
-            }
-                
-                    // Prepare and execute the query with the named parameter
-                    // Prepare and execute the query with the named parameter
-                    $sql->bindParam(':tagName', $tagName, PDO::PARAM_STR);
-                    $sql->execute();
-
-                    // Fetch the results
-                    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-          
-          
-                    foreach ($result as $row) {
-                        print($this->productTemplate($row));
-                    }
-
-
-			}
-		 catch (\PDOException $ex) {
-			print($ex->getMessage());
-		}
-	}
-
+/*
 
 	// Utility function to provide some basic styling for a product
 	function productTemplate($row)
@@ -155,4 +121,5 @@ class ProductModel extends BaseModel
         echo '</div>';
         echo '</div>';
 	}
+    */
 }

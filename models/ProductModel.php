@@ -37,7 +37,7 @@ class ProductModel extends BaseModel
             GROUP BY p.product_id
             LIMIT 10
 
-        
+            
 
 
             ');
@@ -60,16 +60,43 @@ class ProductModel extends BaseModel
         // For example:
         try {
             $db = parent::connectToDB();
-
             $query = $db->prepare('
-                SELECT p.*, c.*
-                FROM products p
-                INNER JOIN cds c ON p.product_id=c.product_id
-                WHERE release_date >= DATE(NOW() - INTERVAL 6000 DAY);
-            ');
+            
+            SELECT
+            p.product_id,
+            c.release_date,
+            p.title as product_title,
+            a.title AS artist_title,
+            t.title AS tag_title,
+            ip.image_name,
+            ip.image_path,
+            SUM(CASE WHEN pc.condition_id = 1 THEN pc.quantity_in_stock ELSE 0 END) AS new_quantity,
+            SUM(CASE WHEN pc.condition_id = 2 THEN pc.quantity_in_stock ELSE 0 END) AS old_quantity,
+            MAX(CASE WHEN pc.condition_id = 1 THEN pc.price END) AS new_price,
+            MAX(CASE WHEN pc.condition_id = 2 THEN pc.price END) AS old_price
+            FROM
+                products p
+            INNER JOIN products_tags pt ON pt.product_id = p.product_id
+            INNER JOIN tags t ON t.tag_id = pt.tag_id
+            INNER JOIN cds c ON c.product_id = p.product_id
+            INNER JOIN artists a ON a.artist_id = c.artist_id
+            LEFT JOIN products_conditions pc ON pc.product_id = p.product_id
+            INNER JOIN images_for_products ip ON ip.product_id = p.product_id
+   
+            WHERE release_date BETWEEN \'2023-01-21\' AND CURDATE()
 
+            GROUP BY p.product_id
+            LIMIT 10
+
+            
+
+
+            ');
+     
             $query->execute();
-            return $query->fetchAll(PDO::FETCH_ASSOC);
+         //s   var_dump($query->queryString);
+        //var_dump($tag);
+            return $query->fetchAll(PDO::FETCH_OBJ);
         } catch (\PDOException $ex) {
             error_log('PDO Exception: ' . $ex->getMessage());
             return []; // Return an empty array or handle the error appropriately

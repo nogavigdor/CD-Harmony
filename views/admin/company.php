@@ -2,12 +2,8 @@
 <!-- views/company.php -->
 
 <?php
-// Displaying an error message for debugging purposes
-echo "Including company.php";
 
-// Setting up error reporting
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+
 
 // Including the admin header
 include_once __DIR__ . '/admin-header.php';
@@ -17,7 +13,7 @@ include_once __DIR__ . '/admin-header.php';
 <h1 class="h1">Company Information</h1>
         <!-- Company Details Form -->
         <div class=" mt-10  grid grid-cols-1 gap-x-8 p-y-8 sm:grid-cols-6">
-                <form  action="/cdharmony/admin/company/" method="POST">
+                <form  action="" method="POST">
                 <?php $controller = new \controllers\CompanyController(); 
                 $company = $controller->getCompanyDetails(); ?>
                 <input  type="hidden" name="company_details_id" value="<?php echo $company->company_details_id; ?>">

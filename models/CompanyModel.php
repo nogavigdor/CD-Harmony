@@ -50,7 +50,8 @@ class CompanyModel extends BaseModel
         $query->bindParam(':opening_hours', $openingHours);
 
 
-        $query->execute();
+        $success = $query->execute();
+        return $success;
     } catch (\PDOException $ex) {
         // Handle errors (log or rethrow the exception)
         throw $ex;

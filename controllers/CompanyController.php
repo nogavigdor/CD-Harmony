@@ -17,7 +17,6 @@ class CompanyController
         }
     }
 
-    // Other methods...
 
     public function showCompanyDetails()
     {
@@ -42,12 +41,24 @@ class CompanyController
                 $phoneNumber = $_POST['phone_number'];
                 $email = $_POST['email'];
 
-                // Add similar lines for other attributes
 
-                // Call the update method
                 $companyDetails=new CompanyModel();
-                $companyDetails->updateCompanyDetails($companyId, $companyName, $street, $postalCodeId, $openingHours, $email, $phoneNumber  );
+                $success=$companyDetails->updateCompanyDetails($companyId, $companyName, $street, $postalCodeId, $openingHours, $email, $phoneNumber  );
 
+                
+                
+                
+                if ($success) {
+                   
+                    // Return a success message
+                  //  echo json_encode(['status' => 'success', 'message' => 'The company details have been updated successfully']);
+                } else {
+                    // Return an error message
+                    echo json_encode(['status' => 'error', 'message' => 'Failed to update company details']);
+                }
+
+                // Terminate script execution to prevent additional output
+                exit();
                 
             }
         } catch (\PDOException $ex) {
