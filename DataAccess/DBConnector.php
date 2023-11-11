@@ -7,29 +7,44 @@ require(__DIR__ . '/db_constants.php');
 
 class DBConnector
 {
-    private $link;
+    // Static variable to hold the single instance
+    private static $instance; 
+    // Instance variable to hold the database connection
+    private $link; 
 
-    function __construct() {}
-
-    function connectToDB()
+    private function __construct()
     {
-        if (!$this->link) {
-            $this->link = new \PDO(
-                'mysql:host=' . DB_SERVER . ';dbname=' . DB_NAME . ';charset=utf8mb4',
-                DB_USER,
-                DB_PASS,
-                array(
-                    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-                    \PDO::ATTR_PERSISTENT => false
-                )
-            );
-        }
-
-        return $this->link;
+        // Private constructor to prevent external instantiation
+        $this->link = new \PDO(
+            'mysql:host=' . DB_SERVER . ';dbname=' . DB_NAME . ';charset=utf8mb4',
+            DB_USER,
+            DB_PASS,
+            array(
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                \PDO::ATTR_PERSISTENT => false
+            )
+        );
     }
 
-    function closeConnection()
+    public static function getInstance()
     {
+        if (!self::$instance) {
+            // If the instance doesn't exist, create a new one
+            self::$instance = new self();
+        }
+        // Return the single instance
+        return self::$instance; 
+    }
+
+    public function connectToDB()
+    {
+        // Return the database connection
+        return $this->link; 
+    }
+
+    public function closeConnection()
+    {
+        // Close the connection (set to null)
         $this->link = null;
     }
 }

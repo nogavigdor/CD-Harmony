@@ -2,15 +2,22 @@
 
 namespace models;
 
+use \DataAccess\DBConnector;
 use PDO; 
 
-class CompanyModel extends BaseModel
+class CompanyModel 
 {
-	function __construct() {}
+    private $dbConnector; 
+
+    public function __construct()
+    {
+        $this->dbConnector = DBConnector::getInstance(); 
+    }
 
     public function getCompanyDetails() {
         try {
-            $db = parent::connectToDB();
+            $dbInstance = $this->dbConnector;
+            $db=$dbInstance->connectToDB();
             $query = $db->prepare('
             
             SELECT
@@ -25,16 +32,17 @@ class CompanyModel extends BaseModel
       
         } catch (\PDOException $ex) {
             print($ex->getMessage());
-        } finally {
-            parent::closeConnection();
-        }
+        } 
+           
+        
     }
 
 
     public function updateCompanyDetails($companyId, $companyName, $street, $postalCodeId, $openingHours, $phoneNumber, $email)
     {
     try {
-        $db = parent::connectToDB();
+        $dbInstance = $this->dbConnector;
+        $db=$dbInstance->connectToDB();
         $query = $db->prepare('
             UPDATE company_details
             SET company_name = :company_name, street = :street, postal_code_id = :postal_code_id, email = :email, opening_hours = :opening_hours, phone_number = :phone_number
@@ -55,9 +63,9 @@ class CompanyModel extends BaseModel
     } catch (\PDOException $ex) {
         // Handle errors (log or rethrow the exception)
         throw $ex;
-    } finally {
-        parent::closeConnection();
-    }
+    } 
+    
+    
 }
 
 

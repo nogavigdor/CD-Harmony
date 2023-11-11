@@ -2,15 +2,24 @@
 
 namespace models;
 
+use \DataAccess\DBConnector;
+
 use PDO; 
 
-class ProductModel extends BaseModel
+class ProductModel 
 {
-	function __construct() {}
+    private $dbConnector; 
+
+    public function __construct()
+    {
+        $this->dbConnector = DBConnector::getInstance(); 
+    }
 
     public function getProductsByTag($tag) {
         try {
-            $db = parent::connectToDB();
+         //   $db = parent::connectToDB();
+            $dbInstance = $this->dbConnector;
+            $db=$dbInstance->connectToDB();
             $query = $db->prepare('
             
             SELECT
@@ -48,9 +57,9 @@ class ProductModel extends BaseModel
             return $query->fetchAll(PDO::FETCH_OBJ);
         } catch (\PDOException $ex) {
             print($ex->getMessage());
-        }  finally {
-            parent::closeConnection();
         }  
+            
+         
     }
 
 
@@ -59,7 +68,8 @@ class ProductModel extends BaseModel
         // Implement the logic to fetch recent releases here
         // For example:
         try {
-            $db = parent::connectToDB();
+            $dbInstance = $this->dbConnector;
+            $db=$dbInstance->connectToDB();
             $query = $db->prepare('
             
             SELECT
@@ -100,15 +110,14 @@ class ProductModel extends BaseModel
         } catch (\PDOException $ex) {
             error_log('PDO Exception: ' . $ex->getMessage());
             return []; // Return an empty array or handle the error appropriately
-        } finally {
-            parent::closeConnection();
-        }
+        } 
     }
 
 	function getProductDetails($id)
 {
     try {
-        $db = parent::connectToDB(); // Add this line to get the database connection
+        $dbInstance = $this->dbConnector;
+        $db=$dbInstance->connectToDB();
 
         $query = $db->prepare('
                 SELECT
@@ -143,9 +152,7 @@ class ProductModel extends BaseModel
         return $result;
     } catch (\PDOException $ex) {
         print($ex->getMessage());
-    } finally {
-        parent::closeConnection();
-    }
+    } 
 }
 
 
