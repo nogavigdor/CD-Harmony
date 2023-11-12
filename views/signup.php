@@ -1,9 +1,12 @@
-<?php include 'header.php'; ?>
+<?php
+session_start();
+
+include 'header.php'; ?>
 
 <div class="max-w-md mx-auto bg-white rounded p-6 shadow-md">
     <h1 class="text-2xl font-semibold mb-6">Registration Form</h1>
 
-    <form id="registrationForm" method='POST' action='./signup'>
+    <form id="registrationForm" method='POST' action='./signup' novalidate>
        
         <!-- Email -->
         <div class="mb-4 relative">
@@ -48,102 +51,22 @@
         <button type="submit" class="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-600">
             Register
         </button>
+        <div class="text-red-500 text-sm mb-4">
+    <?php
+    $error_message = isset($_SESSION['error_message']) ? $_SESSION['error_message'] : '';
+    if (!empty($error_message)) {
+        echo $error_message;
+        unset($_SESSION['error_message']); // Clear the error message after displaying it
+    }
+    ?>
+</div>
     </form>
     <div class="mt-4">
         <p>Already have an account? <a href="./login">Login here</a></p>
     </div>
 </div>
 
-<script>
-document.getElementById('email').addEventListener('input', function () {
-    validateEmail();
-});
-
-document.getElementById('password').addEventListener('input', function () {
-    validatePassword();
-});
-
-document.getElementById('confirmPassword').addEventListener('input', function () {
-    validateConfirmPassword();
-});
-
-
-function validateEmail() {
-    let emailInput = document.getElementById('email');
-    let emailMessage = document.getElementById('emailMessage');
-
-    //checks if the email is valid
-    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value)) {
-        emailMessage.innerHTML = "Email is valid!";
-        emailMessage.style.color = "green";
-    } else {
-        emailMessage.innerHTML = "Email should be valid.";
-        emailMessage.style.color = "red";
-    }
-}
-
-function validatePassword() {
-    let password = document.getElementById('password').value;
-    let passwordMessage = document.getElementById('passwordMessage');
-    let isValid = true;
-
-    // Minimum length of 8 characters
-    if (password.length < 8) {
-        passwordMessage.innerHTML = "Password must be at least 8 characters long.";
-        isValid = false;
-    } else {
-        passwordMessage.innerHTML = "Password is valid!";
-        passwordMessage.style.color = "green";
-    }
-
-    // Additional password validation checks...
-    // At least one uppercase letter
-    if (!/[A-Z]/.test(password)) {
-        passwordMessage.innerHTML += "<br>Please include at least one capital letter.";
-        isValid = false;
-    }
-
-    // At least one lowercase letter
-    if (!/[a-z]/.test(password)) {
-        passwordMessage.innerHTML += "<br>Please include at least one lowercase letter.";
-        isValid = false;
-    }
-
-    // At least one digit
-    if (!/\d/.test(password)) {
-        passwordMessage.innerHTML += "<br>Please include at least one digit.";
-        isValid = false;
-    }
-
-    // At least one special character
-    if (!/[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(password)) {
-        passwordMessage.innerHTML += "<br>Please include at least one special character.";
-        isValid = false;
-    }
-
-    // Update message color based on overall validity
-    if (isValid) {
-        passwordMessage.style.color = "green";
-    } else {
-        passwordMessage.style.color = "red";
-    }
-}
-
-function validateConfirmPassword() {
-    let password = document.getElementById('password').value;
-    let confirmPassword = document.getElementById('confirmPassword').value;
-    let confirmPasswordMessage = document.getElementById('confirmPasswordMessage');
-
-    // Confirm password match
-    if (password === confirmPassword) {
-        confirmPasswordMessage.innerHTML = "Passwords match!";
-        confirmPasswordMessage.style.color = "green";
-    } else {
-        confirmPasswordMessage.innerHTML = "Passwords do not match.";
-        confirmPasswordMessage.style.color = "red";
-    }
-}
-</script>
+<script src="/cdharmony/src/js/signupValidator.jsa"></script> 
 
 <?php include 'footer.php'; ?>
 

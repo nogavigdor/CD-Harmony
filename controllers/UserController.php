@@ -23,15 +23,16 @@ class UserController {
 
         $validator = new Validator();
         
-        //checks if the psassword is valid for account creation
+        //checks if both the psassword and email are valid for account creation
         //the method will return null in case the password is valid
-        if (!$validator->validatePasswordForSignup($password)) {
+        if ($errType=$validator->validatePassword($password)) {
+            $this->sessionManager->setSessionVariable('error_message',$errType);
+        if ($errType=$validator->validateEmail($email))           
+             $this->sessionManager->setSessionVariable('error_message',$errType);
 
+        //null was returned on both email and password validations and therefor they are valid
             $userModel=new UserModel();
             $userModel->setAccount($email, $password);
-        } else {
-            // Handle invalid password for registration
-            $this->sessionManager->setSessionVariable('error_message', 'Your password is not eligible. Please try again.');
         }
 
         //redirects to the signup page after a successfull user creation
