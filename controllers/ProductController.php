@@ -7,6 +7,7 @@ class ProductController
 {
     public function __construct() {
     }
+    
 
     public function showProductsByTag($tag)
     {

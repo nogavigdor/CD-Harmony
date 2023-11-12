@@ -41,15 +41,15 @@
                 <?php
                 // Include the "CountryCDs" section
                 $controller = new \Controllers\ProductController();
-               $controller->showProductsByTag('country');
+               $controller->showProductsByTag('country');   
                 ?>
        
         </section>
 
 
-        <!-- New Arrivals section -->
+        <!-- New Releases section -->
         <section>
-            <h2 class="text-#13324E text-2xl font-bold mt-8 mb-4">New Arrivals</h2>
+            <h2 class="text-#13324E text-2xl font-bold mt-8 mb-4">New Releases</h2>
          
                 <?php
                 // Include the "New Releases" section

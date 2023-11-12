@@ -50,8 +50,7 @@ class CompanyController
                 
                 if ($success) {
                    
-                    // Return a success message
-                  //  echo json_encode(['status' => 'success', 'message' => 'The company details have been updated successfully']);
+                   echo 'The company details have been updated successfully.';
                 } else {
                     // Return an error message
                     echo json_encode(['status' => 'error', 'message' => 'Failed to update company details']);

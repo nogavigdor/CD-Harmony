@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html>
+
 <?php require("header.php"); ?>
 <body class="bg-background-color text-text-color font-poppins">
 <main class="content">
@@ -16,5 +15,3 @@
 </div>
 </main>
 <?php require("footer.php"); ?>
-</body>
-</html?

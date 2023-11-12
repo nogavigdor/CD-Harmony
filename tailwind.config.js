@@ -3,9 +3,9 @@ module.exports = {
     './src/**/*.{html,css,js}', 
     './*.php',
     './views/*.php',
-    "./node_modules/tw-elements/dist/js/**/*.js"
+   // "./node_modules/tw-elements/dist/js/**/*.js"
   ],
-  plugins: [require("tw-elements/dist/plugin.cjs")],
+  //plugins: [require("tw-elements/dist/plugin.cjs")],
   darkMode: "class",
   theme: {
     extend: {
@@ -25,6 +25,11 @@ module.exports = {
       },
     },
   },
-  plugins: [require("daisyui")],
-
+  plugins: [
+    //require("tw-elements/dist/plugin.cjs"),
+    //require('daisyui'),
+  ],
+  darkMode: "class"
 };
+
+

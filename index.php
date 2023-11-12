@@ -36,13 +36,13 @@ route('/cdharmony/login/', 'POST', function() {
 });
 
 route('/cdharmony/signup/', 'GET', function() {
-    $controller = new controllers\SignupController();
+    $controller = new controllers\UserController();
     $controller->signupView();
 });
 
 route('/cdharmony/signup/', 'POST', function() {
-    $controller = new controllers\SignupController();
-    $controller->signupCreation();
+    $controller = new controllers\UserController();
+    $controller->createAccount();
 });
 
 route('/cdharmony/search/', 'GET', function () {
@@ -80,6 +80,6 @@ route('/cdharmony/admin/login', 'GET', function() {
    require 'views/admin/login.php';
 });
 
-$action = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/'); // Extract the path
+$path = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/'); // Extract the path
 $method = $_SERVER['REQUEST_METHOD'];
-dispatch($action, $method);
+dispatch($path, $method);
