@@ -31,8 +31,8 @@ route('/cdharmony/login/', 'GET', function() {
     $controller->loginView();
 });
 route('/cdharmony/login/', 'POST', function() {
-    $controller = new controllers\LoginController();
-    $controller->loginCheck();
+    $controller = new controllers\UserController();
+    $controller->authenticateUser();
 });
 
 route('/cdharmony/signup/', 'GET', function() {
@@ -45,11 +45,13 @@ route('/cdharmony/signup/', 'POST', function() {
     $controller->createAccount();
 });
 
+//not implemented yet
 route('/cdharmony/search/', 'GET', function () {
     $controller = new controllers\SearchController();
     $controller->searchView();
 });
 
+//not implemented yet
 route('/cdharmony/search/', 'POST', function () {
     $controller = new controllers\SearchController();
     $controller->performSearch();

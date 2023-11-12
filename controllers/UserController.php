@@ -4,12 +4,14 @@ namespace controllers;
 
 use models\UserModel;
 use Services\Validator;
+use Services\SessionManager;
 
 class UserController {
     
-   
+    private $sessionManager;
+
     public function __construct() {
-   
+        $this->sessionManager = new SessionManager();
     }
     
     public function createAccount() {
@@ -22,31 +24,51 @@ class UserController {
         $validator = new Validator();
         
         //checks if the psassword is valid for account creation
-        if ($validator->validatePasswordForSignup($password)) {
-           $role=1; //in the database a customer role is defiined as 1
+        //the method will return null in case the password is valid
+        if (!$validator->validatePasswordForSignup($password)) {
 
             $userModel=new UserModel();
             $userModel->setAccount($email, $password);
         } else {
             // Handle invalid password for registration
-            echo 'This message is form the UserController : Your password is not elgiable. pleaese try again.';
+            $this->sessionManager->setSessionVariable('error_message', 'Your password is not eligible. Please try again.');
         }
+
+        //redirects to the signup page after a successfull user creation
+        header("Location: " . BASE_URL . "/login");
+        exit();
     }
 
-    public function authenticateUser($userInputPassword) {
-        // ... user authentication logic ...
+    public function authenticateUser() {
+        $email = $_POST['email'];
+        $password = $_POST['password'];
+
         $userModel = new UserModel();
+        $user = $userModel->getAccount($email, $password);
 
-        if ($this->validator->validatePasswordForLogin($userInputPassword)) {
-            // Password is valid for user authentication
-            // Proceed with login logic
+        if ($user) {
+            if (password_verify($password, $user['password'])) {
+                $this->sessionManager->setSessionVariable('user_id', $user['id']);
+                $this->sessionManager->setSessionVariable('user_email', $user['email']);
+                echo "hurray";
+
+                header("Location: " . BASE_URL . "/");
+                exit();
+            } else {
+                $this->handleLoginError('Incorrect password. Please try again.');
+            }
         } else {
-            // Handle invalid password for login
+            $this->handleLoginError('Email not found. Please try again.');
         }
     }
 
-    public function signupView()
-    {
+    private function handleLoginError($errorMessage) {
+        $this->sessionManager->setSessionVariable('error_message', $errorMessage);
+        header("Location: " . BASE_URL . "/login");
+        exit();
+    }
+
+    public function signupView() {
         try {
             include 'views/signup.php';
         } catch (\PDOException $ex) {

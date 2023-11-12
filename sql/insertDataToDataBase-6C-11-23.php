@@ -63,7 +63,6 @@ foreach ($data as $artistName => $albums) {
             die("Error inserting album into cds table: " . $db->error);
         }
 
-        // ... (rest of the code)
     }
 }
 

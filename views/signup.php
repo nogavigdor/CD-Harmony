@@ -49,6 +49,9 @@
             Register
         </button>
     </form>
+    <div class="mt-4">
+        <p>Already have an account? <a href="./login">Login here</a></p>
+    </div>
 </div>
 
 <script>

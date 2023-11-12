@@ -40,7 +40,7 @@
 
            
             // Passed all checks
-            return true;
+            return null;
         }
 
         public function validateEmail($email) {
