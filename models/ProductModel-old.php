@@ -52,6 +52,7 @@ class ProductModel extends DBConnector
             return $query->fetchAll(PDO::FETCH_OBJ);
         } catch (\PDOException $ex) {
             print($ex->getMessage());
+            die("Connection failed: " . $e->getMessage());
         }
     }
 

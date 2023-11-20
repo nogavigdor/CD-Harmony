@@ -44,7 +44,7 @@ class DBConnector
 
     public function closeConnection()
     {
-        // Close the connection (set to null)
+         // Set the database connection property to null
         $this->link = null;
     }
 }

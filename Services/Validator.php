@@ -2,20 +2,34 @@
 namespace Services;
 
 class Validator {
-
-    public function validateRecaptchaResponse($recaptchaResponse, $recaptchaSecretKey) {
-        // Implementation of reCAPTCHA validation...
+     // reCAPTCHA validation
+    public function validateRecaptchaResponse() {
+        //ih recaptcha verification succeeds
+        if ($recaptcha->success == true && $recaptcha->score >= 0.5 && $recaptcha->action == "contact") {
+            $recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify'; // URL to the reCAPTCHA server
+        //   $recaptcha_secret = '6LcTWQMpAAAAAEq-qGXtn9Iy_kuAcv8_AEwZxfqH'; // Secret key
+            $recaptcha_response = $_POST['recaptchaResponse']; // Response from reCAPTCHA server, added to the form during processing
+            $recaptcha = file_get_contents($recaptcha_url.'?secret='.RECAPTHA_SECRET_KEY.'&response='.$recaptcha_response); // Send request to the server
+            $recaptcha = json_decode($recaptcha); // Decode the JSON response
+            return $recaptcha;
+        } else {
+            //ih recaptcha verification fails
+            return false;
+           
+        }
     }
-
     public function validateEmail($email){
+       
         $regexp = "/^[^0-9][A-z0-9_-]+([.][A-z0-9_]+)*[@][A-z0-9_]+([.][A-z0-9_-]+)*[.][A-z]{2,4}$/";
 
-        if (!preg_match($regexp,$email))
-            return "This is a wrong Email.";
-        
+        //if not email was entered
         if (empty($email)) 
-            return "Your email field is empty.";
-
+            return "Please write your email.";
+        //if the email is not in a valid format
+        elseif (!preg_match($regexp,$email))
+            return "This is an invalid Email.";
+        // Passed all checks
+        else
         return null;
     }
 
@@ -56,6 +70,9 @@ class Validator {
             return "Your name is too long. Please enter a name up to 100 characters.";
         }
 
+        
+        
+
         // Passed the check
         return null;
     }
@@ -64,9 +81,13 @@ class Validator {
         if (strlen($message) > 3000) {
             // Handle text length exceeds 3000 characters
             return "The message you've entered is too long. Please enter a message up to 3000 characters.";
+        } elseif (strlen($message) <1) {
+            // Handle text length does not exceed 3000 characters
+            return "Please write your message";
+        }else {
+            // Passed the check
+            return null;
         }
-
-        // Passed the check
-        return null;
+        
     }
 }
