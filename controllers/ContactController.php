@@ -90,13 +90,30 @@ class ContactController
                // $recaptcha = json_decode($recaptcha); // Decode the JSON response
              //   error_log('Form Data: ' . print_r($_POST, true));
                 //error_log('Error Output: ' . print_r($error_output, true));
+                    $recaptcha = $_POST['recaptchaResponse'];
+                    if (isset($recaptcha))  {
 
+
+                            $recaptchaResult = $this->validator->validateRecaptchaResponse($recaptcha);
+                            //if recaptcha verification was unsuccessfull 
+                            if (($recaptchaResult)) {
+                                //updated output message to the user
+                                $output = ['recaptcha' => 'Recaptcha validation was unsuccessfull. Pleaes try again later.'];
+                                
+                                //redirection back to the contact form
+                                header('Location: ' . BASE_URL);
+                                echo 'whoohooooo';
+                                exit();
+                            }
+
+                            
+                        
+                            
+                    }
+          
                 
-                $recaptcha = $this->validator->validateRecaptchaResponse();
+         //if recaptcha/javascript was not activated and or if recaptcha/activated and verification succeeded
                 
-                //if recaptcha verification succeed
-                if($recaptcha)
-                {
 
                      /*
                             
@@ -145,16 +162,10 @@ class ContactController
                         // Redirect to the homepage
                        header('Location: ' . BASE_URL);
 
-                        exit();
-                }
-               
-                 else {
-                    $output = ['recaptcha' => 'Recaptcha validation was unsuccessfull. Pleaes try again later.'];
-
-                 }
-                 //recaptcha was not successfull
-               
+                     exit();
             }
+               
+                 
             //There was an invalid output
             // Output error or success message
             $output = [

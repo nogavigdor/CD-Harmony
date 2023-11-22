@@ -8,6 +8,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <?php
+    // Include view-specific JavaScript files based on the last part of the URL
+    $url = $_SERVER['REQUEST_URI'];
+    $parts = explode('/', rtrim($url, '/'));
+    $currentView = end($parts);
+    
+    if ($currentView == 'contact') {
+        echo '<script defer src="https://www.google.com/recaptcha/api.js?render=6LcTWQMpAAAAALPZfFSv0kU3vyQdooR0voAyTjb8"></script>';
+        $jsFileName = 'contact.js';
+        echo '<script defer src="../src/js/' . $jsFileName . '"></script>'; // Removed extra double quote
+    }
+?>
+
 </head>
 <body class="bg-primary font-body min-h-screen">
     <!-- Header section -->

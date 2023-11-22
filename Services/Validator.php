@@ -3,14 +3,14 @@ namespace Services;
 
 class Validator {
      // reCAPTCHA validation
-    public function validateRecaptchaResponse() {
-        //ih recaptcha verification succeeds
-        if ($recaptcha->success == true && $recaptcha->score >= 0.5 && $recaptcha->action == "contact") {
-            $recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify'; // URL to the reCAPTCHA server
-        //   $recaptcha_secret = '6LcTWQMpAAAAAEq-qGXtn9Iy_kuAcv8_AEwZxfqH'; // Secret key
-            $recaptcha_response = $_POST['recaptchaResponse']; // Response from reCAPTCHA server, added to the form during processing
-            $recaptcha = file_get_contents($recaptcha_url.'?secret='.RECAPTHA_SECRET_KEY.'&response='.$recaptcha_response); // Send request to the server
-            $recaptcha = json_decode($recaptcha); // Decode the JSON response
+    public function validateRecaptchaResponse($recaptcha) {
+        $recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify'; // URL to the reCAPTCHA server
+        //$recaptcha_secret = '6LcTWQMpAAAAAEq-qGXtn9Iy_kuAcv8_AEwZxfqH'; // Secret key
+        $recaptchaResponse = file_get_contents($recaptcha_url.'?secret=6LcTWQMpAAAAAEq-qGXtn9Iy_kuAcv8_AEwZxfqH&response='.$recaptcha); // Send request to the server
+         $recaptchaResult = json_decode($recaptchaResponse); // Decode the JSON response
+        //if recaptcha verification succeeds
+        if ($recaptchaResult->success == true && $recaptchaResult->score >= 0.5 && $recaptchaResult->action == "contact") {
+          
             return $recaptcha;
         } else {
             //ih recaptcha verification fails

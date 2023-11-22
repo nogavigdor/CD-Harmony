@@ -59,6 +59,11 @@ route('/cdharmony/search/', 'POST', function () {
     $controller->performSearch();
 });
 
+route('/cdharmony/admin/', 'GET', function () {
+    $controller = new controllers\AdminController();
+    $controller->adminView();
+});
+
 route('/cdharmony/admin/company/', 'GET', function () {
     $controller = new controllers\CompanyController();
     $controller->showCompanyDetails();
@@ -75,14 +80,20 @@ route('/cdharmony/admin/company/', 'POST', function () {
 
 route('/cdharmony/admin/', 'GET', function() {
     $controller = new controllers\AdminController();
-    $controller->showAdmin();
+    $controller->adminView();
 });
 
 route('/cdharmony/admin/login', 'GET', function() {
-   // $controller = new controllers\AdminController();
-   // $controller->showAdmin();
-   require 'views/admin/login.php';
+      $controller = new controllers\UserController();
+      $controller->authenticateUser();
+  
 });
+
+route('/cdharmony/admin/login', 'POST', function() {
+    // $controller = new controllers\AdminController();
+    // $controller->adminView();
+    require 'views/admin/login.php';
+ });
 
 $path = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/'); // Extract the path
 $method = $_SERVER['REQUEST_METHOD'];
