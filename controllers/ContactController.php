@@ -1,9 +1,16 @@
 <?php
 namespace controllers;
 
-use Services\Validator;
+use services\Validator;
+use services\SessionManager;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
-use Services\SessionManager;
+require './PHPMailer-master/src/Exception.php';
+require './PHPMailer-master/src/PHPMailer.php';
+require './PHPMailer-master/src/SMTP.php';
+SessionManager::startSession();
 
 class ContactController 
 {
@@ -31,7 +38,7 @@ class ContactController
 
             error_log('ContactController.contactInput method reached');
             // Declaring variables to prepare for form submission
-            $success_output = '';
+            
             $error_output = [];
     
             // Validate individual form fields
@@ -46,7 +53,7 @@ class ContactController
             
             if (isset($_POST['last_name'])) {
                 $last_name = $_POST['last_name'];
-                $error_output['lastt_name'] = $this->validator->validateName($last_name);
+                $error_output['last_name'] = $this->validator->validateName($last_name);
             }
             else 
             //last name field is not mandatory, therefor if its not set, it can pass the check with a null in the error_output
@@ -75,10 +82,13 @@ class ContactController
             else 
             //no message is set therefor an invalid email message should put in the errors_output
             $error_output['message'] = 'Please write your message';
+            $contact_output['errors'] = $error_output;
+            $contact_output['success'] = '';
 
 
     
-
+            
+   
     
             // if all the values of the error_output are nulls it means that no error message was return and the form is valid
             if (count(array_filter($error_output, 'is_null')) === count($error_output))  {
@@ -91,29 +101,47 @@ class ContactController
              //   error_log('Form Data: ' . print_r($_POST, true));
                 //error_log('Error Output: ' . print_r($error_output, true));
                     $recaptcha = $_POST['recaptchaResponse'];
-                    if (isset($recaptcha))  {
-
+                    if (!empty($recaptcha))  {
 
                             $recaptchaResult = $this->validator->validateRecaptchaResponse($recaptcha);
-                            //if recaptcha verification was unsuccessfull 
-                            if (($recaptchaResult)) {
+                       //   if  (!($recaptchaResult)){
+                             if ($recaptchaResult->success) {
                                 //updated output message to the user
-                                $output = ['recaptcha' => 'Recaptcha validation was unsuccessfull. Pleaes try again later.'];
+                                //$output = ['recaptcha' => 'Recaptcha validation was unsuccessfull. Pleaes try again later.'];
                                 
-                                //redirection back to the contact form
+                                // Sets a session variable for contact success
+                                $contact_output['success'] =  'Your contact form has been submitted successfully.';
+                                SessionManager::startSession();
+                                SessionManager::setSessionVariable('contact_output', $contact_output);
+                              
+                                //redirection back to the contact form ti try again
                                 header('Location: ' . BASE_URL);
-                                echo 'whoohooooo';
+                               
                                 exit();
+                            }else  {
+                                 // Sets a session variable for contact output
+                                 $contact_output['success'] =  'There has been a problem with your contact form submission. Please try again later';
+                               // SessionManager::setSessionVariable('contact_output', $contact_output);
+                                  // Send JSON response
+                                  header('Content-Type: application/json');
+                                  echo json_encode($contact_output);
+                                //  header('Location: ' . BASE_URL.'/contact');
+                                  exit();
                             }
 
+                            //in case javascript is not acit
+                            //$contact_output[success] =  'Please enable your javascript and try to submit the form again';
+                            // SessionManager::setSessionVariable('contact_output', $contact_output);
+                               // Send JSON response
+                             //  header('Content-Type: application/json');
+                             //  echo json_encode($output);
+                             //  exit();
+                       
                             
-                        
-                            
-                    }
+                      }//end of isset recaptcha check
           
                 
-         //if recaptcha/javascript was not activated and or if recaptcha/activated and verification succeeded
-                
+              
 
                      /*
                             
@@ -134,7 +162,38 @@ class ContactController
                             // Other mail-related settings
                             ini_set('sendmail_from', 'contact@cdharmony.dk');
                             ini_set('mail.add_x_header', 'On');
-                        */                       
+                        */ 
+                        
+                        
+                        //if recaptcha/javascript was not activated or if it was activated and there was a successfull response
+                        //configuring PHPmailer will email's settings in order to send the contact form information to the admin
+/*
+
+                        $mail = new PHPMailer(true);
+                        
+                        $mail->SMTPDebug = SMTP::DEBUG_SERVER;
+
+                        $mail->isSMTP();
+                        $mail->SMTPAuth = true;
+
+                        $mail->Host = "send.one.com";
+                        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                        $mail->Port = 465;
+
+                        $mail->Username = "contact@cdharmony.dk";
+                        $mail->Password = "Venus999@";
+                        $mail->setFrom($email, $first_name);
+                        $mail->addAddress("contact@cdharmony.dk", "Noga");
+
+                        $mail->Subject = $title;
+                        $mail->Body = $message;
+
+                        $mail->send();
+
+                        echo 'The email was sent';*/
+
+/*
+
                         $to      = 'noga.vigdor@gmail.com';
                         $subject = $title;
                         $message = $message;
@@ -152,35 +211,36 @@ class ContactController
                     } else {
                         $error_output['email_configuration'] = 'Error sending email. Check your server configuration.';
                     }
-
+*/
                        // Start the session
-                      SessionManager::startSession();
+             //         SessionManager::startSession();
                      
                         // Sets a session variable for contact success
-                        SessionManager::setSessionVariable('contact_success', true);
+              //          SessionManager::setSessionVariable('contact_success', true);
 
-                        // Redirect to the homepage
-                       header('Location: ' . BASE_URL);
-
-                     exit();
+                     
             }
-               
-                 
-            //There was an invalid output
-            // Output error or success message
-            $output = [
-                'error' => $error_output,
-                'success' => $success_output,
-                
-            ];
-    
-            // Send JSON response
-         //   header('Content-Type: application/json');
-            echo json_encode($output);
+             
+            //input validtion was not successfull 
+             else    {
+
+                $contact_output['success'] = 'Please correct your form and try again';
+              
+
+                header('Content-Type: application/json');
+                echo json_encode($contact_output);  
+              //  SessionManager::setSessionVariable('contact_output', $error_output); 
+                 //redirection to contact form after validation has failed
+                //header('Location: ' . BASE_URL.'/contact');
+                 exit();
+             } 
+           
+        
         } catch (\PDOException $ex) {
             // Log and handle any PDO Exceptions
             error_log('PDO Exception: ' . $ex->getMessage());
-            echo '<div class="error-message">An error occurred. Please try again later.</div>';
+            echo json_encode(['error' => 'An error occurred. Please try again later.']);
+            exit();
         }
     }
     

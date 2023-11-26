@@ -9,7 +9,7 @@ function app_autoloader($className) {
     if (file_exists($filePath)) {
         require_once $filePath;
     } else {
-    
-        echo "Class file not found: $filePath";
+        // Improve error reporting
+        trigger_error("Class file not found: $filePath", E_USER_ERROR);
     }
 }

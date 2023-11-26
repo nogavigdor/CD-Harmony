@@ -1,6 +1,5 @@
 <?php
-
-namespace Services;
+namespace services;
 
 class SessionManager
 {
@@ -22,6 +21,15 @@ class SessionManager
         self::startSession();
         return isset($_SESSION[$key]) ? $_SESSION[$key] : null;
     }
+
+    public static function unsetSessionVariable($key)
+    {
+    self::startSession();
+    if (isset($_SESSION[$key])) {
+        unset($_SESSION[$key]);
+    }
+    }
+
 
     public static function destroySession()
     {

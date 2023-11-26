@@ -1,3 +1,8 @@
+<?php
+require_once "bootstrap.php";
+use Services\SessionManager;
+SessionManager::startSession();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

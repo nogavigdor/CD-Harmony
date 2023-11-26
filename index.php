@@ -1,12 +1,15 @@
 <?php 
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+
 
 require_once "bootstrap.php";
 
-define("BASE_URL", "http://localhost/cdharmony");
+//define("BASE_URL", "http://localhost/cdharmony");
+require_once "./config/constants.php";
 
 require_once "router.php";
+
+
+
 
 
 route('/cdharmony/', 'GET', function () {

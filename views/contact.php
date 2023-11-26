@@ -6,7 +6,7 @@
 
     <div class="flex justify-center items-center h-screen max-w-screen-lg mx-auto px-4 py-6">
         <!-- Set the maximum width on large and medium screens for the container -->
-        <form  novalidate id="contact_form" method="post" action='./contact' class="bg-white p-6 rounded-lg shadow-lg md:w-2/3 w-full transition-transform transform hover:scale-105">
+        <form  novalidate id="contact_form" method="POST"  class="bg-white p-6 rounded-lg shadow-lg md:w-2/3 w-full transition-transform transform hover:scale-105">
             <input type="hidden" name="recaptchaResponse" id="recaptchaResponse">
 
             <div class="mb-4">
@@ -48,7 +48,7 @@
             </div>
 
             <button type="submit" class="w-full btn btn-primary mt-6 transition-transform transform hover:scale-105">Send Message</button>
-            <div mt-4 mb-4 id="alert">
+            <div class="mt-4 mb-4" id="alert">
             </div>
             <div class="text-center mt-4">
                 <small>This site is protected by reCAPTCHA and the Google <a href="https://policies.google.com/privacy">Privacy Policy</a> and <a href="https://policies.google.com/terms">Terms of Service</a> apply.</small>
@@ -56,6 +56,10 @@
         </form>
     </div>
 
+        <?php
+    // Unset the session variable
 
+    unset($_SESSION['contact_output']);
+    ?>                
 
     <?php include 'footer.php'; ?>

@@ -1,7 +1,7 @@
 <?php
 namespace controllers;
 
-use Services\SessionManager;
+use services\SessionManager;
 use models\UsersModel;
 
 class AdminController

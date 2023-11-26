@@ -1,4 +1,4 @@
--- Without conditions for the cds entity
+
 
 DROP DATABASE IF EXISTS CDHarmonyDB;
 
@@ -14,17 +14,18 @@ CREATE TABLE roles
 ) ENGINE=InnoDB;
 
 INSERT INTO roles (role_name) VALUES
-('customer'),
+('admin'),
 ('editor'),
-('admin');
+('customer');
 
 CREATE TABLE users
 (
     user_id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
     first_name varchar(100) NOT NULL,
     last_name varchar(100) NOT NULL,
-    email varchar(100) NOT NULL,
+    email varchar(100) UNIQUE NOT NULL,
     user_password varchar(100) NOT NULL,  
+    creation_date timestamp NOT NULL,
     role_id int,
     FOREIGN KEY (role_id) REFERENCES roles (role_id)
 ) ENGINE=InnoDB;
