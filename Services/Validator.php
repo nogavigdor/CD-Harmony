@@ -6,8 +6,8 @@ namespace services;
     
  // reCAPTCHA validation
  public function validateRecaptchaResponse($recaptcha) {
-    $recaptcha_url = RECAPTCH_SECRET_KEY;
-    $recaptcha_secret = '6LcTWQMpAAAAAEq-qGXtn9Iy_kuAcv8_AEwZxfqH';
+    $recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';
+    $recaptcha_secret = RECAPTCHA_SECRET_KEY;
 
     $ch = curl_init($recaptcha_url);
     curl_setopt($ch, CURLOPT_POST, 1);

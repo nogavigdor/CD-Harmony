@@ -24,6 +24,11 @@
             echo '<script defer src="https://www.google.com/recaptcha/api.js?render=6LcTWQMpAAAAALPZfFSv0kU3vyQdooR0voAyTjb8"></script>';
             $jsFileName = 'contact.js';
             echo '<script defer src="' . BASE_URL . '/src/js/' . $jsFileName . '"></script>';}
+        
+        if ($currentView == 'signup') {
+             echo '<script defer src="https://www.google.com/recaptcha/api.js?render=6LcTWQMpAAAAALPZfFSv0kU3vyQdooR0voAyTjb8"></script>';
+             $jsFileName = 'signup.js';
+            echo '<script defer src="' . BASE_URL . '/src/js/' . $jsFileName . '"></script>';}
     ?>
 
     </head>

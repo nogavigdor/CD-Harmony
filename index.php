@@ -13,7 +13,8 @@ require_once "router.php";
 
 
 route('/cdharmony/', 'GET', function () {
-    require "views/MainView.php";
+    $controller = new controllers\MainViewController();
+    $controller->showMainView();
 });
 
 route('/cdharmony/product/(\d+)', 'GET', function ($id) {

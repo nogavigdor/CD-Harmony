@@ -88,7 +88,9 @@ class ContactController
 
     
             
-   
+            $recaptcha = $_POST['recaptchaResponse'];
+
+            $recaptchaResult = $this->validator->validateRecaptchaResponse($recaptcha);
     
             // if all the values of the error_output are nulls it means that no error message was return and the form is valid
             if (count(array_filter($error_output, 'is_null')) === count($error_output))  {
@@ -100,7 +102,7 @@ class ContactController
                // $recaptcha = json_decode($recaptcha); // Decode the JSON response
              //   error_log('Form Data: ' . print_r($_POST, true));
                 //error_log('Error Output: ' . print_r($error_output, true));
-                    $recaptcha = $_POST['recaptchaResponse'];
+                
                     if (!empty($recaptcha))  {
 
                             $recaptchaResult = $this->validator->validateRecaptchaResponse($recaptcha);
@@ -111,9 +113,51 @@ class ContactController
                                 
                                 // Sets a session variable for contact success
                                 $contact_output['success'] =  'Your contact form has been submitted successfully.';
-                                SessionManager::startSession();
+                               
                                 SessionManager::setSessionVariable('contact_output', $contact_output);
+/*
+                                      // Set the SMTP server and port for One.com
+                            ini_set('SMTP', 'send.one.com');
+                            ini_set('smtp_port', 465);
+
+                            // Enable SMTP authentication
+                            ini_set('smtp_auth', true);
+
+                            // Set the SMTP username and password (your One.com email credentials)
+                            ini_set('smtp_username', SMTP_USERNAME);
+                            ini_set('smtp_password', SMTP_PASSWORD);
+
+                            // Set encryption type (SSL/TLS)
+                            ini_set('smtp_crypto', 'tls'); // or 'tls'
+
+                            // Other mail-related settings
+                            ini_set('sendmail_from', 'contact@cdharmony.dk');
+                            ini_set('mail.add_x_header', 'On');
+
+                            $mail = new PHPMailer(true);
+                        
+                        $mail->SMTPDebug = SMTP::DEBUG_SERVER;
+
+                        $mail->isSMTP();
+                        $mail->SMTPAuth = true;
+
+                        $mail->Host = "send.one.com";
+                        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                        $mail->Port = 465;
+
+                        $mail->Username = "contact@cdharmony.dk";
+                        $mail->Password = "Venus999@";
+                        $mail->setFrom($email, $first_name);
+                        $mail->addAddress("contact@cdharmony.dk", "Noga");
+
+                        $mail->Subject = $title;
+                        $mail->Body = $message;
+
+                        $mail->send();
+
+                        echo 'The email was sent';
                               
+ */                             
                                 //redirection back to the contact form ti try again
                                 header('Location: ' . BASE_URL);
                                
@@ -128,15 +172,6 @@ class ContactController
                                 //  header('Location: ' . BASE_URL.'/contact');
                                   exit();
                             }
-
-                            //in case javascript is not acit
-                            //$contact_output[success] =  'Please enable your javascript and try to submit the form again';
-                            // SessionManager::setSessionVariable('contact_output', $contact_output);
-                               // Send JSON response
-                             //  header('Content-Type: application/json');
-                             //  echo json_encode($output);
-                             //  exit();
-                       
                             
                       }//end of isset recaptcha check
           
@@ -223,12 +258,11 @@ class ContactController
              
             //input validtion was not successfull 
              else    {
-
-                $contact_output['success'] = 'Please correct your form and try again';
               
-
-                header('Content-Type: application/json');
-                echo json_encode($contact_output);  
+                    $contact_output['success'] = 'Please correct your form and try again';
+                    header('Content-Type: application/json');
+                    //encoding the PHP array as JSON
+                    echo json_encode($contact_output);  
               //  SessionManager::setSessionVariable('contact_output', $error_output); 
                  //redirection to contact form after validation has failed
                 //header('Location: ' . BASE_URL.'/contact');

@@ -8,10 +8,10 @@ use Services\SessionManager;
 
 class UserController {
     
-    private $sessionManager;
+   
 
     public function __construct() {
-        $this->sessionManager = new SessionManager();
+      
     }
     
     public function createAccount() {
@@ -22,22 +22,42 @@ class UserController {
         $password = trim($_POST['password']);
 
         $validator = new Validator();
+
+        //as long as there are no errors the error type will be null
+        $errType = null;
         
         //checks if both the psassword and email are valid for account creation
         //the method will return null in case the password is valid
-        if ($errType=$validator->validatePassword($password)) {
+        //otherwise it will return the error type
+        if ($errType=$validator->validatePassword($password)) 
             $this->sessionManager->setSessionVariable('error_message',$errType);
-        if ($errType=$validator->validateEmail($email))           
+        if ($errType=$validator->validateEmail($email))    
              $this->sessionManager->setSessionVariable('error_message',$errType);
 
-        //null was returned on both email and password validations and therefor they are valid
-            $userModel=new UserModel();
-            $userModel->setAccount($email, $password);
+        //In case of null, there were no errors and the user will be created
+        if ($errType==null) {
+            //creates a new instance of the user model (the model that handles the user data
+              $userModel=new UserModel();
+
+              //the method will return true in case the user was created successfully
+            if( $userModel->setAccount($email, $password) )   
+            {
+                //if the user was created successfully, the user will be redirected to the login page
+                SessionManager::setSessionVariable('success_message', 'User created successfully. Please login.');
+                header("Location: " . BASE_URL . "/login");
+                exit();
+            }
+            else
+            {
+                //if the user was not created successfully, the user will be redirected to the signup page
+                SessionManager::setSessionVariable('error_message', 'User could not be created. Please try again.');
+                header("Location: " . BASE_URL . "/signup");
+                exit();
+            }
+        
         }
 
-        //redirects to the signup page after a successfull user creation
-        header("Location: " . BASE_URL . "/login");
-        exit();
+       
     }
 
     public function authenticateUser() {
@@ -48,23 +68,25 @@ class UserController {
         $user = $userModel->getAccount($email, $password);
 
         if ($user) {
-            if (password_verify($password, $user['password'])) {
-                $this->sessionManager->setSessionVariable('user_id', $user['id']);
-                $this->sessionManager->setSessionVariable('user_email', $user['email']);
-                echo "hurray";
+           
+                SessionManager::setSessionVariable('user[id]', $user['user_id']);
+                SessionManager::setSessionVariable('user[email]', $user['email']);
+                SessionManager::setSessionVariable('user[role]', $user['role_id']);
+                SessionManager::setSessionVariable('user[first_name]', $user['first_name']);
+                $message = "Hi" . $user['first_name'] . ", you have successfully logged in.";
+                SessionManager::setSessionVariable('user[message]', $user[$message]);
+               
 
                 header("Location: " . BASE_URL . "/");
                 exit();
-            } else {
-                $this->handleLoginError('Incorrect password. Please try again.');
-            }
+            
         } else {
-            $this->handleLoginError('Email not found. Please try again.');
+            $this->handleLoginError('Email does not exist or you have entered the wrong password.');
         }
     }
 
     private function handleLoginError($errorMessage) {
-        $this->sessionManager->setSessionVariable('error_message', $errorMessage);
+        SessionManager::setSessionVariable('error_message', $errorMessage);
         header("Location: " . BASE_URL . "/login");
         exit();
     }

@@ -19,7 +19,9 @@
             emailError.classList.add("hidden");
             titleError.classList.add("hidden");
             messageError.classList.add("hidden");
-    /*
+    
+            /*I've commented the javascript validation in order to test the php validation */
+            /*
             let fields = document.querySelectorAll("#contact_form [required]");
             let isValid = true;
 
@@ -122,18 +124,23 @@
                         .then(function (token) {
                             let recaptchaResponse = document.getElementById("recaptchaResponse");
                             recaptchaResponse.value=token;
-                            console.log("Form data:", new FormData(form));
-                            console.log("Recaptcha Token:", recaptchaResponse.value);   
+                            console.log("Form data:");
+                            for (const entry of new FormData(form)) {
+                                const [key, value] = entry;
+                                console.log(`${key}: ${value}`);
+                            }
+                            
+                           // console.log("Recaptcha Token:", recaptchaResponse.value);   
                             fetch(contactUrl,  {
                                 method: "POST",
                                 body: new FormData(form),
                             })
                             .then((response) => {
-
-                                if (!response.ok) {
-                                    throw new Error(`HTTP error! Status: ${response.status}`);
+                                if (response.redirected) {
+                                    window.location.href = response.url; // Redirect if the response indicates a redirect
+                                } else {
+                                    return response.json(); // Parse JSON only if the response is not a redirect
                                 }
-                                return response.json(); // Parse JSON only if the response is OK
                             }
                                 )
                             .then((response) => {
@@ -150,6 +157,7 @@
                                 //update message error message
                                 messageError.classList.remove("hidden");
                                 messageError.innerHTML = response.errors.message;
+                                alertElement.innerText = response.success;
                             //  document.querySelector("#alert").innerText = responseText.error
                             // document.querySelector("#alert").classList.add("error")
                             //  document.querySelector(".formfields").style.display = "block"

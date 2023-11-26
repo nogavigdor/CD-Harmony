@@ -5,14 +5,16 @@
     SessionManager::startSession();
     //setting a modal window of success message in case contact form was submitted successfully
     $successMessage = SessionManager::getSessionVariable('contact_output');
-   
+           // Clear the session variable
+          // SessionManager::setSessionVariable('contact_output','false');
+    
 
     if (!empty($successMessage['success'])) {
     ?>
     <div id="success-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
         <div class="bg-white w-full md:w-1/2 p-8 rounded shadow-md">
-            <span class="cursor-pointer text-gray-500 absolute top-2 right-2 text-xl" onclick="closeSuccessModal()">×</span>
-            <p class="text-green-500"><?php echo $successMessage['success']; ?></p>
+            <span class="cursor-pointer text-gray-500 absolute top-2 right-2 text-xl" onclick="closeSuccessModal()">X</span>
+            <p class="text-gray-500"><?php echo $successMessage['success']; ?></p>
         </div>
     </div>
     <script defer>
@@ -22,9 +24,10 @@
         }
     </script>
     <?php
-        // Clear the session variable
-        SessionManager::unsetSessionVariable('contact_success');
+ 
     }
+
+   
     ?>
     
     
