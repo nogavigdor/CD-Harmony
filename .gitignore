@@ -1,0 +1,13 @@
+DataCreationHistoryFiles/*
+For-later-use/*
+HistoryFiles/*
+node_modules/*
+php-contact-form-with-google-captcha/*
+sql/history/*
+gulpfile
+package-lock
+package.json
+postcss.config
+tailwind.config.default
+tailwind.config
+views/history/*

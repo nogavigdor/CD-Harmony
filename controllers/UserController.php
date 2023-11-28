@@ -1,8 +1,7 @@
 <?php
+namespace Controllers;
 
-namespace controllers;
-
-use models\UserModel;
+use Models\UserModel;
 use Services\Validator;
 use Services\SessionManager;
 
@@ -30,9 +29,9 @@ class UserController {
         //the method will return null in case the password is valid
         //otherwise it will return the error type
         if ($errType=$validator->validatePassword($password)) 
-            $this->sessionManager->setSessionVariable('error_message',$errType);
+            SessionManager::setSessionVariable('error_message',$errType);
         if ($errType=$validator->validateEmail($email))    
-             $this->sessionManager->setSessionVariable('error_message',$errType);
+             SessionManager::setSessionVariable('error_message',$errType);
 
         //In case of null, there were no errors and the user will be created
         if ($errType==null) {
@@ -69,12 +68,20 @@ class UserController {
 
         if ($user) {
            
-                SessionManager::setSessionVariable('user[id]', $user['user_id']);
-                SessionManager::setSessionVariable('user[email]', $user['email']);
-                SessionManager::setSessionVariable('user[role]', $user['role_id']);
-                SessionManager::setSessionVariable('user[first_name]', $user['first_name']);
-                $message = "Hi" . $user['first_name'] . ", you have successfully logged in.";
-                SessionManager::setSessionVariable('user[message]', $user[$message]);
+            $userData = array(
+                'logged_in' => true,
+                'id' => $user['user_id'],
+                'email' => $user['email'],
+                'role' => $user['role_id'],
+                'first_name' => isset($user['first_name']) ? $user['first_name'] : "",
+                'message' => "Hi " . $user['first_name'] . ", you have successfully logged in."
+            );
+            
+            SessionManager::startSession();
+            
+            foreach ($user as $key => $value) {
+                SessionManager::setSessionVariable("user[$key]", $value);
+            }
                
 
                 header("Location: " . BASE_URL . "/");

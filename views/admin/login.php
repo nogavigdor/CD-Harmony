@@ -2,10 +2,6 @@
 <!-- views/company.php -->
 
 <?php
-// Displaying an error message for debugging purposes
-echo "Including company.php";
-
-
 
 // Including the admin header
 include_once __DIR__ . '/admin-header.php';

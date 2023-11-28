@@ -20,13 +20,16 @@
         <button type="submit" class="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-600">
             Login
         </button>
-        <?php
-        $errorMessage = $_SESSION['error_message'] ?? '';
-        if ($errorMessage) {
-            echo "<p style='color: red;'>$errorMessage</p>";
-            unset($_SESSION['error_message']); // Clear the error message after displaying it
-        }
-        ?>
+            <?php
+            // Display the error message if there is one
+            $errorMessage = SessionManager::getSessionVariable('error_message')?? '';
+            if (!empty($errorMessage)) {
+                echo "<p style='color: red;'>$errorMessage</p>";
+            }
+        
+            SessionManager::unsetSessionVariable('error_message');
+         
+            ?>
     </form>
 
     <div class="mt-4">

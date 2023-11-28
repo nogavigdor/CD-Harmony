@@ -2,8 +2,8 @@
 <footer class="flex-col p-10 bg-base-200 text-base-content">
 <div class="footer">
 <?php
-            
-$controller = new \Controllers\CompanyController();
+use Controllers\CompanyController;       
+$controller = new CompanyController();
 $company=$controller->getCompanyDetails();
 ?>
             

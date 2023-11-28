@@ -1,9 +1,5 @@
 <?php
-namespace controllers;
-
-//use models\SignupModel;
-
-
+namespace Controllers;
 
 class SignupController 
 {

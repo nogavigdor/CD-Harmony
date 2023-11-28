@@ -1,7 +1,7 @@
 <?php
-namespace controllers;
+namespace Controllers;
 
-use models\ProductModel;
+use Models\ProductModel;
 
 class ProductController 
 {

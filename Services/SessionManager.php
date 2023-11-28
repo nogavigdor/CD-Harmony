@@ -1,5 +1,5 @@
 <?php
-namespace services;
+namespace Services;
 
 class SessionManager
 {

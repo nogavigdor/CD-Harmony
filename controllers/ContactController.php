@@ -1,8 +1,8 @@
 <?php
-namespace controllers;
+namespace Controllers;
 
-use services\Validator;
-use services\SessionManager;
+use Services\Validator;
+use Services\SessionManager;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
@@ -157,7 +157,7 @@ class ContactController
 
                         echo 'The email was sent';
                               
- */                             
+ */                              
                                 //redirection back to the contact form ti try again
                                 header('Location: ' . BASE_URL);
                                

@@ -1,8 +1,8 @@
 
     <?php
-    use services\SessionManager;
-    include 'views/header.php';
-    SessionManager::startSession();
+
+    include 'header.php';
+
     //setting a modal window of success message in case contact form was submitted successfully
     $successMessage = SessionManager::getSessionVariable('contact_output');
            // Clear the session variable
@@ -88,7 +88,7 @@
 
         <!-- Footer section -->
         <?php
-        include 'views/footer.php';
+        include 'footer.php';
         ?>
     </body>
     </html>

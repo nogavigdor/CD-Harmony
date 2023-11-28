@@ -3,78 +3,76 @@
 
 require_once "bootstrap.php";
 
+
+
 //define("BASE_URL", "http://localhost/cdharmony");
 require_once "./config/constants.php";
 
 require_once "router.php";
 
-
-
-
-
 route('/cdharmony/', 'GET', function () {
-    $controller = new controllers\MainViewController();
+    $controller = new Controllers\MainViewController();
     $controller->showMainView();
 });
 
 route('/cdharmony/product/(\d+)', 'GET', function ($id) {
-    $controller = new controllers\ProductController();
+    $controller = new Controllers\ProductController();
     $controller->showProductDetails($id);
 });
 
 route('/cdharmony/contact/', 'GET', function() {
-    $controller = new controllers\ContactController();
+    $controller = new Controllers\ContactController();
     $controller->contactView();
 });
 
 route('/cdharmony/contact/', 'POST', function() {
-    $controller = new controllers\ContactController();
+    $controller = new Controllers\ContactController();
     $controller->contactInput();
 });
 
 route('/cdharmony/login/', 'GET', function() {
-    $controller = new controllers\LoginController();
+    $controller = new Controllers\LoginController();
     $controller->loginView();
 });
 route('/cdharmony/login/', 'POST', function() {
-    $controller = new controllers\UserController();
+    $controller = new Controllers\UserController();
     $controller->authenticateUser();
 });
 
 route('/cdharmony/signup/', 'GET', function() {
-    $controller = new controllers\UserController();
+    $controller = new Controllers\UserController();
     $controller->signupView();
 });
 
 route('/cdharmony/signup/', 'POST', function() {
-    $controller = new controllers\UserController();
+    $controller = new Controllers\UserController();
     $controller->createAccount();
 });
 
 //not implemented yet
 route('/cdharmony/search/', 'GET', function () {
-    $controller = new controllers\SearchController();
+    $controller = new Controllers\SearchController();
     $controller->searchView();
 });
 
 //not implemented yet
 route('/cdharmony/search/', 'POST', function () {
-    $controller = new controllers\SearchController();
+    $controller = new Controllers\SearchController();
     $controller->performSearch();
 });
 
 route('/cdharmony/admin/', 'GET', function () {
-    $controller = new controllers\AdminController();
+    $controller = new Controllers\AdminController();
     $controller->adminView();
 });
 
 route('/cdharmony/admin/company/', 'GET', function () {
-    $controller = new controllers\CompanyController();
+    $controller = new Controllers\CompanyController();
     $controller->showCompanyDetails();
 });
 
 route('/cdharmony/admin/company/', 'POST', function () {
-    $controller = new controllers\CompanyController();
+    $controller = new Controllers\CompanyController();
     $controller->updateCompanyDetails();
 });
 
@@ -83,12 +81,12 @@ route('/cdharmony/admin/company/', 'POST', function () {
 
 
 route('/cdharmony/admin/', 'GET', function() {
-    $controller = new controllers\AdminController();
+    $controller = new Controllers\AdminController();
     $controller->adminView();
 });
 
 route('/cdharmony/admin/login', 'GET', function() {
-      $controller = new controllers\UserController();
+      $controller = new Controllers\UserController();
       $controller->authenticateUser();
   
 });
@@ -102,3 +100,7 @@ route('/cdharmony/admin/login', 'POST', function() {
 $path = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/'); // Extract the path
 $method = $_SERVER['REQUEST_METHOD'];
 dispatch($path, $method);
+
+
+
+

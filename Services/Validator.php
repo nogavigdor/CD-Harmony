@@ -1,5 +1,5 @@
 <?php
-namespace services;
+namespace Services;
 
 
     class Validator {
@@ -39,44 +39,7 @@ namespace services;
         return false;
     }
 }
-/*
-    
-    // reCAPTCHA validation
-   public function validateRecaptchaResponse($recaptcha) {
-    $recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';
-    $recaptcha_secret = '6LcTWQMpAAAAAEq-qGXtn9Iy_kuAcv8_AEwZxfqH';
 
-    $ch = curl_init($recaptcha_url);
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, [
-        'secret' => $recaptcha_secret,
-        'response' => $recaptcha,
-    ]);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-    $recaptchaResponse = curl_exec($ch);
-    
-    // Check for cURL errors
-    if (curl_errno($ch)) {
-        return false;
-    }
-
-    curl_close($ch);
-
-    // Decode the JSON response with error handling
-    $recaptchaResult = json_decode($recaptchaResponse);
-
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        return false;
-    }
-
-    if ($recaptchaResult->success == true && $recaptchaResult->score >= 0.5 && $recaptchaResult->action == "contact") {
-        return $recaptchaResult;
-    } else {
-        return false;
-    }
-}
-*/
         public function validateEmail($email){
         
             $regexp = "/^[^0-9][A-z0-9_-]+([.][A-z0-9_]+)*[@][A-z0-9_]+([.][A-z0-9_-]+)*[.][A-z]{2,4}$/";
