@@ -12,19 +12,18 @@ class SessionManager
 
     public static function setSessionVariable($key, $value)
     {
-        self::startSession();
+     
         $_SESSION[$key] = $value;
     }
 
     public static function getSessionVariable($key)
     {
-        self::startSession();
         return isset($_SESSION[$key]) ? $_SESSION[$key] : null;
     }
 
     public static function unsetSessionVariable($key)
     {
-    self::startSession();
+   
     if (isset($_SESSION[$key])) {
         unset($_SESSION[$key]);
     }
@@ -33,7 +32,6 @@ class SessionManager
 
     public static function destroySession()
     {
-        self::startSession();
         session_destroy();
     }
 }

@@ -1,9 +1,9 @@
 
     <?php
-
+    use Services\SessionManager;
     include 'header.php';
 
-    //setting a modal window of success message in case contact form was submitted successfully
+   //setting a modal window of success message in case contact form was submitted successfully
     $successMessage = SessionManager::getSessionVariable('contact_output');
            // Clear the session variable
           // SessionManager::setSessionVariable('contact_output','false');

@@ -1,5 +1,6 @@
-<?php include 'header.php'; ?>
-
+<?php include 'header.php'; 
+use \Services\SessionManager;
+?>
 <div class="max-w-md mx-auto bg-white rounded p-6 shadow-md">
     <h1 class="text-2xl font-semibold mb-6">Login</h1>
 
@@ -38,3 +39,4 @@
 </div>
 
 <?php include 'footer.php'; ?>
+

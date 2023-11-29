@@ -1,8 +1,8 @@
 <?php
 namespace Controllers;
 
-use Services\Validator;
-use Services\SessionManager;
+use \Services\Validator;
+use \Services\SessionManager;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;

@@ -1,7 +1,7 @@
 <?php
 namespace Controllers;
 
-use Models\CompanyModel;
+use \Models\CompanyModel;
 
 class CompanyController
 {

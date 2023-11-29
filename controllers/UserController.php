@@ -2,8 +2,8 @@
 namespace Controllers;
 
 use Models\UserModel;
-use Services\Validator;
-use Services\SessionManager;
+use \Services\Validator;
+use \Services\SessionManager;
 
 class UserController {
     
