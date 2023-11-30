@@ -3,10 +3,8 @@ namespace Controllers;
 
 class MainViewController 
 {
-   
-
     public function __construct() {
-        
+       
     }
 
     public function showMainView()
@@ -18,7 +16,5 @@ class MainViewController
             error_log('PDO Exception: ' . $ex->getMessage());
         }
     }
-  
-
- 
 }
+?>

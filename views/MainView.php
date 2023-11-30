@@ -1,35 +1,32 @@
+<?php
+// In your homepage code
+include 'header.php';
+use Services\SessionManager;    
 
-    <?php
-    use Services\SessionManager;
-    include 'header.php';
-
-   //setting a modal window of success message in case contact form was submitted successfully
-    $successMessage = SessionManager::getSessionVariable('contact_output');
-           // Clear the session variable
-          // SessionManager::setSessionVariable('contact_output','false');
-    
-
-    if (!empty($successMessage['success'])) {
-    ?>
-    <div id="success-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-        <div class="bg-white w-full md:w-1/2 p-8 rounded shadow-md">
-            <span class="cursor-pointer text-gray-500 absolute top-2 right-2 text-xl" onclick="closeSuccessModal()">X</span>
-            <p class="text-gray-500"><?php echo $successMessage['success']; ?></p>
-        </div>
-    </div>
-    <script defer>
-        // JavaScript function to close the success modal
-        function closeSuccessModal() {
-            document.getElementById('success-modal').style.display = 'none';
-        }
-    </script>
-    <?php
- 
-    }
-
-   
-    ?>
-    
+// Check for success message session variable
+$successMessage = SessionManager::getSessionVariable('success_message');
+echo $successMessage;   
+/*
+if (!empty($successMessage)) {
+?>
+   <div id="success-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div class="bg-white w-full md:w-1/2 p-8 rounded shadow-md">
+         <span class="cursor-pointer text-gray-500 absolute  z-10 top-2 right-2 text-xl" onclick="closeSuccessModal()">X</span>
+         <p class="text-gray-500"><?php echo $successMessage; ?></p>
+      </div>
+   </div>
+   <script defer>
+      // JavaScript function to close the success modal
+      function closeSuccessModal() {
+         document.getElementById('success-modal').style.display = 'none';
+      }
+   </script>
+<?php
+   // Clear the session variable after displaying the success message
+   SessionManager::setSessionVariable('success_message', '');
+}*/
+?>
+  
     
         <!-- Main content section -->
         <main class="container mx-auto p-4">
@@ -52,7 +49,7 @@
                     <?php
                     // Include the "Pop CDs" section
                     $controller = new \Controllers\ProductController();
-                $controller->showProductsByTag('rock');
+                    $controller->showProductsByTag('rock');
         
                     ?>
         
@@ -62,9 +59,9 @@
                 <h2 class="text-#13324E text-2xl font-bold mb-4">Country CDs</h2>
         
                     <?php
-                    // Include the "CountryCDs" section
-                    $controller = new \Controllers\ProductController();
-                $controller->showProductsByTag('country');   
+                        // Include the "CountryCDs" section
+                        $controller = new \Controllers\ProductController();
+                        $controller->showProductsByTag('country');   
                     ?>
         
             </section>
@@ -88,7 +85,7 @@
 
         <!-- Footer section -->
         <?php
-        include 'footer.php';
+            include 'footer.php';
         ?>
     </body>
     </html>

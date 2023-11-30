@@ -114,7 +114,7 @@ class ContactController
                                 // Sets a session variable for contact success
                                 $contact_output['success'] =  'Your contact form has been submitted successfully.';
                                
-                                SessionManager::setSessionVariable('contact_output', $contact_output);
+                                SessionManager::setSessionVariable('success_message', $contact_output['success']);  
 /*
                                       // Set the SMTP server and port for One.com
                             ini_set('SMTP', 'send.one.com');

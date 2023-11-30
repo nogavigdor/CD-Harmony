@@ -7,19 +7,22 @@ use \Services\SessionManager;
 
 class UserController {
     
-   
+   private $email;
+   private $password;
 
     public function __construct() {
-      
+        SessionManager::startSession();
+        $this->email = htmlspecialchars(trim($_POST['email']));
+        $this->password = htmlspecialchars(trim($_POST['password']));
     }
     
     public function createAccount() {
         //removes any while spaces from the begining and the end of the string
-       // $first_name =trim( $_POST['first_name']);
-       // $last_name = trim($_POST['last_name']);
-        $email = trim($_POST['email']);
-        $password = trim($_POST['password']);
-
+        if (isset($_POST['first_name']))
+          $first_name =trim( $_POST['first_name']);
+        if (isset($_POST['last_name']))
+          $last_name = trim($_POST['last_name']);
+  
         $validator = new Validator();
 
         //as long as there are no errors the error type will be null
@@ -28,9 +31,9 @@ class UserController {
         //checks if both the psassword and email are valid for account creation
         //the method will return null in case the password is valid
         //otherwise it will return the error type
-        if ($errType=$validator->validatePassword($password)) 
+        if ($errType=$validator->validatePassword($this->password)) 
             SessionManager::setSessionVariable('error_message',$errType);
-        if ($errType=$validator->validateEmail($email))    
+        if ($errType=$validator->validateEmail($this->email))    
              SessionManager::setSessionVariable('error_message',$errType);
 
         //In case of null, there were no errors and the user will be created
@@ -39,10 +42,10 @@ class UserController {
               $userModel=new UserModel();
 
               //the method will return true in case the user was created successfully
-            if( $userModel->setAccount($email, $password) )   
+            if( $userModel->setAccount($this->email, $this->$password, $first_name, $last_name) )   
             {
                 //if the user was created successfully, the user will be redirected to the login page
-                SessionManager::setSessionVariable('success_message', 'User created successfully. Please login.');
+                SessionManager::setSessionVariable('success_message', 'Your user acount was created successfully. Please login.');
                 header("Location: " . BASE_URL . "/login");
                 exit();
             }
@@ -53,6 +56,7 @@ class UserController {
                 header("Location: " . BASE_URL . "/signup");
                 exit();
             }
+         
         
         }
 
@@ -60,11 +64,9 @@ class UserController {
     }
 
     public function authenticateUser() {
-        $email = $_POST['email'];
-        $password = $_POST['password'];
 
         $userModel = new UserModel();
-        $user = $userModel->getAccount($email, $password);
+        $user = $userModel->getAccount($this->email, $this->password);
 
         if ($user) {
            
@@ -74,12 +76,15 @@ class UserController {
                 'email' => $user['email'],
                 'role' => $user['role_id'],
                 'first_name' => isset($user['first_name']) ? $user['first_name'] : "",
-                'message' => "Hi " . $user['first_name'] . ", you have successfully logged in."
             );
+
+            $success_message = "Hi " . $user['first_name'] . ", you have successfully logged in.";
             
-            SessionManager::startSession();
+           
             
-            foreach ($user as $key => $value) {
+            SessionManager::setSessionVariable('success_message', $success_message);     
+            
+            foreach ($userData as $key => $value) {
                 SessionManager::setSessionVariable("user[$key]", $value);
             }
                

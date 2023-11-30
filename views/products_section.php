@@ -11,20 +11,20 @@
                      </div>
                  <?php endif; ?>
                 <div class="p-4">
-                <h2 class="text-lg font-semibold"><?= htmlspecialchars($product->product_title) ?></h2>
-                <p class="mt-2"><?= htmlspecialchars($product->artist_title) ?></p>
+                <h2 class="text-lg text-base-500font-semibold"><?= htmlspecialchars($product->product_title) ?></h2>
+                <p class="mt-2 text-lg  text-base-500"><?= htmlspecialchars($product->artist_title) ?></p>
                 <p class="mt-2"><?= htmlspecialchars($product->tag_title) ?></p>
                 <div class="mt-4">
                     <!-- Display New Price -->
                     <?php if ($product->new_quantity > 0) : ?>
-                        <div class="text-lg font-semibold text-green-500"><?= $product->new_price ?> USD (New)</div>
+                        <div class="text-lg  text-base-500"><?= $product->new_price ?> Kr (New)</div>
                     <?php endif; ?>
                     <!-- Display Used Price -->
                     <?php if ($product->old_quantity > 0) : ?>
-                        <div class="text-lg font-semibold text-red-500"><?= $product->old_price ?> USD (Used)</div>
+                        <div class="text-lg  text-base-800"><?= $product->old_price ?> Kr (Used)</div>
                     <?php endif; ?>
                     <div class="mt-2">
-                        <a href="<?= BASE_URL ?>/product/<?= $product->product_id ?>" class="btn btn-primary w-full">View Details</a>
+                        <a href="<?= BASE_URL ?>/product/<?= $product->product_id ?>" class="btn btn-secondary w-full text-white">View Details</a>
                     </div>
                 </div>
             </div>
