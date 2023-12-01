@@ -15,7 +15,7 @@ use PDO;
             $this->dbConnector = DBConnector::getInstance(); 
         }
         //customer role is defined as 3 in the database and that should be the defailt value
-        public function setAccount($email, $password, $role=3) {
+        public function setAccount($email, $password, $first_name="", $last_name="", $role=3) {
             try {
                 $first_name="";
                 $last_name="";

@@ -106,8 +106,8 @@ class ContactController
                     if (!empty($recaptcha))  {
 
                             $recaptchaResult = $this->validator->validateRecaptchaResponse($recaptcha);
-                       //   if  (!($recaptchaResult)){
-                             if (!($recaptchaResult->success)) {
+                          if  (!($recaptchaResult)){
+                         //    if (!($recaptchaResult->success)) {
                                 //updated output message to the user
                                 //$output = ['recaptcha' => 'Recaptcha validation was unsuccessfull. Pleaes try again later.'];
                                 

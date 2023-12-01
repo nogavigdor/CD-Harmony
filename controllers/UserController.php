@@ -7,21 +7,28 @@ use \Services\SessionManager;
 
 class UserController {
     
-   private $email;
-   private $password;
+   
 
     public function __construct() {
         SessionManager::startSession();
-        $this->email = htmlspecialchars(trim($_POST['email']));
-        $this->password = htmlspecialchars(trim($_POST['password']));
+        if (SessionManager::isLoggedIn()) {
+            header("Location: " . BASE_URL . "/home");
+            exit();
+        }
     }
     
     public function createAccount() {
-        //removes any while spaces from the begining and the end of the string
+        //removes any while spaces from the begining and the end of the string 
+        //and converts any special characters to HTML entities
         if (isset($_POST['first_name']))
-          $first_name =trim( $_POST['first_name']);
+          $first_name =htmlspecialchars(trim( $_POST['first_name']));
         if (isset($_POST['last_name']))
-          $last_name = trim($_POST['last_name']);
+          $last_name = chars(htmlspecialtrim($_POST['last_name']));
+        if (isset($_POST['email']))
+            $email = htmlspecialchars(trim($_POST['email']));
+        if (isset($_POST['password']))
+        //not escaping the password as it will be hashed
+            $password = trim($_POST['password']);
   
         $validator = new Validator();
 
@@ -31,9 +38,9 @@ class UserController {
         //checks if both the psassword and email are valid for account creation
         //the method will return null in case the password is valid
         //otherwise it will return the error type
-        if ($errType=$validator->validatePassword($this->password)) 
+        if ($errType=$validator->validatePassword($password)) 
             SessionManager::setSessionVariable('error_message',$errType);
-        if ($errType=$validator->validateEmail($this->email))    
+        if ($errType=$validator->validateEmail($email))    
              SessionManager::setSessionVariable('error_message',$errType);
 
         //In case of null, there were no errors and the user will be created
@@ -42,7 +49,7 @@ class UserController {
               $userModel=new UserModel();
 
               //the method will return true in case the user was created successfully
-            if( $userModel->setAccount($this->email, $this->$password, $first_name, $last_name) )   
+            if( $userModel->setAccount($email, $password, $first_name, $last_name) )   
             {
                 //if the user was created successfully, the user will be redirected to the login page
                 SessionManager::setSessionVariable('success_message', 'Your user acount was created successfully. Please login.');
@@ -65,8 +72,17 @@ class UserController {
 
     public function authenticateUser() {
 
+        //removes any while spaces from the begining and the end of the string  
+        //and converts any special characters to HTML entities
+        if (isset($_POST['email']))
+            $email = htmlspecialchars(trim($_POST['email']));
+        //not escaping the password as it will be hashed
+        if (isset($_POST['password']))
+             $password = trim($_POST['password']);
+        
+             
         $userModel = new UserModel();
-        $user = $userModel->getAccount($this->email, $this->password);
+        $user = $userModel->getAccount($email, $password);
 
         if ($user) {
            
@@ -78,11 +94,12 @@ class UserController {
                 'first_name' => isset($user['first_name']) ? $user['first_name'] : "",
             );
 
-            $success_message = "Hi " . $user['first_name'] . ", you have successfully logged in.";
+            $success_message = "Hi " . $user['first_name'] . ", you have successfully logged in. Your role is " . $user['role_id'] . "  and your user id is " . $user['user_id'] . "and your email is " . $user['email'] . "and you last name is " . $user['last_name'] . "and you password is " . $user['user_password'] . "and you creation date is " . $user['creation_date'] . "and you role id is " . $user['role_id'] . "and you first name is " . $user['first_name'] . "and you last name is " . $user['last_name'] . "and you email is " . $user['email'] . "and you password is " . $user['user_password'] . "and you creation date is " . $user['creation_date'] . "and you role id is " . $user['role_id'] . "and you first name is " . $user['first_name'] . "and you last name is " . $user['last_name'] . "and you email is " . $user['email'] . "and you password is " . $user['user_password'] . "and you creation date is " . $user['creation_date'] . "and you role id is " . $user['role_id'] . "and you first name is " . $user['first_name'] . "and you last name is " . $user['last_name'] . "and you email is " . $user['email'] . "and you password is " . $user['user_password'] . "and you creation date is " . $user['creation_date'] . "and you role id is " . $user['role_id'] . "and you first name is " . $user['first_name'] . "and you last name is " . $user['last_name'] . "and you email is " . $user['email'] . "and you password is " . $user['user_password'] . "and you creation date is " . $user['creation_date'] . "and you role id is " . $user['role_id'] . "and you first name is " . $user['first_name'] . "and you last name is " . $user['last_name'] . "and you email is " . $user['email'] . "and you password is " . $user['user_password'] . "and you creation date is " . $user['creation_date'] . "and you role id is " . $user['role_id'] . "";
             
            
             
-            SessionManager::setSessionVariable('success_message', $success_message);     
+            SessionManager::setSessionVariable('success_message', $success_message);  
+            SessionManager::setSessionVariable('user', $user_data);        
             
             foreach ($userData as $key => $value) {
                 SessionManager::setSessionVariable("user[$key]", $value);

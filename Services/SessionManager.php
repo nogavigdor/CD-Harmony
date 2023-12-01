@@ -29,6 +29,19 @@ class SessionManager
     }
     }
 
+    public static function isLoggedIn()
+    {
+        if (!isset($_SESSION['user']['logged_in'])) {
+            return false;
+        }
+        return self::getSessionVariable('user')['logged_in'];
+    }
+    
+    public static function getLoggedInUserId()
+    {
+        return self::getSessionVariable(['user']['id']);
+    }
+
 
     public static function destroySession()
     {

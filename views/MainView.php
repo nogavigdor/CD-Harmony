@@ -6,6 +6,24 @@ use Services\SessionManager;
 // Check for success message session variable
 $successMessage = SessionManager::getSessionVariable('success_message');
 echo $successMessage;   
+echo 'this is a testing of the user array in the session manger:';
+$test=SessionManager::isLoggedIn();
+if ($test) {
+    echo $test;
+    echo 'hi fron getSessionVariable [user][email]:'. SessionManager::getSessionVariable('user')['email'];
+
+} else {
+    echo 'false  -  you are not logged in';
+}
+//q: why is it now working? I managet to access the success_message variablebut not the [user][first_name] variable
+//a: is there a problem with the way I am accessing the array?
+//q: is there a problem with the way I am accessing the array?
+//a: yes, you are using the wrong syntax. You should use SessionManager::getSessionVariable('user')['first_name']
+//q: I changed it to echo 'hi fron getSessionVariable [user][email]:'. SessionManager::getSessionVariable('user')['email']; and it is still now working
+//a: you are using the wrong syntax. You should use SessionManager::getSessionVariable('user')['email']
+//q: but that's what I"ve used
+//a: no, you are using SessionManager::getSessionVariable(['user']['email'])
+//q: no, I'm using: 
 /*
 if (!empty($successMessage)) {
 ?>

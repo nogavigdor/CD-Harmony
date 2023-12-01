@@ -57,31 +57,31 @@ let contactUrl = BASE_URL+'/contact';
                         .then((response) => {
                             if (response.redirected) {
                                 window.location.href = response.url; // Redirect if the response indicates a redirect
+                                return null;
                             } else {
                                 return response.json(); // Parse JSON only if the response is not a redirect
                             }
                         }
                             )
                         .then((response) => {
-                    
-                        //const responseText = JSON.parse(response) // Get the response
-                        if(response.errors !== "") { // If there is an error
-                        
-                            //update email error message
-                            emailError.classList.remove("hidden");      
-                            emailError.innerHTML = response.errors.email;
-                            //update title error message
-                            titleError.classList.remove("hidden");
-                            titleError.innerHTML = response.errors.title;
-                            //update message error message
-                            messageError.classList.remove("hidden");
-                            messageError.innerHTML = response.errors.message;
-                            alertElement.innerText = response.success;
-                        //  document.querySelector("#alert").innerText = responseText.error
-                        // document.querySelector("#alert").classList.add("error")
-                        //  document.querySelector(".formfields").style.display = "block"
-                            return
-                        }
+                          //to prevent the response being processed if the page is redirected
+                            if(response!== null) { // If there is an error
+                            
+                                //update email error message
+                                emailError.classList.remove("hidden");      
+                                emailError.innerHTML = response.errors.email;
+                                //update title error message
+                                titleError.classList.remove("hidden");
+                                titleError.innerHTML = response.errors.title;
+                                //update message error message
+                                messageError.classList.remove("hidden");
+                                messageError.innerHTML = response.errors.message;
+                                alertElement.innerText = response.success;
+                            //  document.querySelector("#alert").innerText = responseText.error
+                            // document.querySelector("#alert").classList.add("error")
+                            //  document.querySelector(".formfields").style.display = "block"
+                                return
+                            }
                         
                         })
 

@@ -57,12 +57,31 @@ SessionManager::startSession();
                 <!-- Other header elements... -->
 
                 <!-- Login Button -->
-                <a href="<?php echo BASE_URL ;?>/login" class="ml-4 btn btn-secondary">Login</a>
+                <?php
+                $test = SessionManager::isLoggedIn();
 
-                <!-- Sign Up Button -->
-                <a href="<?php echo BASE_URL ;?>/signup" class="ml-4 btn btn-primary">Sign Up</a>
+                if ($test) {
+                    echo $test;
+                    echo 'hi from getSessionVariable [user][first_name]: ' . SessionManager::getSessionVariable('user')['first_name'];
+               
+                } else {
+                    echo 'false  -  you are not logged in';
+                }
 
-            
+                if (SessionManager::isLoggedIn()){
+                    echo '<a href="' . BASE_URL . '/logout" class="ml-4 btn btn-secondary">Logout</a>';
+                } else {
+                    echo '<a href="' . BASE_URL . '/login" class="ml-4 btn btn-secondary">Login</a>';
+                    echo '<a href="' . BASE_URL . '/signup" class="ml-4 btn btn-primary">Sign Up</a>';
+                }
+                ?>
+                <!-- Cart Button -->
+                <a href="<?php echo BASE_URL ;?>/cart" class="ml-4 btn btn-secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"  stroke-width="2" d="M4 4h16M4 8h16M4 12h16M4 16h16M4 20h16"/>
+                    </svg>
+                    Cart    
+                </a>
             </div>
         </div>
     </header>
