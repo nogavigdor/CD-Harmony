@@ -58,16 +58,6 @@ SessionManager::startSession();
 
                 <!-- Login Button -->
                 <?php
-                $test = SessionManager::isLoggedIn();
-
-                if ($test) {
-                    echo $test;
-                    echo 'hi from getSessionVariable [user][first_name]: ' . SessionManager::getSessionVariable('user')['first_name'];
-               
-                } else {
-                    echo 'false  -  you are not logged in';
-                }
-
                 if (SessionManager::isLoggedIn()){
                     echo '<a href="' . BASE_URL . '/logout" class="ml-4 btn btn-secondary">Logout</a>';
                 } else {

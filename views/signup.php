@@ -18,7 +18,15 @@ include 'header.php'; ?>
                     <!-- Your icon code here -->
                 </svg>
             </div>
-            <div id="emailMessage" class="text-sm mt-1"></div> <!-- Dedicated message for email -->
+            <div id="emailMessage" class="text-sm mt-1">
+             <?php
+             // Display the email error message if it exists
+                 $emailErr =  isset($_SESSION['output_errors']) ?  $_SESSION['output_errors']['email'] : '';
+                 if ($emailErr!= null) {
+                     echo $emailErr;
+                 }
+             ?>
+            </div> <!-- Dedicated message for email -->
         </div>
 
         <!-- Password -->
@@ -31,7 +39,16 @@ include 'header.php'; ?>
                     <!-- Your icon code here -->
                 </svg>
             </div>
-            <div id="passwordMessage" class="text-sm mt-1"></div> <!-- Dedicated message for password -->
+            <div id="passwordMessage" class="text-sm mt-1">
+            <?php
+             // Display the password error message if it exists
+                 $passwordErr =  isset($_SESSION['output_errors']) ?  $_SESSION['output_errors']['password'] : '';
+                 if ($passwordErr != null) {
+                     echo $passwordErr;
+                 }
+             ?>
+
+            </div> <!-- Dedicated message for password -->
         </div>
 
         <!-- Confirm Password -->
@@ -45,18 +62,26 @@ include 'header.php'; ?>
                 </svg>
             </div>
             <div id="confirmPasswordMessage" class="text-sm mt-1"></div> <!-- Dedicated message for confirm password -->
+
+            <?php
+             // Display the password error message if it exists
+                 $passwordMatchErr =  isset($_SESSION['output_errors']) ?  $_SESSION['output_errors']['passwordMatch'] : '';
+                 if ($passwordErr != null) {
+                     echo $passwordMatchErr;
+                 }
+             ?>
         </div>
 
         <!-- Submit Button -->
         <button type="submit" class="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-600">
             Register
         </button>
-        <div class="text-red-500 text-sm mb-4">
+        <div class="text-red-500 text-sm mb-4"> 
     <?php
-    $error_message = isset($_SESSION['error_message']) ? $_SESSION['error_message'] : '';
+    $error_message = isset($_SESSION['output_errors']['general']) ? $_SESSION['output_errors']['general'] : '';
     if (!empty($error_message)) {
         echo $error_message;
-        unset($_SESSION['error_message']); // Clear the error message after displaying it
+        unset($_SESSION['output_errors']); // Clear the error message after displaying it
     }
     ?>
 </div>

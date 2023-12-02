@@ -11,10 +11,7 @@ class UserController {
 
     public function __construct() {
         SessionManager::startSession();
-        if (SessionManager::isLoggedIn()) {
-            header("Location: " . BASE_URL . "/home");
-            exit();
-        }
+        
     }
     
     public function createAccount() {
@@ -23,28 +20,35 @@ class UserController {
         if (isset($_POST['first_name']))
           $first_name =htmlspecialchars(trim( $_POST['first_name']));
         if (isset($_POST['last_name']))
-          $last_name = chars(htmlspecialtrim($_POST['last_name']));
+          $last_name = htmlspecialchars(trim( $_POST['last_name']));
         if (isset($_POST['email']))
             $email = htmlspecialchars(trim($_POST['email']));
         if (isset($_POST['password']))
         //not escaping the password as it will be hashed
             $password = trim($_POST['password']);
+        if (isset($_POST['confirmPassword']))
+        //not escaping the password as it will be hashed
+            $confirmPassword = trim($_POST['confirmPassword']);
   
         $validator = new Validator();
 
-        //as long as there are no errors the error type will be null
-        $errType = null;
+        //as long as there are no errors the error type array will be empty
+        $errType = [];
         
         //checks if both the psassword and email are valid for account creation
         //the method will return null in case the password is valid
         //otherwise it will return the error type
-        if ($errType=$validator->validatePassword($password)) 
-            SessionManager::setSessionVariable('error_message',$errType);
-        if ($errType=$validator->validateEmail($email))    
-             SessionManager::setSessionVariable('error_message',$errType);
+
+        $errType['password']=$validator->validatePassword($password);
+        $errType['email']=$validator->validateEmail($email);
+        if($password!=$confirmPassword) {
+            $errType['passwordMatch']='Passwords do not match';
+        }else{
+            $errType['passwordMatch']=null;
+        }
 
         //In case of null, there were no errors and the user will be created
-        if ($errType==null) {
+        if (($errType['password']==null)&&($errType['email']==null)&&($errType['passwordMatch']==null)) {
             //creates a new instance of the user model (the model that handles the user data
               $userModel=new UserModel();
 
@@ -58,16 +62,25 @@ class UserController {
             }
             else
             {
+                $errType['general'] = 'Email already exists. Please try again with a different email.'; 
                 //if the user was not created successfully, the user will be redirected to the signup page
-                SessionManager::setSessionVariable('error_message', 'User could not be created. Please try again.');
+                SessionManager::setSessionVariable('output_errors', $errType);
                 header("Location: " . BASE_URL . "/signup");
                 exit();
             }
          
         
-        }
+        } 
 
-       
+        else //if there were errors, the user will be redirected to the signup page
+        {
+            $errType['general'] = 'Please correct your input fields and try again.';
+            //the error messages will be stored in the session variables
+            SessionManager::setSessionVariable('output_errors',$errType);
+        
+        header("Location: " . BASE_URL . "/signup");
+        exit();
+        }
     }
 
     public function authenticateUser() {
@@ -94,17 +107,13 @@ class UserController {
                 'first_name' => isset($user['first_name']) ? $user['first_name'] : "",
             );
 
-            $success_message = "Hi " . $user['first_name'] . ", you have successfully logged in. Your role is " . $user['role_id'] . "  and your user id is " . $user['user_id'] . "and your email is " . $user['email'] . "and you last name is " . $user['last_name'] . "and you password is " . $user['user_password'] . "and you creation date is " . $user['creation_date'] . "and you role id is " . $user['role_id'] . "and you first name is " . $user['first_name'] . "and you last name is " . $user['last_name'] . "and you email is " . $user['email'] . "and you password is " . $user['user_password'] . "and you creation date is " . $user['creation_date'] . "and you role id is " . $user['role_id'] . "and you first name is " . $user['first_name'] . "and you last name is " . $user['last_name'] . "and you email is " . $user['email'] . "and you password is " . $user['user_password'] . "and you creation date is " . $user['creation_date'] . "and you role id is " . $user['role_id'] . "and you first name is " . $user['first_name'] . "and you last name is " . $user['last_name'] . "and you email is " . $user['email'] . "and you password is " . $user['user_password'] . "and you creation date is " . $user['creation_date'] . "and you role id is " . $user['role_id'] . "and you first name is " . $user['first_name'] . "and you last name is " . $user['last_name'] . "and you email is " . $user['email'] . "and you password is " . $user['user_password'] . "and you creation date is " . $user['creation_date'] . "and you role id is " . $user['role_id'] . "and you first name is " . $user['first_name'] . "and you last name is " . $user['last_name'] . "and you email is " . $user['email'] . "and you password is " . $user['user_password'] . "and you creation date is " . $user['creation_date'] . "and you role id is " . $user['role_id'] . "";
+            $success_message = "Hi " . $user['first_name'];
             
            
-            
+            //sets the success message in the session variable
             SessionManager::setSessionVariable('success_message', $success_message);  
-            SessionManager::setSessionVariable('user', $user_data);        
-            
-            foreach ($userData as $key => $value) {
-                SessionManager::setSessionVariable("user[$key]", $value);
-            }
-               
+            //sets the user data in the session variable
+            SessionManager::setSessionVariable('user', $userData);        
 
                 header("Location: " . BASE_URL . "/");
                 exit();
@@ -115,7 +124,9 @@ class UserController {
     }
 
     private function handleLoginError($errorMessage) {
-        SessionManager::setSessionVariable('error_message', $errorMessage);
+        $errType = [];
+        $errType['general'] = $errorMessage;
+        SessionManager::setSessionVariable('output_errors', $errType);
         header("Location: " . BASE_URL . "/login");
         exit();
     }

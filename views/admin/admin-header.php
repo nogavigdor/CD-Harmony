@@ -1,5 +1,4 @@
 <?php
-require_once "bootstrap.php";
 use Services\SessionManager;
 SessionManager::startSession();
 ?>

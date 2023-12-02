@@ -1,9 +1,6 @@
 <?php 
 
-
 require_once "bootstrap.php";
-
-
 
 //define("BASE_URL", "http://localhost/cdharmony");
 require_once "./config/constants.php";
@@ -39,6 +36,11 @@ route('/cdharmony/login/', 'POST', function() {
     $controller->authenticateUser();
 });
 
+route('/cdharmony/logout/', 'GET', function() {
+    $controller = new Controllers\LoginController();
+    $controller->logoutView();
+});
+
 route('/cdharmony/signup/', 'GET', function() {
     $controller = new Controllers\UserController();
     $controller->signupView();
@@ -66,6 +68,30 @@ route('/cdharmony/admin/', 'GET', function () {
     $controller->adminView();
 });
 
+route('/cdharmony/admin/product/', 'GET', function () {
+    $controller = new Controllers\ProductController();
+    $controller->showProductList();
+});
+
+route('/cdharmony/admin', 'GET', function() {
+    $controller = new Controllers\AdminController();
+    $controller->adminView();
+
+});
+
+route('/cdharmony/admin-login', 'GET', function() {
+    $controller = new Controllers\AdminController();
+    $controller->adminLoginView();
+
+});
+
+route('/cdharmony/admin/admin-login', 'POST', function() {
+  $controller = new controllers\AdminController();
+  $controller->adminLogin();
+ 
+});
+
+
 route('/cdharmony/admin/company/', 'GET', function () {
     $controller = new Controllers\CompanyController();
     $controller->showCompanyDetails();
@@ -76,26 +102,6 @@ route('/cdharmony/admin/company/', 'POST', function () {
     $controller->updateCompanyDetails();
 });
 
-
-
-
-
-route('/cdharmony/admin/', 'GET', function() {
-    $controller = new Controllers\AdminController();
-    $controller->adminView();
-});
-
-route('/cdharmony/admin/login', 'GET', function() {
-      $controller = new Controllers\UserController();
-      $controller->authenticateUser();
-  
-});
-
-route('/cdharmony/admin/login', 'POST', function() {
-    // $controller = new controllers\AdminController();
-    // $controller->adminView();
-    require 'views/admin/login.php';
- });
 
 $path = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/'); // Extract the path
 $method = $_SERVER['REQUEST_METHOD'];

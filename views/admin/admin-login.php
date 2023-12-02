@@ -1,8 +1,21 @@
-<?php include 'header.php'; 
-use \Services\SessionManager;
+<?php
+use Services\SessionManager;
+SessionManager::startSession();
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="<?php echo BASE_URL ?>/src/css/output.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<main class="container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
+<section class="h-screen">
 <div class="max-w-md mx-auto bg-white rounded p-6 shadow-md">
-    <h1 class="text-2xl font-semibold mb-6">Login</h1>
+    <h1 class="text-2xl font-semibold mb-6">Admin Login</h1>
 
     <form id="loginForm" method='POST' action='./login' novalidate>
         <!-- Email -->
@@ -33,10 +46,9 @@ use \Services\SessionManager;
             ?>
     </form>
 
-    <div class="mt-4">
-        <p>Don't have an account? <a href="./signup">Register here</a></p>
-    </div>
 </div>
+</section>
 
-<?php include 'footer.php'; ?>
-
+</main>
+</body>
+</html>

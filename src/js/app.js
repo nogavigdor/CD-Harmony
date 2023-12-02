@@ -1,3 +1,5 @@
+let testing = "hi";
+console.log("this is testing: " + testing); 
 
 function createSuccessModal(message) {
   // Create the main container
@@ -34,7 +36,7 @@ function closeSuccessModal() {
   }
 }
 
-let successMessage = "<?php echo SessionManager::getSessionVariable('success_message'); ?>";
+let successMessage = "<?php   SessionManager::getSessionVariable('success_message'); ?>";
 if (successMessage) {
     createSuccessModal(successMessage);
   }
