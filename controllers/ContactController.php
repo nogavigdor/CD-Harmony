@@ -94,15 +94,7 @@ class ContactController
     
             // if all the values of the error_output are nulls it means that no error message was return and the form is valid
             if (count(array_filter($error_output, 'is_null')) === count($error_output))  {
-                // Proceeds with reCAPTCHA verification
-               // $recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify'; // URL to the reCAPTCHA server
-               // $recaptcha_secret = '6LcTWQMpAAAAAEq-qGXtn9Iy_kuAcv8_AEwZxfqH'; // Secret key
-                //$recaptcha_response = $_POST['recaptchaResponse']; // Response from reCAPTCHA server, added to the form during processing
-               //$recaptcha = file_get_contents($recaptcha_url.'?secret='.RECAPTHA_SECRET_KEY.'&response='.$recaptcha_response); // Send request to the server
-               // $recaptcha = json_decode($recaptcha); // Decode the JSON response
-             //   error_log('Form Data: ' . print_r($_POST, true));
-                //error_log('Error Output: ' . print_r($error_output, true));
-                
+                //if the recaptcha validation was successfull
                     if (!empty($recaptcha))  {
 
                             $recaptchaResult = $this->validator->validateRecaptchaResponse($recaptcha);
@@ -115,49 +107,37 @@ class ContactController
                                 $contact_output['success'] =  'Your contact form has been submitted successfully.';
                                
                                 SessionManager::setSessionVariable('success_message', $contact_output['success']);  
-/*
-                                      // Set the SMTP server and port for One.com
-                            ini_set('SMTP', 'send.one.com');
-                            ini_set('smtp_port', 465);
 
-                            // Enable SMTP authentication
-                            ini_set('smtp_auth', true);
-
-                            // Set the SMTP username and password (your One.com email credentials)
-                            ini_set('smtp_username', SMTP_USERNAME);
-                            ini_set('smtp_password', SMTP_PASSWORD);
-
-                            // Set encryption type (SSL/TLS)
-                            ini_set('smtp_crypto', 'tls'); // or 'tls'
-
-                            // Other mail-related settings
-                            ini_set('sendmail_from', 'contact@cdharmony.dk');
-                            ini_set('mail.add_x_header', 'On');
-
-                            $mail = new PHPMailer(true);
+                        //setting up the email's settings in order to send the contact form information to the admin
+                        /*
+                        try {
+                             $mail = new PHPMailer(true);
                         
-                        $mail->SMTPDebug = SMTP::DEBUG_SERVER;
+                            $mail->SMTPDebug = SMTP::DEBUG_SERVER;
+                            $mail->isSMTP();
+                             $mail->SMTPAuth = true;
 
-                        $mail->isSMTP();
-                        $mail->SMTPAuth = true;
+                             $mail->Host = "mailout.one.com";
+                             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                    
+                             $mail->Port = 25;
 
-                        $mail->Host = "send.one.com";
-                        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                        $mail->Port = 465;
+                            $mail->Username = SMTP_USERNAME;
+                             $mail->Password = SMTP_PASSWORD;   
+                            $mail->setFrom($email, $first_name);
+                             $mail->addAddress("contact@cdharmony.dk", "Noga");
 
-                        $mail->Username = "contact@cdharmony.dk";
-                        $mail->Password = "Venus999@";
-                        $mail->setFrom($email, $first_name);
-                        $mail->addAddress("contact@cdharmony.dk", "Noga");
+                             $mail->Subject = $title;
+                             $mail->Body = $message;
 
-                        $mail->Subject = $title;
-                        $mail->Body = $message;
+                             $mail->send();
 
-                        $mail->send();
-
-                        echo 'The email was sent';
-                              
- */                              
+                        } catch (Exception $e) {
+                            echo json_encode("Message could not be sent. Mailer Error: {$mail->ErrorInfo}"); 
+                        }
+                        */
+                    
+                                // Send JSON response                           
                                 //redirection back to the contact form ti try again
                                 header('Location: ' . BASE_URL);
                                
@@ -174,86 +154,7 @@ class ContactController
                             }
                             
                       }//end of isset recaptcha check
-          
-                
-              
-
-                     /*
-                            
-                            // Set the SMTP server and port for One.com
-                            ini_set('SMTP', 'send.one.com');
-                            ini_set('smtp_port', 465);
-
-                            // Enable SMTP authentication
-                            ini_set('smtp_auth', true);
-
-                            // Set the SMTP username and password (your One.com email credentials)
-                            ini_set('smtp_username', 'contact@cdharmony.dk');
-                            ini_set('smtp_password', 'Venus999@');
-
-                            // Set encryption type (SSL/TLS)
-                            ini_set('smtp_crypto', 'tls'); // or 'tls'
-
-                            // Other mail-related settings
-                            ini_set('sendmail_from', 'contact@cdharmony.dk');
-                            ini_set('mail.add_x_header', 'On');
-                        */ 
-                        
-                        
-                        //if recaptcha/javascript was not activated or if it was activated and there was a successfull response
-                        //configuring PHPmailer will email's settings in order to send the contact form information to the admin
-/*
-
-                        $mail = new PHPMailer(true);
-                        
-                        $mail->SMTPDebug = SMTP::DEBUG_SERVER;
-
-                        $mail->isSMTP();
-                        $mail->SMTPAuth = true;
-
-                        $mail->Host = "send.one.com";
-                        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                        $mail->Port = 465;
-
-                        $mail->Username = "contact@cdharmony.dk";
-                        $mail->Password = "Venus999@";
-                        $mail->setFrom($email, $first_name);
-                        $mail->addAddress("contact@cdharmony.dk", "Noga");
-
-                        $mail->Subject = $title;
-                        $mail->Body = $message;
-
-                        $mail->send();
-
-                        echo 'The email was sent';*/
-
-/*
-
-                        $to      = 'noga.vigdor@gmail.com';
-                        $subject = $title;
-                        $message = $message;
-                        $headers = array(
-                            'From' => $email,
-                            'Reply-To' => $email,
-                            'X-Mailer' => 'PHP/' . phpversion()
-                        );
-
-                    // runs email send routine  
-                    $mailSent = mail($to, $subject, $message, $headers);
-               
-                    if ($mailSent) {
-                        $success_output = 'Your message was sent successfully.';
-                    } else {
-                        $error_output['email_configuration'] = 'Error sending email. Check your server configuration.';
-                    }
-*/
-                       // Start the session
-             //         SessionManager::startSession();
-                     
-                        // Sets a session variable for contact success
-              //          SessionManager::setSessionVariable('contact_success', true);
-
-                     
+   
             }
              
             //input validtion was not successfull 
@@ -263,9 +164,6 @@ class ContactController
                     header('Content-Type: application/json');
                     //encoding the PHP array as JSON
                     echo json_encode($contact_output);  
-              //  SessionManager::setSessionVariable('contact_output', $error_output); 
-                 //redirection to contact form after validation has failed
-                //header('Location: ' . BASE_URL.'/contact');
                  exit();
              } 
            

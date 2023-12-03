@@ -28,6 +28,7 @@ class DBConnector
 
     public static function getInstance()
     {
+        // Check if the instance is already created and return it if it is
         if (!self::$instance) {
             // If the instance doesn't exist, create a new one
             self::$instance = new self();

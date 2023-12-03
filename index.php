@@ -73,19 +73,13 @@ route('/cdharmony/admin/product/', 'GET', function () {
     $controller->showProductList();
 });
 
-route('/cdharmony/admin', 'GET', function() {
-    $controller = new Controllers\AdminController();
-    $controller->adminView();
-
-});
-
 route('/cdharmony/admin-login', 'GET', function() {
     $controller = new Controllers\AdminController();
     $controller->adminLoginView();
 
 });
 
-route('/cdharmony/admin/admin-login', 'POST', function() {
+route('/cdharmony/admin-login', 'POST', function() {
   $controller = new controllers\AdminController();
   $controller->adminLogin();
  

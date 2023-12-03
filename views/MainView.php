@@ -30,6 +30,7 @@ if (!empty($successMessage)) {
     
         <!-- Main content section -->
         <main class="container mx-auto p-4">
+            <h1 class="text-gray-900">Welcome to CD Harmony</h1>
             <!-- Pop CDs section -->
             <section>
                 <h2 class="text-#13324E text-2xl font-bold mb-4">Pop CDs</h2>
