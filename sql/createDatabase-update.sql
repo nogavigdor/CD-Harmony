@@ -228,9 +228,9 @@ CREATE TABLE orders_lines
     quantity int NOT NULL,
     price decimal(10,2),
     order_id int,
-    product_id int,
+    PK_product_condition  int,
     CONSTRAINT PK_order_line PRIMARY KEY (order_id, product_id),
-    FOREIGN KEY (order_id) REFERENCES orders (order_id),
+    FOREIGN KEY (PK_product_condition ) REFERENCES products_conditions (PK_product_condition),
     FOREIGN KEY (product_id) REFERENCES products (product_id)
 ) ENGINE=InnoDB;
 
@@ -260,7 +260,7 @@ CREATE TABLE images_for_articles
     title varchar(100) NOT NULL,
     image_path varchar(255) NOT NULL,
     image_name varchar(255) NOT NULL,
-    article_id int,
+    product_id int,
     FOREIGN KEY (article_id) REFERENCES articles(article_id)
 ) ENGINE=InnoDB;
 

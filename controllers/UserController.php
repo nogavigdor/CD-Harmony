@@ -124,9 +124,7 @@ class UserController {
     }
 
     private function handleLoginError($errorMessage) {
-        $errType = [];
-        $errType['general'] = $errorMessage;
-        SessionManager::setSessionVariable('output_errors', $errType);
+        SessionManager::setSessionVariable('error_message', $errorMessage);
         header("Location: " . BASE_URL . "/login");
         exit();
     }

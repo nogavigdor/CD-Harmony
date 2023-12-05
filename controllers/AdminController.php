@@ -67,9 +67,8 @@ class AdminController
             header('Location:'. BASE_URL. '/admin');
             exit();
         } else {
-            $errType = [];
-            $errType['general'] = 'You are not authororized to to access the page or you have entered invalid input.';
-            SessionManager::setSessionVariable('output_errors', $errType);
+            $errorMessage = 'You are not authororized to to access the page or you have entered invalid input.';
+            SessionManager::setSessionVariable('error_message', $errorMessage);
             header('Location:'. BASE_URL. '/admin-login');
             exit();
       

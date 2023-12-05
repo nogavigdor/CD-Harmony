@@ -47,4 +47,13 @@ class SessionManager
     {
         session_destroy();
     }
+
+    /**
+     * Clears all session variables
+     */
+    public static function clearAll()
+    {
+        session_unset();
+        session_destroy();
+    }
 }
