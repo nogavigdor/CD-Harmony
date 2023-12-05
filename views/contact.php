@@ -1,5 +1,6 @@
 <?php include 'header.php'; ?>
-
+<?php use Services\SessionManager; 
+ SessionManager::startSession(); ?>
 
 
     <h1 class="text-center text-3xl font-bold mb-6">Contact Us</h1>
@@ -8,7 +9,7 @@
         <!-- Set the maximum width on large and medium screens for the container -->
         <form  novalidate id="contact_form" method="" action=""  class="bg-white p-6 rounded-lg shadow-lg md:w-2/3 w-full transition-transform transform hover:scale-105">
             <input type="hidden" name="recaptchaResponse" id="recaptchaResponse">
-
+          
             <div class="mb-4">
                 <label for="first_name" class="block text-sm font-medium text-gray-700">Please enter your first name</label>
                 <input type="text" name="first_name" id="first_name" class="w-full input input-bordered mt-1 focus:scale-105">

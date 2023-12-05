@@ -97,7 +97,6 @@ class ContactController
                 //if the recaptcha validation was successfull
                     if (!empty($recaptcha))  {
 
-                            $recaptchaResult = $this->validator->validateRecaptchaResponse($recaptcha);
                           if  (!($recaptchaResult)){
                          //    if (!($recaptchaResult->success)) {
                                 //updated output message to the user
@@ -109,33 +108,40 @@ class ContactController
                                 SessionManager::setSessionVariable('success_message', $contact_output['success']);  
 
                         //setting up the email's settings in order to send the contact form information to the admin
-                        /*
+                        echo "Mail Start";
                         try {
-                             $mail = new PHPMailer(true);
-                        
+                         
+                            $mail = new PHPMailer(true);
+                       
                             $mail->SMTPDebug = SMTP::DEBUG_SERVER;
                             $mail->isSMTP();
                              $mail->SMTPAuth = true;
-
-                             $mail->Host = "mailout.one.com";
-                             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                    
-                             $mail->Port = 25;
+                           
+                             $mail->Host = "send.one.com";
+                             $mail->SMTPSecure = "ssl";
+                            
+                             $mail->Port = 465;
 
                             $mail->Username = SMTP_USERNAME;
                              $mail->Password = SMTP_PASSWORD;   
-                            $mail->setFrom($email, $first_name);
+                            //$mail->setFrom($email, $first_name);
+                            $mail->isHTML();
+                            $mail->From = "contact@cdharmony.dk";
                              $mail->addAddress("contact@cdharmony.dk", "Noga");
 
                              $mail->Subject = $title;
-                             $mail->Body = $message;
-
+                             $mail->Body = "<h2 style='color:red;'>Email From:</h2> ".$email."<br />".$message;
+                            
+                            
+                            
                              $mail->send();
+
+                       
 
                         } catch (Exception $e) {
                             echo json_encode("Message could not be sent. Mailer Error: {$mail->ErrorInfo}"); 
                         }
-                        */
+                        
                     
                                 // Send JSON response                           
                                 //redirection back to the contact form ti try again

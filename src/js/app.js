@@ -3,7 +3,7 @@ console.log("this is testing: " + testing);
 
 function createSuccessModal(message) {
   // Create the main container
-  var modalContainer = document.createElement('div');
+  const modalContainer = document.createElement('div');
   modalContainer.id = 'success-modal';
   modalContainer.className = 'absolute top-2 left-0 right-0 bottom-0 flex items-center justify-center';
 
@@ -36,7 +36,9 @@ function closeSuccessModal() {
   }
 }
 
-let successMessage = "<?php   SessionManager::getSessionVariable('success_message'); ?>";
-if (successMessage) {
-    createSuccessModal(successMessage);
+let successMessage =document.getElementById("successMessage").value;
+
+if (successMessage&&successMessage.length>0) {
+  alert("OK:"+successMessage+"END");
+      createSuccessModal(successMessage);
   }

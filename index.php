@@ -12,6 +12,11 @@ route('/cdharmony/', 'GET', function () {
     $controller->showMainView();
 });
 
+route('/cdharmony/test', 'GET', function () {
+    $controller = new Controllers\TestController();
+    $controller->showTest();
+});
+
 route('/cdharmony/product/(\d+)', 'GET', function ($id) {
     $controller = new Controllers\ProductController();
     $controller->showProductDetails($id);

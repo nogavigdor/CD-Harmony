@@ -19,14 +19,14 @@ window.addEventListener("load", function () {
 
 let contactUrl = BASE_URL+'/contact';
 
-            console.log("I'm in the valid function");
+           
 
     
             if (alertElement) {
                 alertElement.innerText = "Processing your submission, please wait...";
             }
         
-            console.log("Before grecaptcha.ready");
+
             if (typeof grecaptcha === 'undefined') {
             console.error('reCAPTCHA script not loaded or encountered an error.');
             return;
