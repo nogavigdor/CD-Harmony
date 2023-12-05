@@ -4322,6 +4322,16 @@ details.collapse summary::-webkit-details-marker {
   color: rgb(157 23 77 / var(--tw-text-opacity));
 }
 
+.text-gray-800 {
+  --tw-text-opacity: 1;
+  color: rgb(31 41 55 / var(--tw-text-opacity));
+}
+
+.text-purple-800 {
+  --tw-text-opacity: 1;
+  color: rgb(107 33 168 / var(--tw-text-opacity));
+}
+
 .underline {
   text-decoration-line: underline;
 }

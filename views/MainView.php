@@ -32,6 +32,18 @@ if (!empty($successMessage)) {
         <main class="container mx-auto p-4">
             <h1 class="text-gray-900">Welcome to CD Harmony</h1>
             <!-- Pop CDs section -->
+             <!-- Pop CDs section -->
+             <section>
+                <h2 class="text-#13324E text-2xl font-bold mb-4">Check out out our articles</h2>
+        
+                    <?php
+                    // Includes the articles section
+                    $controller = new \Controllers\ArticleController();
+                $controller->showRecentArticles();
+            
+                    ?>
+        
+            </section>
             <section>
                 <h2 class="text-#13324E text-2xl font-bold mb-4">Pop CDs</h2>
         

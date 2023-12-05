@@ -44,7 +44,7 @@ class ProductController
             $productModel = new ProductModel(); // Create an instance of ProductModel
             $product = $productModel->getProductDetails($id); // Call the method on the instance
 
-            // Load the view to display the "New Releases" section
+            // Load the view to display the product details
 
             include 'views/product_details.php';
             
