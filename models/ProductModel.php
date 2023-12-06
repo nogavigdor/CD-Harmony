@@ -15,6 +15,41 @@ class ProductModel
         $this->dbConnector = DBConnector::getInstance(); 
     }
 
+    public function getAllProducts(){
+        try{
+            $dbInstance = $this->dbConnector;
+            $db=$dbInstance->connectToDB();
+            $sql='
+            SELECT
+            p.product_id,
+            p.title as product_title,
+            a.title AS artist_title,
+            t.title AS tag_title,
+            ip.image_name,
+            ip.image_path,
+            SUM(CASE WHEN pc.condition_id = 1 THEN pc.quantity_in_stock ELSE 0 END) AS new_quantity,
+            SUM(CASE WHEN pc.condition_id = 2 THEN pc.quantity_in_stock ELSE 0 END) AS used_quantity,
+            MAX(CASE WHEN pc.condition_id = 1 THEN pc.price END) AS new_price,
+            MAX(CASE WHEN pc.condition_id = 2 THEN pc.price END) AS used_price
+            FROM
+                products p
+            INNER JOIN products_tags pt ON pt.product_id = p.product_id
+            INNER JOIN tags t ON t.tag_id = pt.tag_id
+            INNER JOIN cds c ON c.product_id = p.product_id
+            INNER JOIN artists a ON a.artist_id = c.artist_id
+            LEFT JOIN products_conditions pc ON pc.product_id = p.product_id
+            INNER JOIN images_for_products ip ON ip.product_id = p.product_id
+            GROUP BY p.product_id
+         
+            ';
+            $query = $db->prepare($sql);
+            $query->execute();
+            return $query->fetchAll(PDO::FETCH_OBJ);
+        } catch (\PDOException $ex) {
+            die("Connection failed: " . $e->getMessage());
+        }
+    }
+
     public function getProductsByTag($tag) {
         try {
          
@@ -29,9 +64,9 @@ class ProductModel
             ip.image_name,
             ip.image_path,
             SUM(CASE WHEN pc.condition_id = 1 THEN pc.quantity_in_stock ELSE 0 END) AS new_quantity,
-            SUM(CASE WHEN pc.condition_id = 2 THEN pc.quantity_in_stock ELSE 0 END) AS old_quantity,
+            SUM(CASE WHEN pc.condition_id = 2 THEN pc.quantity_in_stock ELSE 0 END) AS used_quantity,
             MAX(CASE WHEN pc.condition_id = 1 THEN pc.price END) AS new_price,
-            MAX(CASE WHEN pc.condition_id = 2 THEN pc.price END) AS old_price
+            MAX(CASE WHEN pc.condition_id = 2 THEN pc.price END) AS used_price
             FROM
                 products p
             INNER JOIN products_tags pt ON pt.product_id = p.product_id
@@ -76,9 +111,9 @@ class ProductModel
             ip.image_name,
             ip.image_path,
             SUM(CASE WHEN pc.condition_id = 1 THEN pc.quantity_in_stock ELSE 0 END) AS new_quantity,
-            SUM(CASE WHEN pc.condition_id = 2 THEN pc.quantity_in_stock ELSE 0 END) AS old_quantity,
+            SUM(CASE WHEN pc.condition_id = 2 THEN pc.quantity_in_stock ELSE 0 END) AS used_quantity,
             MAX(CASE WHEN pc.condition_id = 1 THEN pc.price END) AS new_price,
-            MAX(CASE WHEN pc.condition_id = 2 THEN pc.price END) AS old_price
+            MAX(CASE WHEN pc.condition_id = 2 THEN pc.price END) AS used_price
             FROM
                 products p
             INNER JOIN products_tags pt ON pt.product_id = p.product_id
@@ -121,9 +156,9 @@ class ProductModel
         ip.image_name,
         ip.image_path,
         SUM(CASE WHEN pc.condition_id = 1 THEN pc.quantity_in_stock ELSE 0 END) AS new_quantity,
-        SUM(CASE WHEN pc.condition_id = 2 THEN pc.quantity_in_stock ELSE 0 END) AS old_quantity,
+        SUM(CASE WHEN pc.condition_id = 2 THEN pc.quantity_in_stock ELSE 0 END) AS used_quantity,
         MAX(CASE WHEN pc.condition_id = 1 THEN pc.price END) AS new_price,
-        MAX(CASE WHEN pc.condition_id = 2 THEN pc.price END) AS old_price
+        MAX(CASE WHEN pc.condition_id = 2 THEN pc.price END) AS used_price
         FROM
         products p
         INNER JOIN products_tags pt ON pt.product_id = p.product_id

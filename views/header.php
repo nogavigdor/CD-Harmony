@@ -32,7 +32,7 @@ SessionManager::startSession();
 
     </head>
     <body class="bg-primary font-body min-h-screen">
-    <input type="hidden" id="successMessage" value="<?php   SessionManager::getSessionVariable('success_message'); SessionManager::unsetSessionVariable('success_message');?>">
+    <input type="hidden" id="successMessage" value="<?= SessionManager::getSessionVariable('success_message'); SessionManager::unsetSessionVariable('success_message');?>">
         <!-- Header section -->
         <header class="bg-secondary text-white p-4">
         <div class="container mx-auto flex justify-between items-center">

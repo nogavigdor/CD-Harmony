@@ -79,7 +79,7 @@ class ArticleModel
                 articles a
             INNER JOIN users u ON u.user_id = a.user_id
             ORDER BY a.publish_date DESC
-            LIMIT 5
+            LIMIT 3
             ';
             $query = $db->prepare($sql);
      

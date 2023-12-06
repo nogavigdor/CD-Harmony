@@ -112,10 +112,22 @@ route('/cdharmony/admin/articles/', 'GET', function () {
     $controller->updateCompanyDetails();
 });
 
-route('/cdharmony/admin/articles/', 'POST', function () {
+route('/cdharmony/admin/products/', 'GET', function () {
     $controller = new Controllers\CompanyController();
     $controller->updateCompanyDetails();
 });
+
+route('/cdharmony/admin/products/', 'GET', function () {
+    $controller = new Controllers\AdminController();
+    $controller->showProducts();
+});
+
+route('/cdharmony/admin/products/', 'POST', function () {
+    $controller = new Controllers\AdminController();
+    $controller->handleProduct();
+});
+
+
 
 
 $path = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/'); // Extract the path

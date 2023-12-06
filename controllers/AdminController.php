@@ -54,18 +54,17 @@ class AdminController
                 'first_name' => isset($user['first_name']) ? $user['first_name'] : "",
             );
 
-            //sets the user data in the session variable
-             SessionManager::setSessionVariable('user', $userData);    
-            $success_message = "Hi " . $user['first_name'];
-            
+               //sets the user data in the session variable
+               SessionManager::setSessionVariable('user', $userData);    
+               $successMessage = "Hi " . $user['first_name']. ' you are now logged in as admin';
+
+                          
            
             //sets the success message in the session variable
-            SessionManager::setSessionVariable('success_message', $success_message);  
-               
-
-            // Redirect to the admin page
-            header('Location:'. BASE_URL. '/admin');
-            exit();
+            SessionManager::setSessionVariable('success_message', $successMessage);  
+              // Redirect to the admin page
+              header('Location:'. BASE_URL. '/admin');
+              exit();         
         } else {
             $errorMessage = 'You are not authororized to to access the page or you have entered invalid input.';
             SessionManager::setSessionVariable('error_message', $errorMessage);
@@ -73,6 +72,24 @@ class AdminController
             exit();
       
         }
+    }
+
+    
+    public function showProducts()
+    { 
+
+        if(SessionManager::getSessionVariable('user') && SessionManager::getSessionVariable('user')['role'] == 1) {
+            // User is an admin, show the products page
+            include 'views/admin/products.php';
+            } else {
+            // Redirect to the login page
+            header('Location:'. BASE_URL. '/admin-login');
+            exit();
+            }
+
+
+
+
     }
 
    

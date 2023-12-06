@@ -21,8 +21,8 @@
                         <div class="text-lg  text-base-500"><?= $product->new_price ?> Kr (New)</div>
                     <?php endif; ?>
                     <!-- Display Used Price -->
-                    <?php if ($product->old_quantity > 0) : ?>
-                        <div class="text-lg  text-base-800"><?= $product->old_price ?> Kr (Used)</div>
+                    <?php if ($product->used_quantity > 0) : ?>
+                        <div class="text-lg  text-base-800"><?= $product->used_price ?> Kr (Used)</div>
                     <?php endif; ?>
                     <div class="mt-2">
                         <a href="<?= BASE_URL ?>/product/<?= $product->product_id ?>" class="btn btn-secondary w-full text-white">View Details</a>

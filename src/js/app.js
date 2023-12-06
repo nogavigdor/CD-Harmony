@@ -39,6 +39,6 @@ function closeSuccessModal() {
 let successMessage =document.getElementById("successMessage").value;
 
 if (successMessage&&successMessage.length>0) {
-  alert("OK:"+successMessage+"END");
+
       createSuccessModal(successMessage);
   }

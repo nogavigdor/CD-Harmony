@@ -4,7 +4,7 @@ namespace Models;
 
 use PDO; 
 
-class AdminModel extends BaseModel
+class AdminModel
 {
 	function __construct() {}
 

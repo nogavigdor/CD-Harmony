@@ -17,11 +17,11 @@
             <div class="text-lg font-semibold mb-2">Price:</div>
             <div>
                 <input type="radio" name="condition" value="new" id="new" class="mr-1">
-                <label for="new">New: $NewPriceHere</label>
+                <label for="new">New: <?php echo $product->new_price ?></label>
             </div>
             <div>
-                <input type="radio" name="condition" value="old" id="old" class="mr-1">
-                <label for="old">Old: $OldPriceHere</label>
+                <input type="radio" name="condition" value="used" id="used" class="mr-1">
+                <label for="used">used: <?php echo $product->used_price ?></label>
             </div>
         </div>
         <div class="mt-4">
