@@ -37,6 +37,7 @@ h1, h2, h3 {
   --menu-text: #FFF4E0; /* Soft Cream on Deep Teal */
   --hover-states: #009494; /* Lighter Teal */
   --border-color: #333333; /* Dark Gray */
+  --admin-menu-background: #333333; /* Dark Gray */
 }
 
 header {
@@ -136,4 +137,11 @@ footer {
 
 .dropdown:hover .submenu {
   display: block;
+}
+
+
+/* Admin styles */
+
+.active {
+  background-color: var(--admin-menu-background);
 }

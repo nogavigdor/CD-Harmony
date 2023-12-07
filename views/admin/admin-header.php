@@ -30,11 +30,12 @@ SessionManager::startSession();
                 </button>
             </div>
             <nav class="space-x-4">
-                <a href="#" class="text-white">Products</a>
-                <a href="#" class="text-white">Articles</a>
-                <a href="#" class="text-white">Special Offers</a>
-                <a href="#" class="text-white">Orders</a>
-                <a href="#" class="text-white">Company details</a>
+                <a href="<?php echo BASE_URL.'/admin/products' ?>" class="text-white">Products</a>
+                <a href="<?php echo BASE_URL.'/admin/products' ?>" class="text-white">Users</a>
+                <a href="<?php echo BASE_URL.'/admin/users' ?>" class="text-white">Articles</a>
+                <a href="<?php echo BASE_URL.'/admin/special offers' ?>" class="text-white">Special Offers</a>
+                <a href="<?php echo BASE_URL.'/admin/orders' ?>" class="text-white">Orders</a>
+                <a href="<?php echo BASE_URL.'/admin/company details' ?>" class="text-white">Company details</a>
             </nav>
            
             

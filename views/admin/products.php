@@ -1,9 +1,9 @@
-<?php include 'admin-header.php' ?>
+    
 <?php
 use Services\SessionManager; 
 use Models\ProductModel;
 ?>
-<main class='content bg-primary text-base-100'>
+
 
 <h1>Products Page</h1>
 <?php $productsModel=new ProductModel();
@@ -65,5 +65,4 @@ use Models\ProductModel;
     }
 </script>
 
-</main>
-<?php include 'admin-footer.php' ?>
+
