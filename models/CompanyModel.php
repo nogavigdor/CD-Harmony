@@ -38,14 +38,15 @@ class CompanyModel
     }
 
 
-    public function updateCompanyDetails($companyId, $companyName, $street, $postalCodeId, $openingHours, $phoneNumber, $email)
+    public function updateCompanyDetails($companyId, $companyName, $street, $postalCodeId, $openingHours, $email, $phoneNumber, $logo)
     {
     try {
         $dbInstance = $this->dbConnector;
         $db=$dbInstance->connectToDB();
         $query = $db->prepare('
             UPDATE company_details
-            SET company_name = :company_name, street = :street, postal_code_id = :postal_code_id, email = :email, opening_hours = :opening_hours, phone_number = :phone_number
+            SET company_name = :company_name, street = :street, email = :email, phone_number = :phone_number,postal_code_id = :postal_code_id,
+            opening_hours = :opening_hours, logo = :logo
             WHERE company_details_id = :company_details_id
         ');
 
@@ -56,6 +57,7 @@ class CompanyModel
         $query->bindParam(':phone_number', $phoneNumber);
         $query->bindParam(':email', $email);
         $query->bindParam(':opening_hours', $openingHours);
+        $query->bindParam(':logo', $logo);
 
 
         $success = $query->execute();

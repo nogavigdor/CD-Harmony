@@ -22,7 +22,7 @@ class CompanyController
 
     public function showCompanyDetails()
     {
-        if(SessionManager::getSessionVariable('user') && SessionManager::getSessionVariable('user')['role'] == 1) {
+        if(AdminController::authorizeAdmin()) {
       
         include_once 'views/admin/company.php';
         } else {
@@ -35,42 +35,54 @@ class CompanyController
     public function updateCompanyDetails()
     {
         // Validate the CSRF token on form submission - to ensure that only by authorized admin users
-        if ($_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-            // CSRF token is invalid, handle accordingly (e.g., log the incident, show an error)
+        if (SessionManager::validateCSRFToken($_POST['csrf_token'])) {
+            // CSRF token is valid
+            try {
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    // Retrieve values from the form
+                    $companyId=htmlspecialchars(trim($_POST['company_details_id']));
+                    $companyName = htmlspecialchars(trim($_POST['company_name']));
+                    $street = htmlspecialchars(trim($_POST['street']));
+                    $postalCodeId = htmlspecialchars(trim($_POST['postal_code_id']));
+                    $openingHours = htmlspecialchars(trim($_POST['opening_hours']));
+                    $phoneNumber = htmlspecialchars(trim($_POST['phone_number']));
+                    $email = htmlspecialchars(trim($_POST['email']));
+                    $logo = htmlspecialchars(trim($_POST['logo']));
+    
+                    $companyDetails=new CompanyModel();
+                    $success=$companyDetails->updateCompanyDetails($companyId, $companyName, $street, $postalCodeId, $openingHours, $email, $phoneNumber, $logo  );
+    
+                    
+                    
+                    
+                    if ($success) {
+                       //Show a success message
+                       SessionManager::setSessionVariable('success_message', 'Company details updated successfully');
+                        // Redirect to the company details page
+                        header('Location: ' . BASE_URL . '/admin/company');
+                        exit();
+                    } else {
+                        // Show an error message
+                        SessionManager::setSessionVariable('error_message', 'Company details could not be updated');
+                        // Redirect to the company details page
+                        header('Location: ' . BASE_URL . '/admin/company');
+                        exit();
+                    }
+    
+                    // Terminate script execution to prevent additional output
+                    exit();
+                    
+                }
+            } catch (\PDOException $ex) {
+                error_log('PDO Exception: ' . $ex->getMessage());
+            }
+           
+        }
+        // CSRF token validation failed, show an error
+        else {
             exit('CSRF token validation failed');
         }
-        try {
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                // Retrieve values from the form
-                $companyId=htmlspecialchars(trim($_POST['company_details_id']));
-                $companyName = htmlspecialchars(trim($_POST['company_name']));
-                $street = htmlspecialchars(trim($_POST['street']));
-                $postalCodeId = htmlspecialchars(trim($_POST['postal_code_id']));
-                $openingHours = htmlspecialchars(trim($_POST['opening_hours']));
-                $phoneNumber = htmlspecialchars(trim($_POST['phone_number']));
-                $email = htmlspecialchars(trim($_POST['email']));
-
-                $companyDetails=new CompanyModel();
-                $success=$companyDetails->updateCompanyDetails($companyId, $companyName, $street, $postalCodeId, $openingHours, $email, $phoneNumber  );
-
-                
-                
-                
-                if ($success) {
-                   
-                   echo 'The company details have been updated successfully.';
-                } else {
-                    // Return an error message
-                    echo json_encode(['status' => 'error', 'message' => 'Failed to update company details']);
-                }
-
-                // Terminate script execution to prevent additional output
-                exit();
-                
-            }
-        } catch (\PDOException $ex) {
-            error_log('PDO Exception: ' . $ex->getMessage());
-        }
+      
     }
 
    

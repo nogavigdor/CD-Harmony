@@ -181,6 +181,51 @@ class ProductModel
     } 
 }
 
+//Show all products in the admin page
+public function getProductsList() {
+    try {
+         
+        $dbInstance = $this->dbConnector;
+        $db=$dbInstance->connectToDB();
+        $sql='
+        SELECT
+        p.product_id,
+        p.title as product_title,
+        a.title AS artist_title,
+        t.title AS tag_title,
+        ip.image_name,
+        ip.image_path,
+        con.title AS condition_title,
+        con.condition_id,
+        SUM(CASE WHEN pc.condition_id = 1 THEN pc.quantity_in_stock ELSE 0 END) AS new_quantity,
+        SUM(CASE WHEN pc.condition_id = 2 THEN pc.quantity_in_stock ELSE 0 END) AS used_quantity,
+        MAX(CASE WHEN pc.condition_id = 1 THEN pc.price END) AS new_price,
+        MAX(CASE WHEN pc.condition_id = 2 THEN pc.price END) AS used_price
+        FROM
+            products p
+        INNER JOIN products_tags pt ON pt.product_id = p.product_id
+        INNER JOIN tags t ON t.tag_id = pt.tag_id
+        INNER JOIN cds c ON c.product_id = p.product_id
+        INNER JOIN artists a ON a.artist_id = c.artist_id
+        LEFT JOIN products_conditions pc ON pc.product_id = p.product_id
+        INNER JOIN images_for_products ip ON ip.product_id = p.product_id
+        INNER JOIN conditions con ON con.condition_id = pc.condition_id
+        GROUP BY p.product_id
+        ';
+        $query = $db->prepare($sql);
+        echo $query->queryString;
+
+        $query->execute();
+     //s   var_dump($query->queryString);
+    //var_dump($tag);
+        return $query->fetchAll(PDO::FETCH_OBJ);
+    } catch (\PDOException $ex) {
+        die("Connection failed: " . $e->getMessage());
+    }  
+        
+}
+
+
 
 
 

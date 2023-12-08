@@ -2,6 +2,10 @@
 namespace Controllers;
 use Services\SessionManager;
 use Models\UserModel;
+use Models\ProductModel;
+use Models\ArticleModel;
+use Models\SpecialOfferModel;
+use Models\CompanyModel;
 SessionManager::startSession();
 class AdminController
 {
@@ -9,7 +13,7 @@ class AdminController
     public function adminView()
     {
            // Check if the user is logged in and if it has an admin role
-           if (SessionManager::getSessionVariable('user') && SessionManager::getSessionVariable('user')['role'] == 1) {
+           if (self::authorizeAdmin()) {
             // User is an admin, show the admin page
             include 'views/admin/adminView.php';
             } else {
@@ -22,7 +26,7 @@ class AdminController
    public function adminLoginView()
    {
           // Check if the user is logged in and if it has an admin role
-          if (SessionManager::getSessionVariable('user') && SessionManager::getSessionVariable('user')['role'] == 1) {
+          if (self::authorizeAdmin()) {
            // User is an admin, redirect to the admin page
              header('Location:'. BASE_URL. '/admin');
              exit();
@@ -77,8 +81,8 @@ class AdminController
     
     public function showProducts()
     { 
-
-        if(SessionManager::getSessionVariable('user') && SessionManager::getSessionVariable('user')['role'] == 1) {
+        // Check if the user is logged in and if it has an admin role
+        if(self::authorizeAdmin()) {
             // User is an admin, show the products page
             include 'views/admin/products.php';
             } else {
@@ -90,6 +94,28 @@ class AdminController
 
 
 
+    }
+
+    public function getProductDetails()
+    {
+        // Check if the user is logged in and if it has an admin role
+        if(self::authorizeAdmin()) {
+            // User is an admin, show the products page
+            include 'views/admin/product-details.php';
+            } else {
+            // Redirect to the login page
+            header('Location:'. BASE_URL. '/admin-login');
+            exit();
+            }
+    }
+    //checks if the user is logged in and if it has an admin role
+    public static function authorizeAdmin() {
+        if (!SessionManager::getSessionVariable('user') || SessionManager::getSessionVariable('user')['role'] != 1) {
+            return false;
+        }
+        else {
+            return true;
+        }
     }
 
    

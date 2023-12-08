@@ -3,6 +3,8 @@ module.exports = {
     './src/**/*.{html,css,js}', 
     './*.php',
     './views/*.php',
+    './views/**/*.php',
+    './partials/*.php',
    // "./node_modules/tw-elements/dist/js/**/*.js"
   ],
   //plugins: [require("tw-elements/dist/plugin.cjs")],
@@ -53,8 +55,8 @@ module.exports = {
     ],
   },
   plugins: [
-    //require("tw-elements/dist/plugin.cjs"),
     require('daisyui'),
+    
   ],
   darkMode: "class"
 };
