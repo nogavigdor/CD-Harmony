@@ -26,7 +26,7 @@ route('/cdharmony/', 'GET', function () {
 
 route('/cdharmony/test', 'GET', function () {
     $controller = new TestController();
-    $controller->showTest();
+    $controller->insertData();
 });
 
 route('/cdharmony/product/(\d+)', 'GET', function ($id) {

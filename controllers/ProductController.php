@@ -47,7 +47,7 @@ class ProductController
     {
         try {
           
-            $product=$this->productModel->getProductDetails($id); // Call the method on the instance
+            $product=$this->productModel->getProductDetails($id, $role='customer'); // Call the method on the instance
             //the request came from an admin route
             if ($role == 'admin') {
                 if (AdminController::authorizeAdmin()) {

@@ -12,36 +12,37 @@ use Services\SessionManager;
 
         <!-- Content Area -->
         <div class="flex-1 p-8">
+        <a href="<?php echo BASE_URL.'/admin/product/add/' ?>" class="btn">Add Product</a>
+        <h2 class="text-2xl font-semibold mb-4">Product List</h2>
             <?php
             $products = new ProductController();
             $productsList = $products->getProductsList(); 
-
-            if (!empty($productsList)) {
-            ?>
-                <h2 class="text-2xl font-semibold mb-4">Product List</h2>
-                <a href="<?php echo BASE_URL.'/admin/product/add/' ?>" class="btn">Add Product</a>
-                <div class="grid grid-cols-5 gap-4">
-                    <!-- Column headers -->
-                    <div class="font-bold text-gray-700">Product ID</div>
-                    <div class="font-bold text-gray-700">Condition</div>
-                    <div class="font-bold text-gray-700">Title</div>
-                    <div class="font-bold text-gray-700">Price</div>
-                    <div class="font-bold text-gray-700">Actions</div>
-
-                    <!-- Product items -->
-                    <?php foreach ($productsList as $product) { ?>
-                        <div class="border p-4 rounded-md">
-                            <div><?= $product->product_id ?></div>
-                            <div><?= $product->condition_title  ?></div>
-                            <div><?= $product->product_title ?></div>
-                            <div><?= $product->condition_id == 1 ? $product->new_price : $product->used_price ?></div>
-                            <div class="flex space-x-4">
-                                <a href="<?= BASE_URL . '/admin/products/update/' . $product->product_id ?>" class="btn btn-primary">Update</a>
-                                <a href="<?= BASE_URL . '/admin/products/delete/' . $product->product_id ?>" class="btn btn-danger">Delete</a>
-                            </div>
-                        </div>
-                    <?php } ?>
-                </div>
+            if (!empty($productsList)) {?>
+            <table class="table-auto">
+            <thead>
+              <tr>
+                <th>Product ID</th>
+                <th>Condition</th>
+                <th>Title</th>
+                <th>Title</th>
+                <th>Price</th>
+                <th colspan="2">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($productsList as $product) { ?>
+              <tr>
+                <td><?= $product->product_id ?></td>
+                <td><?= $product->condition_title  ?></td>
+                <td><?= $product->product_title ?></td>
+                <td><?= $product->condition_title == 'new' ? $product->new_price : $product->used_price ?></td>
+                <td>  <a href="<?= BASE_URL . '/admin/products/update/' . $product->product_variant_id ?>" class="btn btn-primary">Update</a>
+                      <a href="<?= BASE_URL . '/admin/products/delete/' . $product->product_variant_id ?>" class="btn btn-danger">Delete</a>
+                    </td>
+              </tr>
+              <?php } ?>
+            </tbody>
+          </table>
             <?php } else { ?>
                 <p>No products found.</p>
             <?php } ?>

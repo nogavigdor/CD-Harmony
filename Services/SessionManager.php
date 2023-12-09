@@ -46,16 +46,41 @@ class SessionManager
     // generates a random string of 32 characters which is used as a CSRF token
     public static function generateCSRFToken() {
         $csrfToken = bin2hex(random_bytes(32));
-        $_SESSION['csrf_token'] = $csrfToken;
+        $_SESSION['csrf_token'] = [
+            'value' => $csrfToken,
+            // Set expiration time to 30 minutes (adjust as needed)
+            'expiration_time' => time() + 1800, 
+        ];
         return $csrfToken;
     }
     // returns the CSRF token
     public static function getCSRFToken() {
-        return $_SESSION['csrf_token'] ?? null;
+        // CSRF tocken assigned if exists or null if not
+        $csrfTokenData = $_SESSION['csrf_token'] ?? null;
+        //
+        if ($csrfTokenData && time() < $csrfTokenData['expiration_time']) {
+            return $csrfTokenData['value'];
+        }
+
+        // if the the token expired, generate a new one
+        return self::generateCSRFToken();
     }
     // validates the CSRF token
     public static function validateCSRFToken($token) {
-        return isset($_SESSION['csrf_token']) && $token === $_SESSION['csrf_token'];
+        $csrfTokenData = $_SESSION['csrf_token'] ?? null;
+    
+        // Check if the token exists and is valid (value matched and not expired)
+        if ($csrfTokenData && $token === $csrfTokenData['value'] && time() < $csrfTokenData['expiration_time']) {
+            return true; // Token is valid
+        } elseif ($csrfTokenData && $token !== $csrfTokenData['value']) {
+            // Token doesn't match
+            SessionManager::setSessionVariable('output_alert', "The form could not be submitted due to a security issue. Please refresh the page and try again.");
+        } else {
+            // Token expired
+            SessionManager::setSessionVariable('output_alert', "Your session has expired, and the form is no longer valid. Please refresh the page and try submitting the form again. If the issue persists, log in again and retry.");
+        }
+    
+        return false; // Validation failed
     }
 
     

@@ -7,7 +7,7 @@ include 'header.php'; ?>
     <h1 class="text-2xl font-semibold mb-6">Registration Form</h1>
 
     <form id="registrationForm" method='POST' action='./signup' novalidate>
-       
+    <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">        
         <!-- Email -->
         <div class="mb-4 relative">
             <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>

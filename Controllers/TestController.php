@@ -15,6 +15,15 @@ class TestController
        
     }
 
+    public function insertData() {
+        try {
+            include_once './sql/insertData.php';
+        }
+        catch (\PDOException $ex) {
+            error_log('PDO Exception: ' . $ex->getMessage());
+        }
+    }
+
     public function showTest()
     {
         try {   

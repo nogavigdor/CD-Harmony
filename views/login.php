@@ -5,6 +5,7 @@ use \Services\SessionManager;
     <h1 class="text-2xl text-pink-800 font-semibold mb-6 ">Login</h1>
 
     <form id="loginForm" method='POST' action='./login' novalidate>
+    <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">      
         <!-- Email -->
         <div class="mb-4 relative">
             <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>

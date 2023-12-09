@@ -1,6 +1,7 @@
 <?php
 use Services\SessionManager;  
 SessionManager::startSession();
+$csrfToken=SessionManager::generateCSRFToken();
     ?>
     <!DOCTYPE html>
     <html lang="en">
