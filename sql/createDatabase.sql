@@ -116,7 +116,7 @@
         FOREIGN KEY (artist_id) REFERENCES artists (artist_id),
         FOREIGN KEY (product_id) REFERENCES products (product_id)
     ) ENGINE=InnoDB;
-
+/*
     CREATE TABLE electronic_devices
     (
         electronic_device_id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
@@ -125,7 +125,7 @@
         product_id int,
         FOREIGN KEY (product_id) REFERENCES products (product_id)
     ) ENGINE=InnoDB; 
-
+*/
     CREATE TABLE tags
     (
         tag_id int AUTO_INCREMENT NOT NULL PRIMARY KEY,

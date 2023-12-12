@@ -1,11 +1,12 @@
 <?php
 // In your homepage code
 include 'header.php';
-use Services\SessionManager;    
+use Services\SessionManager; 
 ?>
- 
+
         <!-- Main content section -->
         <main class="container mx-auto p-4">
+<?php include "./partials/message.php"  ?>
             <h1 class="text-base-100">Welcome to CD Harmony</h1>
             <!-- Hero section -->
              <div class="grid grid-cols-1 sm:grid-cols-3 h-600 gap-4 " >

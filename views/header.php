@@ -21,21 +21,21 @@ $csrfToken=SessionManager::generateCSRFToken();
         $currentView = end($parts);
         
         if ($currentView == 'contact') {
-            echo '<script defer src="https://www.google.com/recaptcha/api.js?render=6LcTWQMpAAAAALPZfFSv0kU3vyQdooR0voAyTjb8"></script>';
+            echo '<script defer src="https://www.google.com/recaptcha/api.js"></script>';
             $jsFileName = 'contact.js';
             echo '<script defer src="' . BASE_URL . '/src/js/' . $jsFileName . '"></script>';}
         
         if ($currentView == 'signup') {
-             echo '<script defer src="https://www.google.com/recaptcha/api.js?render=6LcTWQMpAAAAALPZfFSv0kU3vyQdooR0voAyTjb8"></script>';
+             echo '<script defer src="https://www.google.com/recaptcha/api.js"></script>';
              $jsFileName = 'signup.js';
             echo '<script defer src="' . BASE_URL . '/src/js/' . $jsFileName . '"></script>';}
     ?>
 
     </head>
     <body class="bg-primary font-body min-h-screen">
-    <input type="hidden" id="successMessage" value="<?= SessionManager::getSessionVariable('success_message'); SessionManager::unsetSessionVariable('success_message');?>">
-        <!-- Header section -->
-        <header class="bg-secondary text-white p-4">
+   
+     <!-- Header -->
+    <header class="bg-secondary text-white p-4">
         <div class="container mx-auto flex justify-between items-center">
             <a href="<?php echo BASE_URL; ?>"><img src="<?php echo BASE_URL; ?>/src/assets/logo_no_background.png" alt="CD Harmony Logo" class="w-64 h-64"></a>
 
@@ -48,32 +48,47 @@ $csrfToken=SessionManager::generateCSRFToken();
                 </button>
             </div>
 
+            <!-- Navigation Links -->
             <nav class="space-x-4">
-                <a href="<?php echo BASE_URL ;?>" class="text-white">Home</a>
-                <a href="<?php echo BASE_URL ;?>" class="text-white">Shop</a>
+                <a href="<?php echo BASE_URL; ?>" class="text-white">Home</a>
+                <a href="<?php echo BASE_URL; ?>" class="text-white">Shop</a>
                 <a href="#" class="text-white">About</a>
-                <a href="<?php echo BASE_URL ;?>/contact" class="text-white">Contact</a>
+                <a href="<?php echo BASE_URL; ?>/contact" class="text-white">Contact</a>
             </nav>
 
-            <div class="flex items-center">
-                <!-- Other header elements... -->
+            <!-- User and Cart Section -->
+            <div class="relative flex items-center">
+                      <!-- Cart Button -->
+                      <a href="<?php echo BASE_URL; ?>/cart" class="ml-4 btn btn-secondary">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                </svg>
 
-                <!-- Login Button -->
+                </a>
                 <?php
-                if (SessionManager::isLoggedIn()){
-                    echo '<a href="' . BASE_URL . '/logout" class="ml-4 btn btn-secondary">Logout</a>';
-                } else {
+                // Login Button
+                if (SessionManager::isLoggedIn()) { ?>
+       
+                    
+                <!-- User Symbol -->
+                <button id="userBtn" class="ml-4 relative z-10 w-10 h-10 rounded-full overflow-hidden border-2 border-gray-400 hover:border-gray-300 focus:border-gray-300 focus:outline-none">
+                   //avatar
+                    <img src="user-avatar.jpg" alt="User Avatar" class="w-full h-full object-cover">  
+                </button>
+
+                <!-- User Menu -->
+                <div id="menu" class="hidden absolute top-[50px]  right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2">
+                    <a href="<?= BASE_URL . '/account';?>" class="block px-4 py-2 text-gray-800 hover:bg-orange-200 hover:text-gray-600">Account</a>
+                    <a href="<?= BASE_URL . '/logout'; ?>"class="block px-4 py-2 text-gray-800 hover:bg-orange-200 hover:text-gray-600">Logout</a>
+                </div>
+                <?php   } else {
                     echo '<a href="' . BASE_URL . '/login" class="ml-4 btn btn-secondary">Login</a>';
                     echo '<a href="' . BASE_URL . '/signup" class="ml-4 btn btn-primary">Sign Up</a>';
                 }
                 ?>
-                <!-- Cart Button -->
-                <a href="<?php echo BASE_URL ;?>/cart" class="ml-4 btn btn-secondary">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"  stroke-width="2" d="M4 4h16M4 8h16M4 12h16M4 16h16M4 20h16"/>
-                    </svg>
-                    Cart    
-                </a>
+          
+
             </div>
         </div>
-    </header>
+    </header>   
+    <?php include 'partials/message.php'; //integrating success and error messages for the use  ?>

@@ -7,8 +7,9 @@
 
     <div class="flex justify-center items-center h-screen max-w-screen-lg mx-auto px-4 py-6">
         <!-- Set the maximum width on large and medium screens for the container -->
-        <form  novalidate id="contact_form" method="POST" class="bg-white p-6 rounded-lg shadow-lg md:w-2/3 w-full transition-transform transform hover:scale-105">
-            <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
+        <form  novalidate id="contact_form" method="POST" action="<?= BASE_URL.'/contact'; ?>"  class="bg-white p-6 rounded-lg shadow-lg md:w-2/3 w-full transition-transform transform hover:scale-105">
+            <input type="hidden" name="recaptchaResponse" id="recaptchaResponse">
+            
             <div class="mb-4">
                 <label for="first_name" class="block text-sm font-medium text-gray-700">Please enter your first name</label>
                 <input type="text" name="first_name" id="first_name" class="w-full input input-bordered mt-1 focus:scale-105">
@@ -31,6 +32,7 @@
                 <label for="title" class="block text-sm font-medium text-gray-700">* Please choose a topic</label>
                 <select name="title" id="title" required class="w-full input input-bordered mt-1 focus:scale-105">
                     <option value="" disabled selected>Choose a Topic</option>
+                    <option value="Order Inquiry">General Inquiry</option>
                     <option value="Order Inquiry">Order Inquiry</option>
                     <option value="Product Availability">Product Availability</option>
                     <option value="Returns and Exchanges">Returns and Exchanges</option>
@@ -46,10 +48,8 @@
                 <textarea name="message" id="message" required class="w-full input input-bordered mt-1 focus:scale-105 h-32 resize-y"></textarea>
                 <div class="text-red-500 text-sm mt-2 error hidden">Please enter a message.</div>
             </div>
-            <button type="submit" class="g-recaptcha w-full btn btn-primary mt-6 transition-transform transform hover:scale-105" 
-            data-sitekey='6LcTWQMpAAAAALPZfFSv0kU3vyQdooR0voAyTjb8'     
-            data-callback='onSubmit' 
-            data-action='contact'>Send Message</button>
+
+            <button type="submit" class="w-full btn btn-primary mt-6 transition-transform transform hover:scale-105">Send Message</button>
             <div class="mt-4 mb-4" id="alert">
             </div>
             <div class="text-center mt-4">

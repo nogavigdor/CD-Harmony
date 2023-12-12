@@ -19,16 +19,24 @@ require_once "./config/constants.php";
 
 require_once "router.php";
 
+//Home page route
 route('/cdharmony/', 'GET', function () {
     $controller = new MainViewController();
     $controller->showMainView();
 });
 
+//insert data into the database
 route('/cdharmony/test', 'GET', function () {
     $controller = new TestController();
     $controller->insertData();
 });
 
+route('/cdharmony/account', 'GET', function () {
+    $controller = new UserController();
+    $controller->accountView();
+});
+
+//Shows product details
 route('/cdharmony/product/(\d+)', 'GET', function ($id) {
     $controller = new ProductController();
     $controller->showProductDetails($id);
@@ -50,9 +58,14 @@ route('/cdharmony/admin/product/delete/(\d+)', 'DELETE', function ($id) {
     $controller->deleteProduct($id);
 });
 
-route('/cdharmony/admin/product/update/(\d+)', 'PUT', function ($id) {
+route('/cdharmony/admin/product/edit/(\d+)', 'GET', function () {
     $controller = new ProductController();
-    $controller->updateProduct($id);
+    $controller->editProduct();
+});
+
+route('/cdharmony/admin/product/update/', 'PUT', function ($id) {
+    $controller = new ProductController();
+    $controller->updateProduct();
 });
 
 route('/cdharmony/admin/product/create/', 'POST', function () {
@@ -104,6 +117,7 @@ route('/cdharmony/contact/', 'GET', function() {
     $controller = new ContactController();
     $controller->contactView();
 });
+
 
 route('/cdharmony/contact/', 'POST', function() {
     $controller = new ContactController();

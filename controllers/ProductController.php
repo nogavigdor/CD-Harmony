@@ -5,6 +5,8 @@ use Models\ProductModel;
 
 use Controllers\AdminController;
 
+use Services\SessionManager;
+
 class ProductController 
 {
     private $productModel;
@@ -94,6 +96,23 @@ class ProductController
             if(AdminController::authorizeAdmin()) {
                 // Load the view to display the product form
                 include 'views/admin/product_form.php';
+            }
+            else{
+                // Redirect to the login page in case the user is not logged as admin
+                header('Location:'. BASE_URL. '/admin-login');
+                exit();
+            }
+        } catch (\PDOException $ex) {
+            error_log('PDO Exception: ' . $ex->getMessage());
+        }
+    }
+
+    public function editProduct(){
+        try {
+            SessionManager::startSession();
+            if(SessionManager::isAdmin()) {
+                // Load the view to display the product form
+                include 'views/admin/edit-product-form.php';
             }
             else{
                 // Redirect to the login page in case the user is not logged as admin

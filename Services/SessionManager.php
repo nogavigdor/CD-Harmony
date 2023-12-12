@@ -7,7 +7,7 @@ class SessionManager
     public static function startSession()
     {
         if (session_status() == PHP_SESSION_NONE) {
-            session_start();
+        session_start();
         }
     }
     //sets a session variable
@@ -37,6 +37,28 @@ class SessionManager
         }
         return self::getSessionVariable('user')['logged_in'];
     }
+    //logs out the user
+    public static function logout()
+    {
+        self::clearAll();
+        header("Location: " . BASE_URL . "/");
+        exit();
+    }
+
+    //returns true if the user is an admin
+    public static function isAdmin()
+    {
+        echo "TTT:". self::getSessionVariable('user')['role'];
+
+        
+        if (!isset($_SESSION['user']['role'])) {
+            return false;
+        }
+        
+        
+        return self::getSessionVariable('user')['role'] == 1;
+    }
+
     //returns the user id of the logged in user
     public static function getLoggedInUserId()
     {

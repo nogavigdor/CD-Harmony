@@ -2,6 +2,10 @@
 use Services\SessionManager;
 SessionManager::startSession();
 $csrfToken=SessionManager::generateCSRFToken();
+if(SessionManager::getSessionVariable('error_message')){
+    $errorMessage = SessionManager::getSessionVariable('error_message');
+    SessionManager::unsetSessionVariable('error_message');
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -15,40 +19,24 @@ $csrfToken=SessionManager::generateCSRFToken();
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body class="bg-primary font-body min-h-screen">
-<input type="hidden" id="successMessage" value="<?= SessionManager::getSessionVariable('success_message'); SessionManager::unsetSessionVariable('success_message');?>">
+
     <!-- Header section -->
     <header class="bg-secondary text-white p-4">
         <div class="container mx-auto flex justify-between items-center">
-        <a href="<?php echo BASE_URL; ?>"><img src="<?php echo BASE_URL; ?>/src/assets/logo_no_background.png" alt="CD Harmony Logo" class="w-64 h-64"></a>
-
-               <!-- Search area -->
-            <div class="relative" >
-            <input type="text" placeholder="Search products..." class="px-8 py-2 rounded-full border border-white bg-transparent text-buttonText focus:outline-none placeholder-gray-400">
-
-
-                <button class="btn btn-primary search-button transition-transform hover:scale-105">
-                    Search
-                </button>
+             <div>  
+              <a href="<?php echo BASE_URL; ?>"><img src="<?php echo BASE_URL; ?>/src/assets/logo_no_background.png" alt="CD Harmony Logo" class="w-64 h-64"></a>
             </div>
-            <nav class="space-x-4">
-                <a href="<?php echo BASE_URL.'/admin/products' ?>" class="text-white">Products</a>
-                <a href="<?php echo BASE_URL.'/admin/products' ?>" class="text-white">Users</a>
-                <a href="<?php echo BASE_URL.'/admin/users' ?>" class="text-white">Articles</a>
-                <a href="<?php echo BASE_URL.'/admin/special offers' ?>" class="text-white">Special Offers</a>
-                <a href="<?php echo BASE_URL.'/admin/orders' ?>" class="text-white">Orders</a>
-                <a href="<?php echo BASE_URL.'/admin/company details' ?>" class="text-white">Company details</a>
-            </nav>
-           
-            
-        </div>
 
-        
-        <div class="container mx-auto flex justify-end align-end">
+
            
             <div>
-                <button class="btn btn-primary">Shopping Cart</button>
-                <button class="btn btn-secondary">Log In</button>
-                <button class="btn btn-emphasis">Sign Up</button>
+
+                <a href="<?= BASE_URL . '/logout'; ?>" class="px-4 py-2 text-white "><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                </svg>
+                Logout</a>
+        
             </div>
         </div>
     </header>
+    <?php include 'partials/message.php';  ?>

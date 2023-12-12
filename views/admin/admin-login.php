@@ -14,6 +14,7 @@ SessionManager::startSession();
 </head>
 <body class="flex items-center justify-center min-h-screen">
 <main class="container mx-auto my-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
+<?php include 'partials/message.php';  ?>
 <section class="h-screen">
 <div class="max-w-md mx-auto my-auto bg-white rounded p-6 shadow-md mt-20 mb-20">
     <h1 class="text-pink-600 text-2xl font-semibold mb-6">Admin Login</h1>

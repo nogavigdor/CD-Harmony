@@ -1,13 +1,8 @@
 <?php
+use Services\SessionManager;
 session_start();
-
-// Clear specific session variables
-unset($_SESSION['user_id']);
-unset($_SESSION['username']);
-// ... unset other variables
-
-// Destroy the entire session
-session_destroy();
+// Unset all of the session variables
+SessionManager::logout();
 
 // Redirect to the login page
 header("Location:". BASE_URL  ."/login");

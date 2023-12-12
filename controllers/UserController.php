@@ -123,6 +123,8 @@ class UserController {
         }
     }
 
+   
+
     private function handleLoginError($errorMessage) {
         SessionManager::setSessionVariable('error_message', $errorMessage);
         header("Location: " . BASE_URL . "/login");
@@ -136,4 +138,19 @@ class UserController {
             error_log('PDO Exception: ' . $ex->getMessage());
         }
     }
+
+    public function accountView() {
+        try {
+            if (SessionManager::isLoggedIn()) {
+                include 'views/account.php';
+            } else {
+                SessionManager::setSessionVariable('error_message', 'Please login to view your account.');  
+                header("Location: " . BASE_URL . "/login");
+                exit(); 
+            }
+            } catch (\PDOException $ex) {
+                error_log('PDO Exception: ' . $ex->getMessage());
+            }
+    }
+    
 }

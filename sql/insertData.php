@@ -85,45 +85,49 @@ try {
                         $stmtProductTag->bindParam(':tagId', $tagId, PDO::PARAM_INT);
                         $stmtProductTag->execute();
                     }
+
+          
                 }
-            }
+            }//end of tags insertion
 
-            // Insert album data into the product_variants table for "new" condition
-            $priceNew = rand(1, 5) * 10 + 89.95;
-            $quantityInStockNew = rand(0, 10);
+       
+ 
+            
+           // Insert album data into the cds table
+           $stmtCds = $db->prepare("INSERT INTO cds (release_date, artist_id, product_id) VALUES (:releaseDate, :artistId, :productId)");
+           $stmtCds->bindParam(':releaseDate', $releaseDate, PDO::PARAM_STR);
+           $stmtCds->bindParam(':artistId', $artistId, PDO::PARAM_INT);
+           $stmtCds->bindParam(':productId', $productId, PDO::PARAM_INT);
+           $stmtCds->execute();
 
-            $stmtConditionNew = $db->prepare("INSERT INTO product_variants (price, quantity_in_stock, product_id, condition_id) VALUES (:priceNew, :quantityInStockNew, :productId, (SELECT condition_id FROM conditions WHERE title = 'new'))");
-            $stmtConditionNew->bindParam(':priceNew', $priceNew, PDO::PARAM_INT);
-            $stmtConditionNew->bindParam(':quantityInStockNew', $quantityInStockNew, PDO::PARAM_INT);
-            $stmtConditionNew->bindParam(':productId', $productId, PDO::PARAM_INT);
-            $stmtConditionNew->execute();
+           // Insert album data into the product_variants table for "new" condition
+           $priceNew = rand(1, 5) * 10 + 89.95;
+           $quantityInStockNew = rand(0, 10);
+           $conditionId = 1;
+           $stmtConditionNew = $db->prepare("INSERT INTO product_variants (price, quantity_in_stock, product_id, condition_id) VALUES (:priceNew, :quantityInStockNew, :productId, :conditionId)");
+           $stmtConditionNew->bindParam(':priceNew', $priceNew, PDO::PARAM_INT);
+           $stmtConditionNew->bindParam(':quantityInStockNew', $quantityInStockNew, PDO::PARAM_INT);
+           $stmtConditionNew->bindParam(':productId', $productId, PDO::PARAM_INT);
+           $stmtConditionNew->bindParam(':conditionId', $conditionId, PDO::PARAM_INT);
+           $stmtConditionNew->execute();
 
-            // Insert album data into the product_variants table for "used" condition
-            $priceUsed = $priceNew - 40;
-            $quantityInStockUsed = rand(0, 10);
-
-            $stmtConditionUsed = $db->prepare("INSERT INTO product_variants (price, quantity_in_stock, product_id, condition_id) VALUES (:priceUsed, :quantityInStockUsed, :productId, (SELECT condition_id FROM conditions WHERE title = 'used'))");
-            $stmtConditionUsed->bindParam(':priceUsed', $priceUsed, PDO::PARAM_INT);
-            $stmtConditionUsed->bindParam(':quantityInStockUsed', $quantityInStockUsed, PDO::PARAM_INT);
-            $stmtConditionUsed->bindParam(':productId', $productId, PDO::PARAM_INT);
-            $stmtConditionUsed->execute();
-
-            // Insert album data into the cds table
-            $stmtCds = $db->prepare("INSERT INTO cds (release_date, artist_id, product_id) VALUES (:releaseDate, :artistId, :productId)");
-            $stmtCds->bindParam(':releaseDate', $releaseDate, PDO::PARAM_STR);
-            $stmtCds->bindParam(':artistId', $artistId, PDO::PARAM_INT);
-            $stmtCds->bindParam(':productId', $productId, PDO::PARAM_INT);
-            $stmtCds->execute();
+           // Insert album data into the product_variants table for "used" condition
+           $priceUsed = $priceNew - 40;
+           $quantityInStockUsed = rand(0, 10);
+           $conditionId = 2;
+           // Insert album data into the product_variants table for "new" condition
+           $stmtConditionUsed = $db->prepare("INSERT INTO product_variants (price, quantity_in_stock, product_id, condition_id) VALUES (:priceUsed, :quantityInStockUsed, :productId, :conditionId)");
+           $stmtConditionUsed->bindParam(':priceUsed', $priceUsed, PDO::PARAM_INT);
+           $stmtConditionUsed->bindParam(':quantityInStockUsed', $quantityInStockUsed, PDO::PARAM_INT);
+           $stmtConditionUsed->bindParam(':productId', $productId, PDO::PARAM_INT);
+           $stmtConditionUsed->bindParam(':conditionId', $conditionId, PDO::PARAM_INT);
+           $stmtConditionUsed->execute();
+       
         }
+
     }
 
-    // Commit the transaction
-    $db->commit();
-} catch (PDOException $e) {
-    // An error occurred, rollback the transaction
-    $db->rollBack();
-    die("Error: " . $e->getMessage());
-}
+
 
 //insertion of Zipcode table
 
@@ -1284,7 +1288,7 @@ $stmt->bindParam(':postal_code_id', $postalCodeId);
 
 // Execute the statement
 $stmt->execute();
-echo "sdfgsdfg";
+echo "sdfgsdfg";    
 
 //Insert an admin to users
 $setPass = 'MyPassword';
@@ -1302,7 +1306,7 @@ $stmt->debugDumpParams();
 // Insert articles
 
 
-
+/*  
     function insertArticle($db, $title, $content, $publish_date, $update_date, $user_id)
     {
         echo "OOOOOOO";
@@ -1401,8 +1405,8 @@ $stmt->debugDumpParams();
       
        In the ever-changing landscape of music, "The Head on the Door" stands as a testament to The Cure\'s ability to evolve while staying true to their unique sound. It\'s more than an album; it\'s a captivating chapter in the ongoing story of a band that has left an indelible mark on the world of alternative music.',
        date('Y-m-d H:i:s'), date('Y-m-d H:i:s'), 1);
-          
-   
+
+
 
 // Insert data for a Sony CD player in the products table
 $title = "Sony CD Player";
@@ -1433,8 +1437,10 @@ $stmtConditionNew->bindParam(':quantityInStockNew', $quantityInStockNew, PDO::PA
 $stmtConditionNew->bindParam(':productId', $productIdForSonyCDPlayer, PDO::PARAM_INT);
 $stmtConditionNew->execute();
 
+*/
+
 // Get the last inserted product_variant_id
-$productVariantIdForSonyCDPlayer = $db->lastInsertId();
+$productId = 4;
 $discountSum = 200;
 $specialOfferTitle = "Exclusive Deal: Sony CD Player";
 $specialOfferDescription = "Get a special discount on the Sony CD Player!";
@@ -1450,10 +1456,16 @@ $stmtSpecialOffer->bindParam(':endDate', $specialOfferEndDate, PDO::PARAM_STR);
 $stmtSpecialOffer->bindParam(':productVariantId', $productVariantIdForSonyCDPlayer, PDO::PARAM_INT);
 $stmtSpecialOffer->execute();
 
+ // Commit the transaction
+ $db->commit();
 
-
-echo "11Data inserted successfully!\n";
 
 $dbConnector->closeConnection();
 
+echo "Data inserted successfully!\n";
 
+} catch (PDOException $e) {
+    // An error occurred, rollback the transaction
+    $db->rollBack();
+    die("Error: " . $e->getMessage());
+}

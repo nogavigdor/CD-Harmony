@@ -49,7 +49,7 @@ namespace Models;
                 die("Connection failed: " . $e->getMessage());
             }
         }
-
+        //Get product cds by tag
         public function getProductsByTag($tag) {
             try {
             
@@ -84,7 +84,7 @@ namespace Models;
                 $query = $db->prepare($sql);
                 $query->bindParam(':tag', $tag, PDO::PARAM_STR);
                 $query->execute();
-            //s   var_dump($query->queryString);
+            //var_dump($query->queryString);
             //var_dump($tag);
                 return $query->fetchAll(PDO::FETCH_OBJ);
             } catch (\PDOException $ex) {
@@ -95,7 +95,7 @@ namespace Models;
         }
 
 
-
+        //get recent release of cds
         public function getRecentReleases() {
             // Implement the logic to fetch recent releases here
             // For example:
@@ -151,6 +151,7 @@ namespace Models;
             SELECT
             p.product_id,
             pv.product_variant_id,
+            con.title AS condition_title,
             p.title as product_title,
             p.product_description,
             a.title AS artist_title,
@@ -158,10 +159,8 @@ namespace Models;
             t.title AS tag_title,
             ip.image_name,
             ip.image_path,
-            SUM(CASE WHEN pv.condition_id = 1 THEN pv.quantity_in_stock ELSE 0 END) AS new_quantity,
-            SUM(CASE WHEN pv.condition_id = 2 THEN pv.quantity_in_stock ELSE 0 END) AS used_quantity,
-            MAX(CASE WHEN pv.condition_id = 1 THEN pv.price END) AS new_price,
-            MAX(CASE WHEN pv.condition_id = 2 THEN pv.price END) AS used_price
+            pv.quantity_in_stock,
+            pv.price
             FROM
             products p
             INNER JOIN products_tags pt ON pt.product_id = p.product_id
@@ -196,15 +195,13 @@ namespace Models;
             p.product_id,
             pv.condition_id,
             p.title AS product_title,
+            p.product_description AS description,
             a.title AS artist_title,
             t.title AS tag_title,
             ip.image_name,
             ip.image_path,
             con.title AS condition_title,        
-            SUM(CASE WHEN pv.condition_id = 1 THEN pv.quantity_in_stock ELSE 0 END) AS new_quantity,
-            SUM(CASE WHEN pv.condition_id = 2 THEN pv.quantity_in_stock ELSE 0 END) AS used_quantity,
-            MAX(CASE WHEN pv.condition_id = 1 THEN pv.price END) AS new_price,
-            MAX(CASE WHEN pv.condition_id = 2 THEN pv.price END) AS used_price
+            pv.quantity_in_stock 
         FROM
             products p
         INNER JOIN product_variants pv ON p.product_id = pv.product_id
@@ -214,7 +211,7 @@ namespace Models;
         LEFT JOIN artists a ON c.artist_id = a.artist_id
         LEFT JOIN images_for_products ip ON p.product_id = ip.product_id
         INNER JOIN conditions con ON pv.condition_id = con.condition_id
-        GROUP BY p.product_id 
+        GROUP BY pv.product_variant_id
              ';
             $query = $db->prepare($sql);
             echo $query->queryString;
@@ -224,10 +221,54 @@ namespace Models;
         //var_dump($tag);
             return $query->fetchAll(PDO::FETCH_OBJ);
         } catch (\PDOException $ex) {
-            die("Connection failed: " . $e->getMessage());
+            die("Connection failed: " . $ex->getMessage());
         }  
             
     }
+
+       //Show all products in the admin page
+       public function updateProduct() {
+        try {
+            
+            $dbInstance = $this->dbConnector;
+            $db=$dbInstance->connectToDB();
+            $sql = '
+            SELECT
+            pv.product_variant_id,
+            p.product_id,
+            pv.condition_id,
+            p.title AS product_title,
+            p.product_description AS description,
+            a.title AS artist_title,
+            t.title AS tag_title,
+            ip.image_name,
+            ip.image_path,
+            con.title AS condition_title,        
+            pv.quantity_in_stock 
+        FROM
+            products p
+        INNER JOIN product_variants pv ON p.product_id = pv.product_id
+        INNER JOIN products_tags pt ON p.product_id = pt.product_id
+        INNER JOIN tags t ON pt.tag_id = t.tag_id
+        LEFT JOIN cds c ON p.product_id = c.product_id
+        LEFT JOIN artists a ON c.artist_id = a.artist_id
+        LEFT JOIN images_for_products ip ON p.product_id = ip.product_id
+        INNER JOIN conditions con ON pv.condition_id = con.condition_id
+        GROUP BY pv.product_variant_id
+             ';
+            $query = $db->prepare($sql);
+            echo $query->queryString;
+
+            $query->execute();
+        //s   var_dump($query->queryString);
+        //var_dump($tag);
+            return $query->fetchAll(PDO::FETCH_OBJ);
+        } catch (\PDOException $ex) {
+            die("Connection failed: " . $ex->getMessage());
+        }  
+            
+    }
+
 
 
 

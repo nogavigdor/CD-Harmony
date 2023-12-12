@@ -1,7 +1,8 @@
 <?php
 
 
-include 'header.php'; ?>
+include 'header.php'; 
+include './partials/message.php'; ?>    
 
 <div class="max-w-md mx-auto bg-white rounded p-6 shadow-md">
     <h1 class="text-2xl font-semibold mb-6">Registration Form</h1>

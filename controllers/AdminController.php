@@ -32,6 +32,8 @@ class AdminController
              exit();
            } else {
            // user is not logged in ad admin 
+           $errorMessage = 'You are not authororized to to access the page. If you are an admin - please enter log in.';
+           SessionManager::setSessionVariable('error_message', $errorMessage);
            include 'views/admin/admin-login.php';
            }
   }
@@ -49,7 +51,7 @@ class AdminController
         $user = $userModel->getAccount($email, $password);
     
         //if user is found and if the user has an admin role       
-        if ($user && $user['role_id'] == 1) {
+        if (!empty($user) && $user['role_id'] == 1) {
             $userData = array(
                 'logged_in' => true,
                 'id' => $user['user_id'],
@@ -70,7 +72,7 @@ class AdminController
               header('Location:'. BASE_URL. '/admin');
               exit();         
         } else {
-            $errorMessage = 'You are not authororized to to access the page or you have entered invalid input.';
+            $errorMessage = 'Please enter valid credentials.';
             SessionManager::setSessionVariable('error_message', $errorMessage);
             header('Location:'. BASE_URL. '/admin-login');
             exit();

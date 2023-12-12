@@ -24,7 +24,7 @@ use Services\SessionManager;
                 <th>Product ID</th>
                 <th>Condition</th>
                 <th>Title</th>
-                <th>Title</th>
+                <th>Description</th>
                 <th>Price</th>
                 <th colspan="2">Actions</th>
               </tr>
@@ -33,11 +33,11 @@ use Services\SessionManager;
             <?php foreach ($productsList as $product) { ?>
               <tr>
                 <td><?= $product->product_id ?></td>
-                <td><?= $product->condition_title  ?></td>
+               
                 <td><?= $product->product_title ?></td>
-                <td><?= $product->condition_title == 'new' ? $product->new_price : $product->used_price ?></td>
-                <td>  <a href="<?= BASE_URL . '/admin/products/update/' . $product->product_variant_id ?>" class="btn btn-primary">Update</a>
-                      <a href="<?= BASE_URL . '/admin/products/delete/' . $product->product_variant_id ?>" class="btn btn-danger">Delete</a>
+                
+                <td>  <a href="<?= BASE_URL . '/admin/product/edit/' . $product->product_variant_id ?>" class="btn btn-primary">Edit</a>
+                      <a href="<?= BASE_URL . '/admin/product/delete/' . $product->product_variant_id ?>" class="btn btn-danger">Delete</a>
                     </td>
               </tr>
               <?php } ?>
