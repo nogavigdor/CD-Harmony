@@ -6,9 +6,13 @@ use Models\ProductModel;
 use Models\ArticleModel;
 use Models\SpecialOfferModel;
 use Models\CompanyModel;
-SessionManager::startSession();
 class AdminController
 {
+    public function __construct()
+    {
+        $session = new SessionManager();
+        $session->startSession();
+    }
   
     public function adminView()
     {
@@ -32,8 +36,6 @@ class AdminController
              exit();
            } else {
            // user is not logged in ad admin 
-           $errorMessage = 'You are not authororized to to access the page. If you are an admin - please enter log in.';
-           SessionManager::setSessionVariable('error_message', $errorMessage);
            include 'views/admin/admin-login.php';
            }
   }

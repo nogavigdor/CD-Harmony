@@ -1,6 +1,5 @@
 <?php
 use Services\SessionManager;
-SessionManager::startSession();
 ?>
 <!DOCTYPE html>
 <html lang="en">

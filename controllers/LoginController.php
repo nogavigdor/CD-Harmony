@@ -1,10 +1,15 @@
 <?php
 namespace Controllers;
+use Services\SessionManager;
 
 
 class LoginController 
 {
+    private $session;
     public function __construct() {
+        $session = new SessionManager();
+        $session->startSession();
+        $this->session = $session;
     }
 
     public function loginView()
@@ -17,10 +22,10 @@ class LoginController
     }
 
 
-    public function logoutView()
+    public function logout()
     {
         try {
-            include_once 'views/logout.php';
+            $this->session::logout();
         } catch (\PDOException $ex) {
             error_log('PDO Exception: ' . $ex->getMessage());
         }

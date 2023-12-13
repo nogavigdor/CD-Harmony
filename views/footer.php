@@ -1,4 +1,3 @@
-
 <footer class="flex-col p-10 bg-base-200 text-base-content">
 <div class="footer">
 <?php
@@ -38,7 +37,6 @@ $company=$controller->getCompanyDetails();
  
 </div> <!--End of footer columns -->
   <div class="flex justify-center mt-8 font-headline">&copy; <?php echo date("Y"); ?> <span class="mr-4 ml-4"><?php echo $company->company_name; ?></span>All rights reserved. </div>
- 
 </footer>
 </body>
 </html>

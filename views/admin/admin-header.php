@@ -1,6 +1,7 @@
 <?php
 use Services\SessionManager;
-SessionManager::startSession();
+$session = new SessionManager();
+$session->startSession();
 $csrfToken=SessionManager::generateCSRFToken();
 if(SessionManager::getSessionVariable('error_message')){
     $errorMessage = SessionManager::getSessionVariable('error_message');

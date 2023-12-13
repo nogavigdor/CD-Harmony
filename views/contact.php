@@ -1,6 +1,7 @@
 <?php include 'header.php'; ?>
 <?php use Services\SessionManager; 
- SessionManager::startSession(); ?>
+$session = new SessionManager();
+$session->startSession(); ?>
 
 
     <h1 class="text-center text-3xl font-bold mb-6">Contact Us</h1>

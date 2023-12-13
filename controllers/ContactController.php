@@ -10,7 +10,7 @@ use PHPMailer\PHPMailer\Exception;
 require './PHPMailer-master/src/Exception.php';
 require './PHPMailer-master/src/PHPMailer.php';
 require './PHPMailer-master/src/SMTP.php';
-SessionManager::startSession();
+
 
 class ContactController 
 {
@@ -18,6 +18,8 @@ class ContactController
 
     public function __construct() {
         $this->validator = new Validator();
+        $session = new SessionManager();
+        $session->startSession();
     }
 
     public function contactView()
@@ -109,6 +111,7 @@ class ContactController
                     */
                     if ($response->success && $response->score >= 0.5 && $response->action == 'contact') {
                         //upon a successful validation of the recaptcha, the email will be sent to the admin
+                        /*
                                         $mail = new PHPMailer(true);
                                 
                                         $mail->SMTPDebug = SMTP::DEBUG_SERVER;
@@ -133,11 +136,12 @@ class ContactController
                                         
                                         
                                         $mail->send();
-                                        SessionManager::startSession();
+                            */      
                                         SessionManager::setSessionVariable('success_message', 'Your message has been sent successfully. We\'ll get back to you within 48 hours.');
-                                        header('Location: ' . BASE_URL);
-                                        exit();
-                      //  echo json_encode(array('success' => true, "msg"=>"Your message has been sent successfully. We'll get back to you within 48 hours.", "response"=>$response));
+                                        
+                      
+                                        echo json_encode(array('success' => true, "msg"=>"Your message has been sent successfully. We'll get back to you within 48 hours.", "response"=>$response));
+                                        
                     } else {
             
                         //recaptcha validation faild
@@ -145,82 +149,12 @@ class ContactController
                     }
                 }  //fields validation has failed
             } else {
-              SessionManager::setSessionVariable('error_message', 'Please check your form fields.');  
-              $error_output['alert'] = 'Please check your form fields.';
+
+             // SessionManager::setSessionVariable('error_message', 'Please check your form fields.');  
+            
               echo json_encode($error_output);  
             }
-    /*
-       
-                if (isset($_POST['g-recaptcha-response'])) {
-                    $captcha = $_POST['g-recaptcha-response'];
-                    $recaptchaResult = $this->validator->validateRecaptchaResponse($captcha,'contact');
-                }else {
-                    $error_message = 'Please check the captcha form.';
-                    SessionManager::startSession();
-                    SessionManager::setSessionVariable('error_message', $error_message);
-                    header('Location: ' . BASE_URL.'/contact');
-                  }
-             
-    
-                $recaptchaResult = $this->validator->validateRecaptchaResponse($captcha, 'contact');
-                    echo 'I am after the recaptcha validation and the recaptcha result is: '.$recaptchaResult;
-                // if all the values of the error_output are nulls it means that no error message was return and the form is valid
-                if (count(array_filter($error_output, 'is_null')) === count($error_output))  {
-                    //if the recaptcha validation was successfull
-                        if ($recaptchaResult)  {
-                                echo "I'm after the recaptch validation to true";
-                             //    if (!($recaptchaResult->success)) {
-                                    //updated output message to the user
-                                    //$output = ['recaptcha' => 'Recaptcha validation was unsuccessfull. Pleaes try again later.'];
-                                    
-                                    // Sets a session variable for contact success
-                                    $success_message =  'Your contact form has been submitted successfully.';
-                                    SessionManager::startSession();
-    
-                                    SessionManager::setSessionVariable('success_message', $success_message);  
-    
-                            //setting up the email's settings in order to send the contact form information to the admin
-                         
-                          
-                        
-                                    // Send JSON response                           
-                                    //redirection back to the contact form ti try again
-                                    header('Location: ' . BASE_URL);
-                                   
-                                    exit();
-                                
-                                //The recaptcha validation was not successfull   
-                          }else  {
-                            // Sets a session variable for contact output
-                            $contact_output['success'] =  'There has been a problem with your contact form submission. Please try again later';
-                          // SessionManager::setSessionVariable('contact_output', $contact_output);
-                             // Send JSON response
-                            header('Location: ' . BASE_URL.'/contact');
-                             exit();
-                       }
-       
-                }
-                 
-                //input validtion was not successfull 
-                 else    {
-                  
-                        $error_message = 'Please correct your form and try again';
-                        SessionManager::startSession();
-    
-                        SessionManager::setSessionVariable('error_message', $error_message);
-                        SessionManager::setSessionVariable('error_output', $error_output);
-                        header('Location: ' . BASE_URL.'/contact');
-                     exit();
-                 } 
-               
-            
-            } catch (\PDOException $ex) {
-                // Log and handle any PDO Exceptions
-                error_log('PDO Exception: ' . $ex->getMessage());
-          
-                exit();
-            }
-            */
+   
         }
       
         }catch (\PDOException $ex) {

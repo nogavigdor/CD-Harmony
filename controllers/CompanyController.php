@@ -3,7 +3,7 @@ namespace Controllers;
 
 use \Models\CompanyModel;
 use \Services\SessionManager;
-SessionManager::startSession();
+//SessionManager::startSession();
 
 
 class CompanyController

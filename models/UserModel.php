@@ -15,7 +15,7 @@ use PDO;
             $this->dbConnector = DBConnector::getInstance(); 
         }
         //customer role is defined as 3 in the database and that should be the defailt value
-        public function setAccount($email, $password, $first_name="", $last_name="", $role=3) {
+        public function setAccount($email, $password, $first_name="", $last_name="", $role = 3) {
             try {
                 $first_name="";
                 $last_name="";
@@ -42,7 +42,7 @@ use PDO;
 
                 //email/user doesn't exist, therefor Inserting user data into the database
                 $sql = '
-                INSERT INTO users (first_name, last_name, email, user_password, creation_date, role_id) VALUES (:first_name,:last_name, :email, :hashed_password, :creation_date, :role)
+                INSERT INTO users (first_name, last_name, email, user_password, creation_date, role_id) VALUES (:first_name,:last_name, :email, :hashed_password, :creation_date, :role_id)
                 ';
                 $query = $db->prepare($sql);
                 $query->bindParam(':first_name', $first_name, \PDO::PARAM_STR);  
@@ -50,7 +50,7 @@ use PDO;
                 $query->bindParam(':email', $email, \PDO::PARAM_STR);
                 $query->bindParam(':hashed_password', $hashed_password, \PDO::PARAM_STR);
                 $query->bindParam(':creation_date', $creation_date, \PDO::PARAM_STR);
-                $query->bindParam(':role', $role, PDO::PARAM_INT);
+                $query->bindParam(':role_id', $role, PDO::PARAM_INT);
                 $query->execute();
                 return true;
                 }
@@ -64,32 +64,26 @@ use PDO;
                 exit();
             }
         }   
-        //checks if the login details mataches any of the existing users
-        public function getAccount($email, $password) {
+        //checks if the login details mataches any of the existing users (customers)
+        public function getAccount($email, $role = 3) {
             try {   
                 $dbInstance = $this->dbConnector;
                 $db = $dbInstance->connectToDB();
         
                 // Fetching user data from the database based on the email
-                $sql = "SELECT * FROM users WHERE email = :email";
+                $sql = 'SELECT * FROM users WHERE email = :email AND role_id = :role_id';
+                
                 $query = $db->prepare($sql);
                 $query->bindParam(':email', $email);
+                $query->bindParam(':role_id', $role);
                 $query->execute();
         
                 // Fetching the user data
                 $user = $query->fetch(\PDO::FETCH_ASSOC);
         
-                // If a user is found, passwords are compared
-                if ($user) {
-                    // Verify the password
-                    if (password_verify($password, $user['user_password'])) {
-                        // Returns user data if the password is correct
-                        return $user;
-                    }
-                }
-        
-                // Return false if no user is found or the password is incorrect
-                return false;
+                // return true if the user was found and false if not
+                return $user;
+                
             } catch (\PDOException $ex) {
                 // Handle PDOException
                 error_log('PDOException in getAccount: ' . $ex->getMessage());

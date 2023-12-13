@@ -135,7 +135,7 @@ route('/cdharmony/login/', 'POST', function() {
 
 route('/cdharmony/logout/', 'GET', function() {
     $controller = new Controllers\LoginController();
-    $controller->logoutView();
+    $controller->logout();
 });
 
 route('/cdharmony/signup/', 'GET', function() {

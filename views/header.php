@@ -1,6 +1,12 @@
 <?php
-use Services\SessionManager;  
-SessionManager::startSession();
+use Services\SessionManager; 
+$session = new SessionManager();
+$session->startSession();
+
+//SessionManager::setSessionVariable('success_message', 'Your user acount was created successfully. Please login.');
+
+
+
 $csrfToken=SessionManager::generateCSRFToken();
     ?>
     <!DOCTYPE html>

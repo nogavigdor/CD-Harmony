@@ -4,10 +4,11 @@ namespace Services;
 class SessionManager
 {   
     //starts a session
-    public static function startSession()
+    public function startSession()
     {
         if (session_status() == PHP_SESSION_NONE) {
-        session_start();
+            session_start();
+        
         }
     }
     //sets a session variable
@@ -40,15 +41,24 @@ class SessionManager
     //logs out the user
     public static function logout()
     {
-        self::clearAll();
-        header("Location: " . BASE_URL . "/");
-        exit();
+        // Check if the user is an admin or not
+        if (SessionManager::isAdmin()) {
+            self::unsetSessionVariable('user');
+            header("Location: " . BASE_URL . "/admin-login");
+            SessionManager::setSessionVariable('success_message', 'You have been logged out successfully.');
+        }
+        // If the user is not an admin, log out as a normal user
+        else {
+            self::unsetSessionVariable('user');
+            header("Location: " . BASE_URL . "/login");
+            SessionManager::setSessionVariable('success_message', 'You have been logged out successfully. See you soon!');
+        }
     }
 
     //returns true if the user is an admin
     public static function isAdmin()
     {
-        echo "TTT:". self::getSessionVariable('user')['role'];
+     
 
         
         if (!isset($_SESSION['user']['role'])) {

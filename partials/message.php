@@ -2,7 +2,7 @@
 use Services\SessionManager;
 ?>
 <?php
-SessionManager::startSession();
+//SessionManager::startSession();
 $successMessage = SessionManager::getSessionVariable('success_message'); ?>
 <?php if(!empty($successMessage)): ?>
 

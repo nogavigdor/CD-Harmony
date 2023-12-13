@@ -1,6 +1,6 @@
 <?php include 'header.php'; 
 use \Services\SessionManager;
-SessionManager::startSession();
+$errors_out = SessionManager::getSessionVariable('errors_output');
 ?>
 <?php include 'partials/message.php'; ?>
 <div class="max-w-md mx-auto bg-white rounded p-6 shadow-md mt-20 mb-20">
@@ -24,20 +24,10 @@ SessionManager::startSession();
         <button type="submit" class="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-600">
             Login
         </button>
-            <?php
-            // Display the error message if there is one
-            $errorMessage = SessionManager::getSessionVariable('output_errors')['general'] ?? '';
-            if (!empty($errorMessage)) {
-                echo "<p style='color: red;'>$errorMessage</p>";
-            }
-        
-            SessionManager::unsetSessionVariable('output_errors');
-         
-            ?>
     </form>
 
     <div class="mt-4">
-        <p>Don't have an account? <a href="./signup">Register here</a></p>
+        <p>Don't have an account? <a text-accent text-xl href="./signup">Register here</a></p>
     </div>
 </div>
 

@@ -257,7 +257,7 @@ namespace Models;
         GROUP BY pv.product_variant_id
              ';
             $query = $db->prepare($sql);
-            echo $query->queryString;
+            //echo $query->queryString;
 
             $query->execute();
         //s   var_dump($query->queryString);

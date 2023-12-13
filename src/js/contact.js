@@ -1,22 +1,23 @@
-    const alertElement = document.querySelector("#alert");
-    const emailError = document.getElementById("email").nextElementSibling;
-    const titleError = document.getElementById("title").nextElementSibling;
-    const messageError = document.getElementById("message").nextElementSibling;
-    alertElement.innerText = "";
-    emailError.classList.add("hidden");
-    titleError.classList.add("hidden");
-    messageError.classList.add("hidden");
+
 
   
 
-    const fetchurl = BASE_URL + '/contact';
     function onSubmit(token) {
+        const alertElement = document.querySelector("#alert");
+        const emailError = document.getElementById("email").nextElementSibling;
+        const titleError = document.getElementById("title").nextElementSibling;
+        const messageError = document.getElementById("message").nextElementSibling;
+        alertElement.innerText = "";
+        emailError.classList.add("hidden");
+        titleError.classList.add("hidden");
+        messageError.classList.add("hidden");
         if (alertElement) {
             alertElement.innerText = "Processing your submission, please wait...";
         }
+        
         const formData = new FormData(document.getElementById('contact_form'));
          formData.append('g-recaptcha-response', token);
-        fetch(fetchurl, {
+        fetch('contact', {
             method: 'POST',
             body: formData
         })
@@ -31,9 +32,12 @@
             .then(data => {
                 if (data.success) {
                     // process to next request after success user is human
+                  
+                    window.location.href = BASE_URL;
                     console.log('Success', data);
                    
                 } else {
+           
                     // process to next request after failed user is not human
                     console.error('Server Side Erorr', data);
                         //update email error message
