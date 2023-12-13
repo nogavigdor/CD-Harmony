@@ -91,10 +91,10 @@ class UserController {
         //removes any while spaces from the begining and the end of the string  
         //and converts any special characters to HTML entities
         if (isset($_POST['email']))
-        $email = htmlspecialchars(trim($_POST['email']));
+          $email = htmlspecialchars(trim($_POST['email']));
         //not escaping the password as it will be hashed
         if (isset($_POST['password']))
-        $password = trim($_POST['password']);
+         $password = trim($_POST['password']);
         //sets the role to 3 (customer)
         $role = 3;
         $userModel = new UserModel();

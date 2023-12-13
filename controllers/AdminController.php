@@ -45,15 +45,20 @@ class AdminController
     public function adminLogin()
     {
         // Validate login credentials 
-        $email = trim(htmlspecialchars($_POST['email']));
+        if (isset($_POST['password']))
+            $email = trim(htmlspecialchars($_POST['email']));
+        if (isset($_POST['password']))
         //no need to trim or htmlspecialchars password because it is hashed
-        $password = $_POST['password'];
+            $password = trim($_POST['password']);
+
+        //sets the role to 1 (admin)
+        $role = 1;
         //retrieves the user data from the database
         $userModel = new UserModel();
-        $user = $userModel->getAccount($email, $password);
+        $user = $userModel->getAccount($email, $role);
     
         //if user is found and if the user has an admin role       
-        if (!empty($user) && $user['role_id'] == 1) {
+        if (!empty($user) && (password_verify($password, $user['user_password']))) {
             $userData = array(
                 'logged_in' => true,
                 'id' => $user['user_id'],
