@@ -6,7 +6,7 @@ class ImageHandler {
     protected  const IMAGE_WIDTH = 300;
     protected  const IMAGE_HEIGHT = 300;
     protected const RESIZE_TYPE = 'width';
-    protected const PRODUCT_SIZE = PRODUCT_IMAGE_WIDTH;
+
 
     protected $upMessages = [];
 

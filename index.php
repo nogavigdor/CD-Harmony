@@ -39,7 +39,8 @@ route('/cdharmony/account', 'GET', function () {
 //Shows product details
 route('/cdharmony/product/(\d+)', 'GET', function ($id) {
     $controller = new ProductController();
-    $controller->showProductDetails($id);
+    //when accessing the product details from the main page, the role is set to none
+    $controller->showProductDetails($id, 'none');
 });
 
 route('/cdharmony/admin/product/show/(\d+)', 'GET', function ($id) {
@@ -50,7 +51,7 @@ route('/cdharmony/admin/product/show/(\d+)', 'GET', function ($id) {
 
 route('/cdharmony/admin/product/(\d+)', 'POST', function ($id) {
     $controller = new ProductController();
-    $controller->showProductDetails($id);
+    $controller->showProductDetails($id,'admin');
 });
 
 route('/cdharmony/admin/product/delete/(\d+)', 'DELETE', function ($id) {
@@ -58,12 +59,12 @@ route('/cdharmony/admin/product/delete/(\d+)', 'DELETE', function ($id) {
     $controller->deleteProduct($id);
 });
 
-route('/cdharmony/admin/product/edit/(\d+)', 'GET', function () {
+route('/cdharmony/admin/product/edit/(\d+)', 'GET', function ($id) {
     $controller = new ProductController();
-    $controller->editProduct();
+    $controller->editProduct($id);
 });
 
-route('/cdharmony/admin/product/update/', 'PUT', function ($id) {
+route('/cdharmony/admin/product/update/', 'PUT', function () {
     $controller = new ProductController();
     $controller->updateProduct();
 });
@@ -184,7 +185,7 @@ route('/cdharmony/admin-login', 'POST', function() {
 
 
 route('/cdharmony/admin/company/', 'GET', function () {
-    $controller = new CompanyController();
+    $controller = new CompanyController();  
     $controller->showCompanyDetails();
 });
 

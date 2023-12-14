@@ -6,7 +6,7 @@ use Services\SessionManager;
 <main class='content bg-primary'>
 
 
-    <div class="flex h-screen bg-gray-100">
+    <div class="flex bg-gray-100">
         <!-- Sidebar -->
         <?php include './partials/admin-sidebar.php' ?>
 
@@ -14,65 +14,51 @@ use Services\SessionManager;
         <div class="flex-1 p-8">
         <?php
         ?>
-        <form action="<?php echo BASE_URL.'/admin/product/create' ?>" method="POST" enctype="multipart/form-data" class="max-w-lg mx-auto p-4 bg-white shadow-md rounded-md">
-        <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">      
-        <!-- Product Type Selection -->
-        <div class="mb-4">
-            <label for="productType" class="block text-sm font-medium text-gray-700">Choose Product Type:</label>
-            <select name="productType" id="productType" required
-                    class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                <option value="cd" <?php echo ($productDetails['product_type'] == 'cd') ? 'selected' : ''; ?>>CD</option>
-                <option value="electronic_device" <?php echo ($productDetails['product_type'] == 'electronic_device') ? 'selected' : ''; ?>>Electronic Device</option>
-            </select>
-        </div>
+          <form action="<?php echo BASE_URL.'/admin/product/update' ?>" method="POST" enctype="multipart/form-data" class="max-w-lg mx-auto p-4 bg-white shadow-md rounded-md">
+                <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">  
 
-        <!-- CD Fields -->
-        <div id="cdFields" style="display: <?php echo ($productDetails['product_type'] == 'cd') ? 'block' : 'none'; ?>;">
-            <!-- ... (existing CD fields) ... -->
-        </div>
+                <!-- Title -->
+                <div class="mb-4">
+                    <label for="title" class="block text-sm font-medium text-gray-700">Title:</label>
+                    <input type="text" name="title" id="title" value="<?= $productDetails->product_title ?? ''; ?>"
+                        class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                </div>
 
-        <!-- Electronic Device Fields -->
-        <div id="electronicDeviceFields" style="display: <?php echo ($productDetails['product_type'] == 'electronic_device') ? 'block' : 'none'; ?>;">
-            <!-- ... (existing electronic device fields) ... -->
-        </div>
+                <!-- Description -->
+                <div class="mb-4">
+                    <label for="description" class="block text-sm font-medium text-gray-700">Description:</label>
+                    <textarea name="description" id="description"
+                        class="mt-1 p-2 block w-full  rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 h-52 auto"><?php echo $productDetails->product_description ?? ''; ?></textarea>
+                </div>
 
-        <!-- Image Upload -->
-        <div class="mb-4">
-            <label for="image" class="block text-sm font-medium text-gray-700">Upload Image:</label>
-            <input type="file" name="image" id="image"
-                class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-        </div>
+                <!-- Product Condition (CD) Fields -->
+                <div id="cdFields">
+                    <div class="mb-4">
+                        <label for="quantityInStock" class="block text-sm font-medium text-gray-700">Quantity in Stock:</label>
+                        <input type="text" name="quantityInStock" id="quantityInStock" value="<?php echo $productDetails->quantity_in_stock ?? ''; ?>"
+                            class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    </div>
 
-        <!-- Other Common Fields -->
-        <div class="mb-4">
-            <label for="title" class="block text-sm font-medium text-gray-700">Title:</label>
-            <input type="text" name="title" id="title" value="<?php echo $productDetails['title'] ?? ''; ?>"
-                class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-        </div>
+                    <div class="mb-4">
+                        <label for="price" class="block text-sm font-medium text-gray-700">Price:</label>
+                        <input type="text" name="price" id="price" value="<?php echo $productDetails->price ?? ''; ?>"
+                            class="h-52 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    </div>
+                </div>
 
-        <div class="mb-4">
-            <label for="description" class="block text-sm font-medium text-gray-700">Description:</label>
-            <textarea name="description" id="description"
-                    class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"><?php echo $productDetails['description'] ?? ''; ?></textarea>
-        </div>
+                <!-- Current Image Preview -->
+                <div class="mb-4">
+                    <label for="currentImage" class="block text-sm font-medium text-gray-700">Current Image:</label>
+                    <img src="<?= BASE_URL . '/src/assets/images/albums/'. htmlspecialchars($productDetails->image_name) ?? ''; ?>" alt="Current Image" class="mt-1 w-full rounded-md border-gray-300 shadow-sm">
+                </div>
 
-        <!-- Add any other common fields here -->
-
-        <!-- Submit Button -->
-        <div class="mb-4">
-            <input type="submit" value="Submit" name="submit"
-                class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-indigo-600 focus:outline-none focus:border-indigo-700 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-        </div>
-
-         </form>
-
-
-           <form action="<?php echo BASE_URL.'/admin/product/create' ?>" method="POST" enctype="multipart/form-data">
-           
-
-           <input type="file" name="fileToUpload" id="fileToUpload" name="fileToUpload">
-              <input type="submit" value="Upload Image" name="submit">
-           </form>
+                <!-- Image Upload -->
+                <div class="mb-4">
+                    <label for="image" class="block text-sm font-medium text-gray-700">Upload New Image:</label>
+                    <input type="file" name="image" id="image"
+                        class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                </div>
+            </form>
         </div>
     </div>
 </main>

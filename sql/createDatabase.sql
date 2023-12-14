@@ -93,6 +93,7 @@
     CREATE TABLE product_variants
     (
         product_variant_id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
+        creation_date timestamp NOT NULL,
         price decimal(10,2) NOT NULL,
         quantity_in_stock int NOT NULL,
         product_id int,
@@ -155,7 +156,7 @@
         special_offer_id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
         title varchar(100) NOT NULL,
         special_offer_description varchar(300) NOT NULL,
-        discount_sum int NOT NULL,
+        discount int NOT NULL,
         special_offer_start_date timestamp NOT NULL,
         special_offer_end_date timestamp NOT NULL,
         product_variant_id int,
@@ -198,17 +199,41 @@
     ('paid'),
     ('refund');
 
+    CREATE TABLE cart_master
+    (
+        cart_master_id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
+        creation_date timestamp NOT NULL,
+        session_id varchar(100) NOT NULL,
+        discount decimal(10,2), NOT NULL,
+        sub_total decimal(10,2) NOT NULL,
+        grand_total decimal(10,2) NOT NULL,
+        user_id int,
+        FOREIGN KEY (user_id) REFERENCES users (user_id)
+    ) ENGINE=InnoDB;
+
+    CREATE TABLE cart_items
+    (
+        quantity int NOT NULL,
+        price decimal(10,2),
+        cart_master_id int,
+        product_variant_id int,
+        CONSTRAINT PK_cart_line PRIMARY KEY (cart_master_id, product_variant_id),
+        FOREIGN KEY (cart_master_id) REFERENCES cart_master (cart_master_id),
+        FOREIGN KEY (product_variant_id) REFERENCES product_variants (product_variant_id)
+    ) ENGINE=InnoDB;
+
     CREATE TABLE orders
     (
         order_id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
-        created timestamp NOT NULL,
-        user_id int,
+        creation_date timestamp NOT NULL,
         order_status_id int,
         order_payment_id int,
-        address_id int,
-        FOREIGN KEY (user_id, address_id) REFERENCES users_addresses(user_id, address_id),
+        cart_master_id int,
+        user_id int,
+        FOREIGN KEY (user_id) REFERENCES users_addresses(user_id),
         FOREIGN KEY (order_status_id) REFERENCES orders_status(order_status_id),
         FOREIGN KEY (order_payment_id) REFERENCES orders_payment(order_payment_id)
+        FOREIGN KEY (cart_master_id) REFERENCES cart_master(cart_master_id)
     ) ENGINE=InnoDB;
 
     CREATE TABLE orders_lines
@@ -248,6 +273,7 @@
         title varchar(100) NOT NULL,
         image_path varchar(255) NOT NULL,
         image_name varchar(255) NOT NULL,
+        main_image tinyint(1) NOT NULL,
         article_id int,
         FOREIGN KEY (article_id) REFERENCES articles(article_id)
     ) ENGINE=InnoDB;

@@ -3,10 +3,8 @@ use Services\SessionManager;
 ?>
 <?php include 'admin-header.php' ?>
 
-<main class='content bg-primary'>
+<main class='flex  bg-gray-100'>
 
-
-    <div class="flex h-screen bg-gray-100">
         <!-- Sidebar -->
         <?php include './partials/admin-sidebar.php' ?>
 
@@ -22,10 +20,9 @@ use Services\SessionManager;
             <thead>
               <tr>
                 <th>Product ID</th>
-                <th>Condition</th>
+              
                 <th>Title</th>
-                <th>Description</th>
-                <th>Price</th>
+               
                 <th colspan="2">Actions</th>
               </tr>
             </thead>
@@ -36,8 +33,8 @@ use Services\SessionManager;
                
                 <td><?= $product->product_title ?></td>
                 
-                <td>  <a href="<?= BASE_URL . '/admin/product/edit/' . $product->product_variant_id ?>" class="btn btn-primary">Edit</a>
-                      <a href="<?= BASE_URL . '/admin/product/delete/' . $product->product_variant_id ?>" class="btn btn-danger">Delete</a>
+                <td>  <a href="<?= BASE_URL . '/admin/product/edit/' . $product->product_id ?>" class="btn btn-primary">Edit</a>
+                      <a href="<?= BASE_URL . '/admin/product/delete/' . $product->product_id ?>" class="btn btn-danger">Delete</a>
                     </td>
               </tr>
               <?php } ?>
@@ -47,7 +44,7 @@ use Services\SessionManager;
                 <p>No products found.</p>
             <?php } ?>
         </div>
-    </div>
+  
 </main>
 
 <?php include 'admin-footer.php' ?>

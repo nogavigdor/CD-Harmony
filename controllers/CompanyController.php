@@ -8,6 +8,11 @@ use \Services\SessionManager;
 
 class CompanyController
 {
+    public function __construct()
+    {
+        $session = new SessionManager();
+        $session->startSession();
+    }   
     public function getCompanyDetails()
     {
         try {

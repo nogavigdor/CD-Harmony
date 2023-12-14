@@ -119,11 +119,11 @@ class AdminController
     }
     //checks if the user is logged in and if it has an admin role
     public static function authorizeAdmin() {
-        if (!SessionManager::getSessionVariable('user') || SessionManager::getSessionVariable('user')['role'] != 1) {
-            return false;
+        if (SessionManager::getSessionVariable('user') && SessionManager::getSessionVariable('user')['role'] == 1) {
+            return true;
         }
         else {
-            return true;
+            return false;
         }
     }
 

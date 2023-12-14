@@ -13,6 +13,8 @@ class ProductController
 
     public function __construct() {
         $this->productModel = new ProductModel();
+        $session = new SessionManager();
+        $session->startSession();
     }
     
 
@@ -45,26 +47,28 @@ class ProductController
         }
     }
 
-	public function showProductDetails($id)
+	public function showProductDetails($id, $role = 'none')
     {
         try {
-          
-            $product=$this->productModel->getProductDetails($id, $role='customer'); // Call the method on the instance
-            //the request came from an admin route
+            //route for admin
             if ($role == 'admin') {
                 if (AdminController::authorizeAdmin()) {
+                    $product = $this->productModel->getProductDetails($id);
                     // Load the view to display the product details if the user is an admin
                     include 'views/admin/product_details.php';
                 } else {
-                    // Redirect to the login page since the user is not an admin
+                    // Redirect to the login page in case the user is not logged as admin
                     header('Location:'. BASE_URL. '/admin-login');
                     exit();
                 }
-            //the request came from a customer route
+            //route for customer
             } else {
+                $product = $this->productModel->getProductDetails($id);
                 // Load the view to display the product details
                 include 'views/product_details.php';
             }
+          
+          
         } catch (\PDOException $ex) {
             error_log('PDO Exception: ' . $ex->getMessage());
         }
@@ -74,7 +78,7 @@ class ProductController
     {
         try {
             if(AdminController::authorizeAdmin()) {
-                return $this->productModel->getProductsList(); // Call the method on the instance
+                return $this->productModel->getAllProducts(); // Call the method on the instance
 
            
             
@@ -107,10 +111,12 @@ class ProductController
         }
     }
 
-    public function editProduct(){
+    public function editProduct($id){
         try {
-            SessionManager::startSession();
+          
             if(SessionManager::isAdmin()) {
+                // Get the product details from the database
+                $productDetails = $this->productModel->getProductDetails($id);
                 // Load the view to display the product form
                 include 'views/admin/edit-product-form.php';
             }

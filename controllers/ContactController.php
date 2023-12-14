@@ -111,7 +111,7 @@ class ContactController
                     */
                     if ($response->success && $response->score >= 0.5 && $response->action == 'contact') {
                         //upon a successful validation of the recaptcha, the email will be sent to the admin
-                        /*
+                        
                                         $mail = new PHPMailer(true);
                                 
                                         $mail->SMTPDebug = SMTP::DEBUG_SERVER;
@@ -120,7 +120,7 @@ class ContactController
                                     
                                         $mail->Host = "send.one.com";
                                         $mail->SMTPSecure = "ssl";
-                                        
+                                        $mail->SMTPDebug = 0; 
                                         $mail->Port = 465;
     
                                         $mail->Username = SMTP_USERNAME;
@@ -136,7 +136,7 @@ class ContactController
                                         
                                         
                                         $mail->send();
-                            */      
+                            
                                         SessionManager::setSessionVariable('success_message', 'Your message has been sent successfully. We\'ll get back to you within 48 hours.');
                                         
                       

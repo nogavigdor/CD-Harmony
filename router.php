@@ -17,7 +17,7 @@ function route($path, $method, Closure $callback)
     global $routes;
     $path = trim($path, '/');
     $path = str_replace('/', '\/', $path); // Escape slashes
-    $path = '/^' . $path . '$/'; // Use ^ and $ to match the whole URL
+    $path = '/^' . $path . '$/'; // Use of ^ and $ to match the whole URL
 
     $routes[$path][$method] = $callback;
 }

@@ -4314,6 +4314,10 @@ details.collapse summary::-webkit-details-marker {
   height: 100vh;
 }
 
+.h-52 {
+  height: 13rem;
+}
+
 .min-h-screen {
   min-height: 100vh;
 }
@@ -5122,6 +5126,10 @@ label {
     --tw-bg-opacity: 1;
     background-color: hsl(var(--b3) / var(--tw-bg-opacity));
   }
+}
+
+.first-letter\:mt-1::first-letter {
+  margin-top: 0.25rem;
 }
 
 .hover\:-translate-y-1:hover {

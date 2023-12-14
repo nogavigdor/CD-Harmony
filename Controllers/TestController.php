@@ -17,7 +17,7 @@ class TestController
 
     public function insertData() {
         try {
-            include_once './sql/insertData.php';
+            include_once './sql/insertArticles.php';
         }
         catch (\PDOException $ex) {
             error_log('PDO Exception: ' . $ex->getMessage());
