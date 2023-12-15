@@ -103,7 +103,7 @@
     In the ever-changing landscape of music, "The Head on the Door" stands as a testament to The Cure\'s ability to evolve while staying true to their unique sound. It\'s more than an album; it\'s a captivating chapter in the ongoing story of a band that has left an indelible mark on the world of alternative music.',
     date('Y-m-d H:i:s'), date('Y-m-d H:i:s'), 1);
     
-
+    
     // Close the database connection
     $DBConnector->closeConnection();  
 
@@ -112,6 +112,8 @@
 
 
   }
+
+
   catch (\PDOException $e) {
       die("Connection failed: " . $e->getMessage());
   }

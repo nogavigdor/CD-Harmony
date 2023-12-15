@@ -8,11 +8,11 @@ use PDO;
 
     class UserModel 
     {
-        private $dbConnector; 
+        private $db; 
 
         public function __construct()
         {
-            $this->dbConnector = DBConnector::getInstance(); 
+            $this->db = DBConnector::getInstance()->connectToDB();
         }
         //customer role is defined as 3 in the database and that should be the defailt value
         public function setAccount($email, $password, $first_name="", $last_name="", $role = 3) {
@@ -22,12 +22,11 @@ use PDO;
                 $iterations = ['cost' => 15];
                 $hashed_password = password_hash($password, PASSWORD_BCRYPT, $iterations);
                 $creation_date = date('Y-m-d H:i:s');
-                $dbInstance = $this->dbConnector;
-                $db=$dbInstance->connectToDB();
+                
                 
                 // Fetching user data from the database based on the email
                 $sql = "SELECT * FROM users WHERE email = :email";
-                $query = $db->prepare($sql);
+                $query = $this->db->prepare($sql);
                 $query->bindParam(':email', $email, \PDO::PARAM_STR);
                 $query->execute();
                 $user = $query->fetch(\PDO::FETCH_ASSOC);
@@ -44,7 +43,7 @@ use PDO;
                 $sql = '
                 INSERT INTO users (first_name, last_name, email, user_password, creation_date, role_id) VALUES (:first_name,:last_name, :email, :hashed_password, :creation_date, :role_id)
                 ';
-                $query = $db->prepare($sql);
+                $query = $this->db->prepare($sql);
                 $query->bindParam(':first_name', $first_name, \PDO::PARAM_STR);  
                 $query->bindParam(':last_name', $last_name , \PDO::PARAM_STR);    
                 $query->bindParam(':email', $email, \PDO::PARAM_STR);
@@ -92,4 +91,25 @@ use PDO;
         }
 
     } 
+
+    public function hasMadePurchace($user_id){
+        try {    
+            // Fetching user data from the database based on user_id
+            $sql = 'SELECT * FROM orders WHERE user_id = :user_id';
+            
+            $query = $this->db->prepare($sql);
+            $query->bindParam(':user_id', $user_id);
+            $query->execute();
+    
+            // Fetching the user data
+            $user = $query->fetch(\PDO::FETCH_ASSOC);
+    
+             // return true if the user was found and false if not
+            return $user ? true : false;
+            
+        } catch (\PDOException $e) {
+            // Handle PDOException
+            error_log('PDOException in getAccount: ' . $e->getMessage());
+      }
     }
+}

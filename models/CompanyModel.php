@@ -1,24 +1,21 @@
 <?php
-
 namespace Models;   
-
 use \DataAccess\DBConnector;
 use PDO; 
 
-class CompanyModel 
+class AdminModel 
 {
-    private $dbConnector; 
+    private $db; 
 
     public function __construct()
     {
-        $this->dbConnector = DBConnector::getInstance(); 
+        $this->db = DBConnector::getInstance()->connectToDB();
     }
 
     public function getCompanyDetails() {
         try {
-            $dbInstance = $this->dbConnector;
-            $db=$dbInstance->connectToDB();
-            $query = $db->prepare('
+         
+            $query = $this->db->prepare('
             
             SELECT
             c.*, p.city
@@ -30,8 +27,8 @@ class CompanyModel
             return $query->fetch(PDO::FETCH_OBJ);
 
       
-        } catch (\PDOException $ex) {
-            print($ex->getMessage());
+        } catch (\PDOException $e) {
+            print($e->getMessage());
         } 
            
         
@@ -41,9 +38,7 @@ class CompanyModel
     public function updateCompanyDetails($companyId, $companyName, $street, $postalCodeId, $openingHours, $email, $phoneNumber, $logo)
     {
     try {
-        $dbInstance = $this->dbConnector;
-        $db=$dbInstance->connectToDB();
-        $query = $db->prepare('
+        $query = $this->db->prepare('
             UPDATE company_details
             SET company_name = :company_name, street = :street, email = :email, phone_number = :phone_number,postal_code_id = :postal_code_id,
             opening_hours = :opening_hours, logo = :logo
@@ -62,9 +57,9 @@ class CompanyModel
 
         $success = $query->execute();
         return $success;
-    } catch (\PDOException $ex) {
+    } catch (\PDOException $e) {
         // Handle errors (log or rethrow the exception)
-        throw $ex;
+        throw $e;
     } 
     
     

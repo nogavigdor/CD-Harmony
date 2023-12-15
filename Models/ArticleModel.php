@@ -8,18 +8,16 @@ use PDO;
 
 class ArticleModel 
 {
-    private $dbConnector; 
+    private $db; 
 
     public function __construct()
     {
-        $this->dbConnector = DBConnector::getInstance(); 
+        $this->db = DBConnector::getInstance()->connectToDB();
     }
 
     public function getArticlesByTag($tag) {
         try {
          //still need to be implemented
-            $dbInstance = $this->dbConnector;
-            $db=$dbInstance->connectToDB();
             $sql='
             SELECT
             a.article_id,
@@ -45,7 +43,7 @@ class ArticleModel
             GROUP BY p.product_id
             LIMIT 10
             ';
-            $query = $db->prepare($sql);
+            $query = $this->db->prepare($sql);
             $query->bindParam(':tag', $tag, PDO::PARAM_STR);
             $query->execute();
          //s   var_dump($query->queryString);
@@ -64,8 +62,6 @@ class ArticleModel
         // Implement the logic to fetch recent releases here
         // For example:
         try {
-            $dbInstance = $this->dbConnector;
-            $db=$dbInstance->connectToDB();
             $sql='
             SELECT
             a.article_id,
@@ -81,7 +77,7 @@ class ArticleModel
             ORDER BY a.publish_date DESC
             LIMIT 3
             ';
-            $query = $db->prepare($sql);
+            $query = $this->db->prepare($sql);
      
             $query->execute();
          //s   var_dump($query->queryString);
@@ -95,8 +91,6 @@ class ArticleModel
 	function getArticleDetails($id)
 {
     try {
-        $dbInstance = $this->dbConnector;
-        $db=$dbInstance->connectToDB();
         $sql = '
         SELECT
         a.article_id,
@@ -111,7 +105,7 @@ class ArticleModel
         INNER JOIN users u ON u.user_id = a.user_id
         WHERE a.article_id = :id
         ';
-        $query = $db->prepare($sql);
+        $query = $this->db->prepare($sql);
         $query->bindParam(':id', $id, \PDO::PARAM_INT);
         $query->execute();
 

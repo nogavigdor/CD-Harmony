@@ -7,17 +7,15 @@ namespace Models;
 
     class ProductModel 
     {
-        private $dbConnector; 
+        private $db; 
 
         public function __construct()
         {
-            $this->dbConnector = DBConnector::getInstance(); 
+            $this->db = DBConnector::getInstance()->connectToDB();
         }
 
         public function getAllProducts(){
             try{
-                $dbInstance = $this->dbConnector;
-                $db=$dbInstance->connectToDB();
                 $sql='     
                 SELECT
                 pv.product_variant_id,
@@ -42,7 +40,7 @@ namespace Models;
                 INNER JOIN conditions con ON pv.condition_id = con.condition_id
                 GROUP BY p.product_id
                 ';
-                $query = $db->prepare($sql);
+                $query = $this->db->prepare($sql);
                 $query->execute();
                 return $query->fetchAll(PDO::FETCH_OBJ);
             } catch (\PDOException $e) {
@@ -52,9 +50,6 @@ namespace Models;
         //Get product cds by tag
         public function getProductsByTag($tag) {
             try {
-            
-                $dbInstance = $this->dbConnector;
-                $db=$dbInstance->connectToDB();
                 $sql='
                 SELECT
                 p.product_id,
@@ -81,7 +76,7 @@ namespace Models;
                 GROUP BY p.product_id
                 LIMIT 10
                 ';
-                $query = $db->prepare($sql);
+                $query = $this->db->prepare($sql);
                 $query->bindParam(':tag', $tag, PDO::PARAM_STR);
                 $query->execute();
             //var_dump($query->queryString);
@@ -100,8 +95,6 @@ namespace Models;
             // Implement the logic to fetch recent releases here
             // For example:
             try {
-                $dbInstance = $this->dbConnector;
-                $db=$dbInstance->connectToDB();
                 $sql='
                 SELECT
                 p.product_id,
@@ -131,7 +124,7 @@ namespace Models;
                 LIMIT 10
 
                 ';
-                $query = $db->prepare($sql);
+                $query = $this->db->prepare($sql);
         
                 $query->execute();
             //s   var_dump($query->queryString);
@@ -145,8 +138,6 @@ namespace Models;
         function getProductDetails($id)
     {
         try {
-            $dbInstance = $this->dbConnector;
-            $db=$dbInstance->connectToDB();
             $sql = '
             SELECT
             p.product_id,
@@ -173,7 +164,7 @@ namespace Models;
             INNER JOIN images_for_products ip ON ip.product_id = p.product_id
             WHERE p.product_id = :id
             ';
-            $query = $db->prepare($sql);
+            $query = $this->db->prepare($sql);
             $query->bindParam(':id', $id, \PDO::PARAM_INT);
             $query->execute();
 
@@ -188,9 +179,6 @@ namespace Models;
        //Show all products in the admin page
        public function updateProduct() {
         try {
-            
-            $dbInstance = $this->dbConnector;
-            $db=$dbInstance->connectToDB();
             $sql = '
             SELECT
             pv.product_variant_id,
@@ -206,16 +194,16 @@ namespace Models;
             pv.quantity_in_stock 
         FROM
             products p
-        INNER JOIN product_variants pv ON p.product_id = pv.product_id
-        INNER JOIN products_tags pt ON p.product_id = pt.product_id
-        INNER JOIN tags t ON pt.tag_id = t.tag_id
-        LEFT JOIN cds c ON p.product_id = c.product_id
-        LEFT JOIN artists a ON c.artist_id = a.artist_id
-        LEFT JOIN images_for_products ip ON p.product_id = ip.product_id
-        INNER JOIN conditions con ON pv.condition_id = con.condition_id
-        GROUP BY pv.product_variant_id
+            INNER JOIN product_variants pv ON p.product_id = pv.product_id
+            INNER JOIN products_tags pt ON p.product_id = pt.product_id
+            INNER JOIN tags t ON pt.tag_id = t.tag_id
+            LEFT JOIN cds c ON p.product_id = c.product_id
+            LEFT JOIN artists a ON c.artist_id = a.artist_id
+            LEFT JOIN images_for_products ip ON p.product_id = ip.product_id
+            INNER JOIN conditions con ON pv.condition_id = con.condition_id
+            GROUP BY pv.product_variant_id
              ';
-            $query = $db->prepare($sql);
+            $query = $this->db->prepare($sql);
             //echo $query->queryString;
 
             $query->execute();
@@ -228,8 +216,55 @@ namespace Models;
             
     }
 
+    //Get all the tags that are associated with a specific product
+    public function getProductTags($productId) {
+        $query = "
+            SELECT t.title 
+            FROM tags t 
+            INNER JOIN products_tags pt ON t.tag_id = pt.tag_id 
+            WHERE pt.product_id = :productId
+        ";
 
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':productId', $productId);
+        $stmt->execute();
+        $tags = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
+        return $tags;
+    }
+
+    public function getProductsByTags($productId, $tags) {
+    // Gets the number of tags and creates a placeholder string for the query
+        $placeholders = str_repeat('?,', count($tags) - 1) . '?';
+        $limit = 3;
+        $query = "
+        SELECT p.product_id, p.title AS product_title, p.product_description, a.title as artist_title,
+        COUNT(pt.tag_id) as common_tag_count, GROUP_CONCAT(t.title) as common_tags, ip.image_name, ip.image_path
+        FROM products p
+        INNER JOIN products_tags pt ON p.product_id = pt.product_id
+        INNER JOIN tags t ON t.tag_id = pt.tag_id
+        INNER JOIN images_for_products ip ON ip.product_id = p.product_id
+        INNER JOIN cds c ON c.product_id = p.product_id
+        INNER JOIN artists a ON a.artist_id = c.artist_id
+        WHERE pt.tag_id IN (
+            SELECT tag_id
+            FROM products_tags
+            WHERE product_id = :current_product_id
+        )
+        AND p.product_id != :current_product_id
+        GROUP BY p.product_id
+        ORDER BY common_tag_count DESC
+        LIMIT :limit
+    ";
+    
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':current_product_id', $productId, \PDO::PARAM_INT);
+        $stmt->bindParam(':limit', $limit, \PDO::PARAM_INT);
+        $stmt->execute();
+        $products = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        return $products;
+    }
 
 
 

@@ -1,4 +1,5 @@
 <?php
+use Controllers\SpecialOfferController;
 // In your homepage code
 include 'header.php';
 
@@ -10,20 +11,25 @@ include 'header.php';
             <!-- Hero section -->
              <div class="grid grid-cols-1 sm:grid-cols-3 h-600 gap-4 " >
              <Section class="col-span-3 sm:col-span-2 pt-4">
-                <h2 class="text-base-100 text-2xl font-bold mb-4 ">Don't miss this deal</h2>
+                <?php $specialOfferController= new SpecialOfferController(); 
+                    $specialOffer=$specialOfferController->showSpecialOffer();
+                ?>
+
+                <h2 class="text-base-100 text-2xl font-bold mb-4 "><?= $specialOffer->product_title ?></h2>
+       
                 <div class="bg-white relative w-full rounded">
                     <div class="p-4">
-                        <p class="text-xl text-secondary font-bold mb-2">CD Player</p>
+                        <p class="text-xl text-secondary font-bold mb-2"></p>
                         <p class="text-xl text-secondary font-bold mb-2">
-                            highy quality CD player with 5 year warranty
+                        <?= $specialOffer->offer_title ?>
                         </p>
-                        <p class="text-xl text-secondary font-bold mb-2">Only $99.99</p>
+                        <p class="text-xl text-secondary font-bold mb-2">Only <?= $specialOffer->discounted_price ?> Kr </p>
                     </div>
                     <div class="mask mask-star  bg-secondary w-[500px] h-[500px] shadow-lg absolute top-[-100px] right-[50px] text-white p-4 flex flex-col justify-center items-center">
-                        <p class="text-xl text-base-100 font-bold mb-2">Limided time only</p>
+                        <p class="text-xl text-base-100 font-bold mb-2"><?= $specialOffer->description ?></p>
                         <p class="text-xl text-base-100 font-bold mb-2">Offer ends on <?php  ?></p>
                     </div>
-                    <img src="./src/assets/images/products/cd-player.png" alt="CD Harmony fan" class="w-1/2 object-cover">
+                    <img src="<?= BASE_URL.'/src'.$specialOffer->image_path.$specialOffer->image_name.'/';?>" alt="CD Harmony fan" class="w-1/2 object-cover">
                     <button class="btn btn-accent absolute right-2 bottom-2 w-1/3" data-product-id="1">Add to Cart</button>
                 </div>
             </Section>

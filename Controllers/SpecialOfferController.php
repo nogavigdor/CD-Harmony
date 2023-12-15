@@ -55,11 +55,11 @@ class SpecialOfferController
     }
     
 
-	public function getSpecialOfferDetails($id)
+	public function showSpecialOffer()
     {
         try {
             // Get the special deal details
-            return $this->specialDealModel->getSpecialOffierDetails(); // Call the method on the instance
+            return $this->specialOfferModel->getSpecialOffer(); // Call the method on the instance
             
         } catch (\PDOException $ex) {
             error_log('PDO Exception: ' . $ex->getMessage());

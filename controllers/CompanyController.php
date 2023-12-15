@@ -1,6 +1,5 @@
 <?php
 namespace Controllers;
-
 use \Models\CompanyModel;
 use \Services\SessionManager;
 //SessionManager::startSession();

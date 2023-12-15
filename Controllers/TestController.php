@@ -17,7 +17,7 @@ class TestController
 
     public function insertData() {
         try {
-            include_once './sql/insertArticles.php';
+            include_once './sql/insertData.php';
         }
         catch (\PDOException $ex) {
             error_log('PDO Exception: ' . $ex->getMessage());
@@ -29,10 +29,10 @@ class TestController
         try {   
             echo ' test mail';
             try {
-$email="noga.vigdor@gmail.com";
-$first_name = 'Noga';
-$title = 'test from test controller';
-$message = 'test from test controller';
+            $email="noga.vigdor@gmail.com";
+            $first_name = 'Noga';
+            $title = 'test from test controller';
+            $message = 'test from test controller';
 
 
                          
