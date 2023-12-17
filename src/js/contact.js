@@ -1,7 +1,4 @@
 
-
-  
-
     function onSubmit(token) {
         const alertElement = document.querySelector("#alert");
         const emailError = document.getElementById("email").nextElementSibling;

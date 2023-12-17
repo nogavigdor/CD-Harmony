@@ -22,10 +22,10 @@ if(SessionManager::getSessionVariable('error_message')){
 <body class="bg-primary font-body min-h-screen">
 
     <!-- Header section -->
-    <header class="bg-secondary text-white p-4">
+    <header class="relative bg-secondary text-white p-4 flex align-center h-52">
         <div class="container mx-auto flex justify-between items-center">
-             <div>  
-              <a href="<?php echo BASE_URL; ?>"><img src="<?php echo BASE_URL; ?>/src/assets/logo_no_background.png" alt="CD Harmony Logo" class="w-64 h-64"></a>
+             <div class="mt-8">  
+              <a href="<?php echo BASE_URL; ?>"><img src="<?php echo BASE_URL; ?>/src/assets/logo_no_background.png" alt="CD Harmony Logo" class="w-48"></a>
             </div>
 
 
@@ -40,4 +40,5 @@ if(SessionManager::getSessionVariable('error_message')){
             </div>
         </div>
     </header>
+
     <?php include 'partials/message.php';  ?>

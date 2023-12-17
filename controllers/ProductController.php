@@ -47,6 +47,7 @@ class ProductController
         }
     }
 
+    //includes the produt details page for admin or customer - depending on the role
 	public function showProductDetails($id, $role = 'none')
     {
         try {
@@ -63,12 +64,24 @@ class ProductController
                 }
             //route for customer
             } else {
+                //getting an array of variants (new and old) and the product details
                 $product = $this->productModel->getProductDetails($id);
                 // Load the view to display the product details
                 include 'views/product_details.php';
             }
           
           
+        } catch (\PDOException $ex) {
+            error_log('PDO Exception: ' . $ex->getMessage());
+        }
+    }
+
+    //Getting the product variantd details (in this case, the new and old variant of a cd product)
+    public function getProductVariantDetails($id)
+    {
+        try {
+            $productVariantsDetails = $this->productModel->getProductVariantsDetails($id);
+            return $productVariantsDetails;
         } catch (\PDOException $ex) {
             error_log('PDO Exception: ' . $ex->getMessage());
         }

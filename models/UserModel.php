@@ -66,13 +66,11 @@ use PDO;
         //checks if the login details mataches any of the existing users (customers)
         public function getAccount($email, $role = 3) {
             try {   
-                $dbInstance = $this->dbConnector;
-                $db = $dbInstance->connectToDB();
-        
+          
                 // Fetching user data from the database based on the email
                 $sql = 'SELECT * FROM users WHERE email = :email AND role_id = :role_id';
                 
-                $query = $db->prepare($sql);
+                $query = $this->db->prepare($sql);
                 $query->bindParam(':email', $email);
                 $query->bindParam(':role_id', $role);
                 $query->execute();

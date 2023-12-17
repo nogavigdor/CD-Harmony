@@ -1,12 +1,8 @@
 <?php
 use Services\SessionManager; 
+include './utilities/functions.php';
 $session = new SessionManager();
 $session->startSession();
-
-//SessionManager::setSessionVariable('success_message', 'Your user acount was created successfully. Please login.');
-
-
-
 $csrfToken=SessionManager::generateCSRFToken();
     ?>
     <!DOCTYPE html>
@@ -22,9 +18,7 @@ $csrfToken=SessionManager::generateCSRFToken();
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <?php
         // Include view-specific JavaScript files based on the last part of the URL
-        $url = $_SERVER['REQUEST_URI'];
-        $parts = explode('/', rtrim($url, '/'));
-        $currentView = end($parts);
+        $currentView = getCurrentView();
         
         if ($currentView == 'contact') {
             echo '<script defer src="https://www.google.com/recaptcha/api.js"></script>';
@@ -35,18 +29,22 @@ $csrfToken=SessionManager::generateCSRFToken();
              echo '<script defer src="https://www.google.com/recaptcha/api.js"></script>';
              $jsFileName = 'signup.js';
             echo '<script defer src="' . BASE_URL . '/src/js/' . $jsFileName . '"></script>';}
+
+        
     ?>
 
     </head>
-    <body class="bg-primary font-body min-h-screen">
+    <body class="bg-primary  font-body min-h-screen">
    
      <!-- Header -->
-    <header class="bg-secondary text-white p-4">
+    <header class="relative bg-secondary text-white p-4">
         <div class="container mx-auto flex justify-between items-center">
-            <a href="<?php echo BASE_URL; ?>"><img src="<?php echo BASE_URL; ?>/src/assets/logo_no_background.png" alt="CD Harmony Logo" class="w-64 h-64"></a>
-
-            <!-- Search area -->
-            <div class="relative">
+            <a href="<?php echo BASE_URL; ?>"><img src="<?php echo BASE_URL; ?>/src/assets/logo_no_background.png" alt="CD Harmony Logo" class="w-64"></a>
+        <?php    
+       if($currentView != 'login' && $currentView != 'signup') { ?>
+       
+          <!-- Search area -->
+          <div class="relative">
                 <input type="text" placeholder="Search products..." class="px-8 py-2 rounded-full border border-white bg-transparent text-buttonText focus:outline-none placeholder-gray-400">
 
                 <button class="btn btn-primary search-button transition-transform hover:scale-105">
@@ -55,7 +53,7 @@ $csrfToken=SessionManager::generateCSRFToken();
             </div>
 
             <!-- Navigation Links -->
-            <nav class="space-x-4">
+            <nav  class="space-x-4 text-xl">
                 <a href="<?php echo BASE_URL; ?>" class="text-white">Home</a>
                 <a href="<?php echo BASE_URL; ?>" class="text-white">Shop</a>
                 <a href="#" class="text-white">About</a>
@@ -64,13 +62,23 @@ $csrfToken=SessionManager::generateCSRFToken();
 
             <!-- User and Cart Section -->
             <div class="relative flex items-center">
-                      <!-- Cart Button -->
-                      <a href="<?php echo BASE_URL; ?>/cart" class="ml-4 btn btn-secondary">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
-                </svg>
-
+                 <!-- Cart Button -->
+                <a href="<?php echo BASE_URL; ?>/cart" class="ml-4 btn btn-secondary relative">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                    </svg>
+                    <span id="cartItemCount" class="absolute top-0 right-0 bg-red-500 text-white text-sm rounded-full h-6 w-6 flex items-center justify-center">0</span>
                 </a>
+                <!-- Cart Slider -->
+                <div id="cartSlider" class="fixed top-0 right-0 h-full w-64 bg-white p-4 overflow-auto transform translate-x-full transition-transform duration-200 ease-in-out">
+                    <!-- Cart items will be added here -->
+                    <div id="cartItems"></div>
+                    <!-- Total price -->
+                    <div id="totalPrice"></div>
+                    <!-- Go to cart page button -->
+                    <a href="<?php echo BASE_URL; ?>/cart" class="btn btn-primary">Go to Cart</a>
+                </div>
+
                 <?php
                 // Login Button
                 if (SessionManager::isLoggedIn()) { ?>
@@ -95,6 +103,9 @@ $csrfToken=SessionManager::generateCSRFToken();
           
 
             </div>
+            <?php } ?>
+    
+          
         </div>
     </header>   
     <?php include 'partials/message.php'; //integrating success and error messages for the use  ?>

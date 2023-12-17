@@ -1,13 +1,15 @@
+<h2>Related Albums</h2>
 
-<div class="flex justify-between">
+<div class="flex flex-col gap-4 md:flex-row justify-between  ">
+ 
     <?php
     //Displays recommended products on the product details page
     $controller = new Controllers\RecommendationController();
     $recommendedProducts = $controller->getRecommendationsOnProductPage($product->product_id);
     foreach ($recommendedProducts as $recommendedProduct) {
         ?>
-        <div class="w-1/3">
-            <div class="bg-white rounded-lg shadow-lg p-4">
+        <div class="w-full md:w-1/3">
+            <div class="bg-white rounded-lg shadow-lg p-4 ">
                 <div class="flex justify-between">
                     <div class="flex flex-col">
                         <h3 class="text-xl font-semibold mb-2"><?= $recommendedProduct['product_title'  ] ?></h3>

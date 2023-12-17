@@ -4,7 +4,7 @@ $errors_out = SessionManager::getSessionVariable('errors_output');
 ?>
 <?php include 'partials/message.php'; ?>
 <div class="max-w-md mx-auto bg-white rounded p-6 shadow-md mt-20 mb-20">
-    <h1 class="text-2xl text-pink-800 font-semibold mb-6 ">Login</h1>
+    <h1 class="font-headline text-2xl text-pink-800 font-semibold mb-6 ">Customer Login</h1>
 
     <form id="loginForm" method='POST' action='./login' novalidate>
     <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">      

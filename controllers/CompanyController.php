@@ -17,8 +17,8 @@ class CompanyController
         try {
             $companyModel = new CompanyModel();
             return $companyModel->getCompanyDetails();
-        } catch (\PDOException $ex) {
-            error_log('PDO Exception: ' . $ex->getMessage());
+        } catch (\PDOException $e) {
+            error_log('PDO Exception: ' . $e->getMessage());
             // Handle error (maybe return default company details or log the error)
             return null;
         }
@@ -77,8 +77,8 @@ class CompanyController
                     exit();
                     
                 }
-            } catch (\PDOException $ex) {
-                error_log('PDO Exception: ' . $ex->getMessage());
+            } catch (\PDOException $e) {
+                error_log('PDO Exception: ' . $e->getMessage());
             }
            
         }

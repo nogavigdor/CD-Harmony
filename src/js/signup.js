@@ -24,50 +24,42 @@ function validateEmail() {
         emailMessage.style.color = "red";
     }
 }
-
 function validatePassword() {
     let password = document.getElementById('password').value;
     let passwordMessage = document.getElementById('passwordMessage');
-    let isValid = true;
+    let errorMessages = [];
 
     // Minimum length of 8 characters
     if (password.length < 8) {
-        passwordMessage.innerHTML = "Password must be at least 8 characters long.";
-        isValid = false;
-    } else {
-        passwordMessage.innerHTML = "Password is valid!";
-        passwordMessage.style.color = "green";
+        errorMessages.push("Password must be at least 8 characters long.");
     }
 
-    // Additional password validation checks...
     // At least one uppercase letter
     if (!/[A-Z]/.test(password)) {
-        passwordMessage.innerHTML += "<br>Please include at least one capital letter.";
-        isValid = false;
+        errorMessages.push("Please include at least one capital letter.");
     }
 
     // At least one lowercase letter
     if (!/[a-z]/.test(password)) {
-        passwordMessage.innerHTML += "<br>Please include at least one lowercase letter.";
-        isValid = false;
+        errorMessages.push("Please include at least one lowercase letter.");
     }
 
     // At least one digit
     if (!/\d/.test(password)) {
-        passwordMessage.innerHTML += "<br>Please include at least one digit.";
-        isValid = false;
+        errorMessages.push("Please include at least one digit.");
     }
 
     // At least one special character
     if (!/[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(password)) {
-        passwordMessage.innerHTML += "<br>Please include at least one special character.";
-        isValid = false;
+        errorMessages.push("Please include at least one special character.");
     }
 
-    // Update message color based on overall validity
-    if (isValid) {
+    // If all conditions are met, password is valid
+    if (errorMessages.length === 0) {
+        passwordMessage.innerHTML = "Password is valid!";
         passwordMessage.style.color = "green";
     } else {
+        passwordMessage.innerHTML = errorMessages.join("<br>");
         passwordMessage.style.color = "red";
     }
 }

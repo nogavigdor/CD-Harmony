@@ -31,6 +31,31 @@ route('/cdharmony/test', 'GET', function () {
     $controller->insertData();
 });
 
+// Add item to cart
+route('/cdharmony/cart/add/(\d+)', 'POST', function ($id) {
+    $controller = new CartController();
+    $controller->addItem($id);
+});
+
+// Remove item from cart
+route('/cdharmony/cart/remove/(\d+)', 'POST', function ($id) {
+    $controller = new CartController();
+    $controller->removeItem($id);
+});
+
+// Checkout
+route('/cdharmony/cart/checkout', 'POST', function () {
+    $controller = new CartController();
+    $controller->checkout();
+});
+
+// View cart
+route('/cdharmony/cart', 'GET', function () {
+    $controller = new CartController();
+    $controller->viewCart();
+});
+
+
 route('/cdharmony/account', 'GET', function () {
     $controller = new UserController();
     $controller->accountView();
@@ -43,11 +68,6 @@ route('/cdharmony/product/(\d+)', 'GET', function ($id) {
     $controller->showProductDetails($id, 'none');
 });
 
-route('/cdharmony/admin/product/show/(\d+)', 'GET', function ($id) {
-    $controller = new ProductController();
-    //when accessing the product details from the admin panel, the role is set to admin
-    $controller->showProductDetails($id,'admin');
-});
 
 route('/cdharmony/admin/product/(\d+)', 'POST', function ($id) {
     $controller = new ProductController();
@@ -195,8 +215,8 @@ route('/cdharmony/admin/company/', 'POST', function () {
 });
 
 route('/cdharmony/admin/articles/', 'GET', function () {
-    $controller = new CompanyController();
-    $controller->updateCompanyDetails();
+    $controller = new ArticleController();
+    $controller->getArticles();
 });
 
 route('/cdharmony/admin/products/', 'GET', function () {

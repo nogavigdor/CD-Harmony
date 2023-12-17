@@ -1333,6 +1333,14 @@ $HpassCustomer = password_hash($setPassCustomer, PASSWORD_BCRYPT, $iterationsCus
 $sqlCustomer = "INSERT INTO users (first_name, last_name, email, user_password, creation_date, role_id) VALUES (:first_name, :last_name, :email, :user_password, :creation_date, :role_id)";
 $stmtCustomer = $db->prepare($sqlCustomer);
 
+// Set parameter values
+$first_nameCustomer = 'John';
+$last_nameCustomer = 'Doe';
+$emailCustomer = 'noga.vigdor@gmail.com';
+$creation_dateCustomer = date('Y-m-d H:i:s');
+$role_idCustomer = 3; 
+
+
 // Bind parameters
 $stmtCustomer->bindParam(':first_name', $first_nameCustomer, PDO::PARAM_STR);
 $stmtCustomer->bindParam(':last_name', $last_nameCustomer, PDO::PARAM_STR);
@@ -1341,12 +1349,6 @@ $stmtCustomer->bindParam(':user_password', $HpassCustomer, PDO::PARAM_STR);
 $stmtCustomer->bindParam(':creation_date', $creation_dateCustomer, PDO::PARAM_STR);
 $stmtCustomer->bindParam(':role_id', $role_idCustomer, PDO::PARAM_INT);
 
-// Set parameter values
-$first_nameCustomer = 'John';
-$last_nameCustomer = 'Doe';
-$emailCustomer = 'noga.vigdor@gmail.com';
-$creation_dateCustomer = date('Y-m-d H:i:s');
-$role_idCustomer = 3; 
 
 // Execute the statement
 $stmtCustomer->execute();

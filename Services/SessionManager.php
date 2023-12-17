@@ -17,6 +17,12 @@ class SessionManager
      
         $_SESSION[$key] = $value;
     }
+
+    //is variable set
+    public static function isVar($key)
+    {
+        return isset($_SESSION[$key]);
+    }
     //returns a session variable
     public static function getSessionVariable($key)
     {
@@ -72,7 +78,7 @@ class SessionManager
     //returns the user id of the logged in user
     public static function getLoggedInUserId()
     {
-        return self::getSessionVariable(['user']['id']);
+        return self::getSessionVariable('user')['id'];
     }
 
     // generates a random string of 32 characters which is used as a CSRF token
@@ -99,7 +105,7 @@ class SessionManager
     }
     // validates the CSRF token
     public static function validateCSRFToken($token) {
-        $csrfTokenData = $_SESSION['csrf_token'] ?? null;
+        $csrfTokenData = SessionManager::getSessionVariable('csrf_token');
     
         // Check if the token exists and is valid (value matched and not expired)
         if ($csrfTokenData && $token === $csrfTokenData['value'] && time() < $csrfTokenData['expiration_time']) {

@@ -11,10 +11,11 @@ use Services\SessionManager;
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
-<body class="flex items-center justify-center min-h-screen">
-<main class="container mx-auto my-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
+<body class="relative flex items-center justify-center min-h-screen">
 <?php include 'partials/message.php';  ?>
-<section class="h-screen">
+<main class="container mx-auto my-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
+
+<section class="">
 <div class="max-w-md mx-auto my-auto bg-white rounded p-6 shadow-md mt-20 mb-20">
     <h1 class="text-pink-600 text-2xl font-semibold mb-6">Admin Login</h1>
 

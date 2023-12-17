@@ -135,48 +135,46 @@ namespace Models;
             } 
         }
 
+        //Get product details by product id
         function getProductDetails($id)
-    {
+        {   //implementing product_details view
         try {
             $sql = '
-            SELECT
-            p.product_id,
-            pv.product_variant_id,
-            con.title AS condition_title,
-            p.title as product_title,
-            p.product_description,
-            a.title AS artist_title,
-            c.release_date,
-            t.title AS tag_title,
-            ip.image_name,
-            ip.image_path,
-            ip.main_image,
-            pv.quantity_in_stock,
-            pv.price
-            FROM
-            products p
-            INNER JOIN products_tags pt ON pt.product_id = p.product_id
-            LEFT JOIN product_variants pv ON pv.product_id = p.product_id
-            INNER JOIN tags t ON t.tag_id = pt.tag_id
-            INNER JOIN cds c ON c.product_id = p.product_id
-            INNER JOIN artists a ON a.artist_id = c.artist_id
-            INNER JOIN conditions con ON pv.condition_id = con.condition_id
-            INNER JOIN images_for_products ip ON ip.product_id = p.product_id
-            WHERE p.product_id = :id
-            ';
-            $query = $this->db->prepare($sql);
-            $query->bindParam(':id', $id, \PDO::PARAM_INT);
-            $query->execute();
-
-            $result = $query->fetch(\PDO::FETCH_OBJ);
-
-            return $result;
+                    SELECT * from product_details
+                    WHERE product_id = :id  
+             ';
+        
+        $query = $this->db->prepare($sql);
+        $query->bindParam(':id', $id, \PDO::PARAM_INT);
+        $query->execute();
+        $product = $query->fetch(\PDO::FETCH_OBJ);
+        return $product;
+        
         } catch (\PDOException $e) {
             die("Connection failed: " . $e->getMessage());
         } 
     }
 
-       //Show all products in the admin page
+    //Get product variant details by product id
+     public function getProductVariantsDetails($id)
+        {   //implementing product_details view
+        try {
+            $sql = '
+                    SELECT * from product_variants_details
+                    WHERE product_id = :id  
+             ';
+        
+        $query = $this->db->prepare($sql);
+        $query->bindParam(':id', $id, \PDO::PARAM_INT);
+        $query->execute();
+        $product_variants_details = $query->fetchAll(\PDO::FETCH_ASSOC);
+        return $product_variants_details;
+        
+        } catch (\PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
+        }
+    }
+       //update a product on the admin page
        public function updateProduct() {
         try {
             $sql = '
@@ -216,6 +214,8 @@ namespace Models;
             
     }
 
+    //Get product variant details by product id
+
     //Get all the tags that are associated with a specific product
     public function getProductTags($productId) {
         $query = "
@@ -233,6 +233,7 @@ namespace Models;
         return $tags;
     }
 
+    //Get products that have the same tags as the current product
     public function getProductsByTags($productId, $tags) {
     // Gets the number of tags and creates a placeholder string for the query
         $placeholders = str_repeat('?,', count($tags) - 1) . '?';

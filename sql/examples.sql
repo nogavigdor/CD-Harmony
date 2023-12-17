@@ -54,6 +54,62 @@ LIMIT 5;
 
 
 -- Triggers
+/*
+This trigger first check if the remaining quantaty is greater or equal to the ordered quantaty
+and only then update the quantity of a product variant in the product_variants table
+
+*/
+CREATE TRIGGER update_stock_after_order
+AFTER INSERT ON orders_lines
+FOR EACH ROW
+BEGIN
+    DECLARE remaining_quantity INT;
+
+    SELECT quantity_in_stock INTO remaining_quantity
+    FROM product_variants
+    WHERE product_variant_id = NEW.product_variant_id;
+
+    IF remaining_quantity >= NEW.quantity THEN
+        UPDATE product_variants
+        SET quantity_in_stock = quantity_in_stock - NEW.quantity
+        WHERE product_variant_id = NEW.product_variant_id;
+    ELSE
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Not enough stock for this product variant.';
+    END IF;
+END;
+
+<?php
+try {
+    // Code to insert a new order line
+    // ...
+} catch (PDOException $e) {
+    if (strpos($e->getMessage(), 'Not enough stock for this product variant') !== false) {
+        // Display a user-friendly error message
+        echo "We're sorry, but there's not enough stock for one of the products in your order.";
+    } else {
+        // If the error is something else, rethrow the exception
+        throw $e;
+    }
+}
+
+/* This trigger will increase the total_price in the orders table when a new order line 
+is inserted.
+*/
+DELIMITER $$
+CREATE TRIGGER update_total_price_on_insert
+AFTER INSERT ON orders_lines
+FOR EACH ROW
+BEGIN
+    UPDATE orders
+    SET total_price = total_price + NEW.price
+    WHERE order_id = NEW.order_id;
+END$$
+DELIMITER ;
+
+
+
+
 -- A trigger that updates the grand_total in the cart_master table when a new cart_item is added
 DELIMITER $$
 CREATE TRIGGER update_grand_total
@@ -113,6 +169,32 @@ try {
     exit();
 }
 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --A trigger that updates the quantity_in_stock in the product_variants table when a new order is placed
 DELIMITER $$
@@ -174,113 +256,6 @@ BEGIN
 END$$
 DELIMITER ;
 
---A trigger that updates the grand_total in the cart_master table when a cart_item is updated
-DELIMITER $$
-CREATE TRIGGER update_grand_total
-AFTER UPDATE ON cart_items
-FOR EACH ROW
-BEGIN
-    UPDATE cart_master
-    SET grand_total = grand_total - OLD.price + NEW.price
-    WHERE cart_master_id = OLD.cart_master_id;
-END$$
-DELIMITER ;
-
---A trigger that updates the sub_total in the cart_master table when a cart_item is updated
-DELIMITER $$
-CREATE TRIGGER update_sub_total
-AFTER UPDATE ON cart_items
-FOR EACH ROW
-BEGIN
-    UPDATE cart_master
-    SET sub_total = sub_total - OLD.price + NEW.price
-    WHERE cart_master_id = OLD.cart_master_id;
-END$$
-DELIMITER ;
-
---A trigger that update the discount in the cart_master table when a cart_item is updated
-DELIMITER $$
-CREATE TRIGGER update_discount
-AFTER UPDATE ON cart_items
-FOR EACH ROW
-BEGIN
-    UPDATE cart_master
-    SET discount = discount - OLD.price + NEW.price
-    WHERE cart_master_id = OLD.cart_master_id;
-END$$
-DELIMITER ;
-
---A trigger that updates the quantity_in_stock in the product_variants table when a order is updated
-DELIMITER $$
-CREATE TRIGGER update_quantity_in_stock
-AFTER UPDATE ON orders_lines
-FOR EACH ROW
-BEGIN
-    UPDATE product_variants
-    SET quantity_in_stock = quantity_in_stock - OLD.quantity + NEW.quantity
-    WHERE product_variant_id = OLD.product_variant_id;
-END$$
-DELIMITER ;
-
---A trigger that updates the grand_total in the cart_master table when a cart_item is updated
-DELIMITER $$
-CREATE TRIGGER update_grand_total
-AFTER UPDATE ON cart_items
-FOR EACH ROW
-BEGIN
-    UPDATE cart_master
-    SET grand_total = grand_total - OLD.price + NEW.price
-    WHERE cart_master_id = OLD.cart_master_id;
-END$$
-DELIMITER ;
-
---A trigger that updates the sub_total in the cart_master table when a cart_item is updated
-DELIMITER $$
-CREATE TRIGGER update_sub_total
-AFTER UPDATE ON cart_items
-FOR EACH ROW
-BEGIN
-    UPDATE cart_master
-    SET sub_total = sub_total - OLD.price + NEW.price
-    WHERE cart_master_id = OLD.cart_master_id;
-END$$
-DELIMITER ;
-
---A trigger that update the discount in the cart_master table when a cart_item is updated
-DELIMITER $$
-CREATE TRIGGER update_discount
-AFTER UPDATE ON cart_items
-FOR EACH ROW
-BEGIN
-    UPDATE cart_master
-    SET discount = discount - OLD.price + NEW.price
-    WHERE cart_master_id = OLD.cart_master_id;
-END$$
-DELIMITER ;
-
---A trigger that updates the quantity_in_stock in the product_variants table when a order is updated
-DELIMITER $$
-CREATE TRIGGER update_quantity_in_stock
-AFTER UPDATE ON orders_lines
-FOR EACH ROW
-BEGIN
-    UPDATE product_variants
-    SET quantity_in_stock = quantity_in_stock - OLD.quantity + NEW.quantity
-    WHERE product_variant_id = OLD.product_variant_id;
-END$$
-DELIMITER ;
-
---A trigger that updates the grand_total in the cart_master table when a cart_item is updated
-DELIMITER $$
-CREATE TRIGGER update_grand_total
-AFTER UPDATE ON cart_items
-FOR EACH ROW
-BEGIN
-    UPDATE cart_master
-    SET grand_total = grand_total - OLD.price + NEW.price
-    WHERE cart_master_id = OLD.cart_master_id;
-END$$
-DELIMITER ;
 
 
 

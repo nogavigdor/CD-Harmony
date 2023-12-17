@@ -17,7 +17,13 @@ class UserController {
     }
     
     public function createAccount() {
-        //removes any while spaces from the begining and the end of the string 
+    try {
+        // Check if CSRF token is set and if it matches the one stored in the session
+        if (!isset($_POST['csrf_token']) || !SessionManager::validateCSRFToken($_POST['csrf_token'])) {
+            // CSRF token is not valid, stop the execution
+            die('Invalid CSRF token');
+        }
+           //removes any while spaces from the begining and the end of the string 
         //and converts any special characters to HTML entities
         if (isset($_POST['first_name']))
           $first_name =htmlspecialchars(trim( $_POST['first_name']));
@@ -77,17 +83,33 @@ class UserController {
         else //if there were errors, the user will be redirected to the signup page
         {
             $errType['general'] = 'Please correct your input fields and try again.';
+            SessionManager::setSessionVariable('error_message', 'Please correct your input fields and try again.');
             //the error messages will be stored in the session variables
             SessionManager::setSessionVariable('output_errors',$errType);
+            SessionManager::setSessionVariable('email_input', $email);
         
         header("Location: " . BASE_URL . "/signup");
         exit();
+        }
+
+
+        } catch (Exception $e) {
+            // Log the exception or display a message
+            error_log($e->getMessage());
+            SessionManager::setSessionVariable('error_message', 'An error occurred while creating your account. Please try again.');
+            header("Location: " . BASE_URL . "/signup");
+            exit();
         }
     }
 
     //user (customer) login
     public function authenticateUser() {
-
+    try {
+        // Check if CSRF token is set and if it matches the one stored in the session
+        if (!isset($_POST['csrf_token']) || !SessionManager::validateCSRFToken($_POST['csrf_token'])) {
+            // CSRF token is not valid, stop the execution
+            die('Invalid CSRF token');
+        }
         //removes any while spaces from the begining and the end of the string  
         //and converts any special characters to HTML entities
         if (isset($_POST['email']))
@@ -121,10 +143,18 @@ class UserController {
         } else {
             //sets the input fields in the session variable so when redirected to the login page 
             //the user will see the input fields with the values he/she has entered
-            SessionManager::setSessionVariable('input_fiels', $_POST);
+            $_SESSION['email_input'] = $_POST['email'];
             //sets the error message in the session variable
             SessionManager::setSessionVariable('error_message', 'Please check your email or passwor and try to log in.');
           
+            header("Location: " . BASE_URL . "/login");
+            exit();
+        }
+
+        } catch (Exception $e) {
+            // Log the exception or display a message
+            error_log($e->getMessage());
+            SessionManager::setSessionVariable('error_message', 'An error occurred while login to your account. Please try again.');
             header("Location: " . BASE_URL . "/login");
             exit();
         }
