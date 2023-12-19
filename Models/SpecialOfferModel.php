@@ -14,205 +14,157 @@ namespace Models;
             $this->db = DBConnector::getInstance()->connectToDB();
         }
 
-        public function getAllProducts(){
-            try{
-                $sql='     
-                SELECT
-                pv.product_variant_id,
-                p.product_id,
-                pv.condition_id,
-                p.title AS product_title,
-                p.product_description AS description,
-                a.title AS artist_title,
-                t.title AS tag_title,
-                ip.image_name,
-                ip.image_path,
-                con.title AS condition_title,        
-                pv.quantity_in_stock 
-                FROM
-                product_variants pv
-                INNER JOIN products p ON p.product_id = pv.product_id
-                INNER JOIN products_tags pt ON p.product_id = pt.product_id
-                INNER JOIN tags t ON pt.tag_id = t.tag_id
-                LEFT JOIN cds c ON p.product_id = c.product_id
-                LEFT JOIN artists a ON c.artist_id = a.artist_id
-                LEFT JOIN images_for_products ip ON p.product_id = ip.product_id
-                INNER JOIN conditions con ON pv.condition_id = con.condition_id
-                GROUP BY p.product_id
+        public function createSpecialOffer($productVariantId, $title, $description, $discountPrecentage, $startDate, $endDate)
+        {
+            try {
+                $sql = '
+                    INSERT INTO special_offers (product_variant_id, title, special_offer_description, discount_precentage, special_offer_start_date, special_offer_end_date)
+                    VALUES (:product_variant_id, :title, :special_offer_description, :discount_precentage, :special_offer_start_date, :special_offer_end_date)
                 ';
+
+                $query->bindParam(':product_variant_id', $productVariantId);
+                $query->bindParam(':title', $title);
+                $query->bindParam(':special_offer_description', $description);
+                $query->bindParam(':discount_precentage', $discountPrecentage);
+                $query->bindParam(':special_offer_start_date', $startDate);
+                $query->bindParam(':special_offer_end_date', $endDate);
                 $query = $this->db->prepare($sql);
                 $query->execute();
-                return $query->fetchAll(PDO::FETCH_OBJ);
             } catch (\PDOException $e) {
-                die("Connection failed: " . $e->getMessage());
+                
+                $e->getMessage();
             }
         }
-        //Get product cds by tag
-        public function getProductsByTag($tag) {
+
+        public function updateSpecialOffer($productVariantId, $title, $description, $discountPrecentage, $startDate, $endDate)
+        {
             try {
-                $sql='
-                SELECT
-                p.product_id,
-                pv.product_variant_id,
-                p.title as product_title,
-                a.title AS artist_title,
-                t.title AS tag_title,
-                ip.image_name,
-                ip.image_path,
-                SUM(CASE WHEN pv.condition_id = 1 THEN pv.quantity_in_stock ELSE 0 END) AS new_quantity,
-                SUM(CASE WHEN pv.condition_id = 2 THEN pv.quantity_in_stock ELSE 0 END) AS used_quantity,
-                MAX(CASE WHEN pv.condition_id = 1 THEN pv.price END) AS new_price,
-                MAX(CASE WHEN pv.condition_id = 2 THEN pv.price END) AS used_price
-                FROM
-                    products p
-                INNER JOIN products_tags pt ON pt.product_id = p.product_id
-                INNER JOIN tags t ON t.tag_id = pt.tag_id
-                INNER JOIN cds c ON c.product_id = p.product_id
-                INNER JOIN artists a ON a.artist_id = c.artist_id
-                LEFT JOIN product_variants pv ON pv.product_id = p.product_id
-                INNER JOIN images_for_products ip ON ip.product_id = p.product_id
-                WHERE t.title LIKE :tag
-
-                GROUP BY p.product_id
-                LIMIT 10
+                $sql = '
+                    UPDATE special_offers
+                    SET title = :title, special_offer_description = :special_offer_description, discount_precentage = :discount_precentage, special_offer_start_date = :special_offer_start_date, special_offer_end_date = :special_offer_end_date
+                    WHERE product_variant_id = :product_variant_id
                 ';
+
+                $query->bindParam(':product_variant_id', $productVariantId);
+                $query->bindParam(':title', $title);
+                $query->bindParam(':special_offer_description', $description);
+                $query->bindParam(':discount_precentage', $discountPrecentage);
+                $query->bindParam(':special_offer_start_date', $startDate);
+                $query->bindParam(':special_offer_end_date', $endDate);
                 $query = $this->db->prepare($sql);
-                $query->bindParam(':tag', $tag, PDO::PARAM_STR);
                 $query->execute();
-            //var_dump($query->queryString);
-            //var_dump($tag);
-                return $query->fetchAll(PDO::FETCH_OBJ);
             } catch (\PDOException $e) {
-                die("Connection failed: " . $e->getMessage());
-            }  
-                
-            
-        }
-
-
-        //get recent release of cds
-        public function getRecentReleases() {
-            // Implement the logic to fetch recent releases here
-            // For example:
-            try {
-                $sql='
-                SELECT
-                p.product_id,
-                pv.product_variant_id,
-                c.release_date,
-                p.title as product_title,
-                a.title AS artist_title,
-                t.title AS tag_title,
-                ip.image_name,
-                ip.image_path,
-                SUM(CASE WHEN pv.condition_id = 1 THEN pv.quantity_in_stock ELSE 0 END) AS new_quantity,
-                SUM(CASE WHEN pv.condition_id = 2 THEN pv.quantity_in_stock ELSE 0 END) AS used_quantity,
-                MAX(CASE WHEN pv.condition_id = 1 THEN pv.price END) AS new_price,
-                MAX(CASE WHEN pv.condition_id = 2 THEN pv.price END) AS used_price
-                FROM
-                    products p
-                INNER JOIN products_tags pt ON pt.product_id = p.product_id
-                INNER JOIN tags t ON t.tag_id = pt.tag_id
-                INNER JOIN cds c ON c.product_id = p.product_id
-                INNER JOIN artists a ON a.artist_id = c.artist_id
-                LEFT JOIN product_variants pv ON pv.product_id = p.product_id
-                INNER JOIN images_for_products ip ON ip.product_id = p.product_id
-    
-                WHERE release_date BETWEEN \'2023-01-21\' AND CURDATE()
-
-                GROUP BY p.product_id
-                LIMIT 10
-
-                ';
-                $query = $this->db->prepare($sql);
-        
-                $query->execute();
-            //s   var_dump($query->queryString);
-            //var_dump($tag);
-                return $query->fetchAll(PDO::FETCH_OBJ);
-            } catch (\PDOException $e) {
-                die("Connection failed: " . $e->getMessage());
+         
+                $e->getMessage();
             } 
         }
 
-        function getSpecialOffer()
-    {
-        try {
-            $sql = '
-            SELECT 
-            so.title AS offer_title,
-            so.special_offer_description AS description,
-            so.discount_sum AS discount,
-            so.special_offer_end_date AS end_date,
-            p.title AS product_title,
-            a.title AS artist_title,
-            (pv.price - so.discount_sum) AS discounted_price,
-            ip.image_path,
-            ip.image_name
-            FROM special_offers so
-            JOIN product_variants pv ON so.product_variant_id = pv.product_variant_id
-            JOIN cds c ON pv.product_id = c.product_id
-            JOIN artists a ON c.artist_id = a.artist_id
-            JOIN products p ON pv.product_id = p.product_id
-            JOIN images_for_products ip ON p.product_id = ip.product_id AND ip.main_image = 1
-            ORDER BY so.special_offer_id DESC
-            LIMIT 1;
-            ';
-            $query = $this->db->prepare($sql);
-            $query->execute();
+        public function deleteSpecialOffer($productVariantId)
+        {
+            try {
+                $sql = '
+                    DELETE FROM special_offers
+                    WHERE product_variant_id = :product_variant_id
+                ';
 
-            $result = $query->fetch(\PDO::FETCH_OBJ);
+                $query->bindParam(':product_variant_id', $productVariantId);
+                $query = $this->db->prepare($sql);
+                $query->execute();
+            } catch (\PDOException $e) {
+                
+                $e->getMessage();
+            }
+        }
 
-            return $result;
-        } catch (\PDOException $e) {
-            die("Connection failed: " . $e->getMessage());
-        } 
-    }
+        function getSpecialOffer($productVariantId)
+        {
+            try {
+                $sql = '
+                    SELECT *
+                    FROM special_offers
+                    WHERE product_variant_id = :product_variant_id AND
+                ';
 
-       //Show all products in the admin page
-       public function updateProduct() {
-        try {
-            $sql = '
-            SELECT
-            pv.product_variant_id,
-            p.product_id,
-            pv.condition_id,
-            p.title AS product_title,
-            p.product_description AS description,
-            a.title AS artist_title,
-            t.title AS tag_title,
-            ip.image_name,
-            ip.image_path,
-            con.title AS condition_title,        
-            pv.quantity_in_stock 
-        FROM
-            products p
-        INNER JOIN product_variants pv ON p.product_id = pv.product_id
-        INNER JOIN products_tags pt ON p.product_id = pt.product_id
-        INNER JOIN tags t ON pt.tag_id = t.tag_id
-        LEFT JOIN cds c ON p.product_id = c.product_id
-        LEFT JOIN artists a ON c.artist_id = a.artist_id
-        LEFT JOIN images_for_products ip ON p.product_id = ip.product_id
-        INNER JOIN conditions con ON pv.condition_id = con.condition_id
-        GROUP BY pv.product_variant_id
-             ';
-            $query = $this->db->prepare($sql);
-            //echo $query->queryString;
+                $query->bindParam(':product_variant_id', $productVariantId);
+                $query = $this->db->prepare($sql);
+                $query->execute();
+                $result = $query->fetch(PDO::FETCH_ASSOC);
+                return $result;
+            } catch (\PDOException $e) {
+                
+                $e->getMessage();
+            }
+        }
+        //get the special offer details by product variant id
+        //from the product_variants_details view
+        public function getSpecialOfferDetails($productVariantId)
+        {
+            try {
+                $sql = '
+                    SELECT *
+                    FROM product_variants_details
+                    WHERE product_variant_id = :product_variant_id
+                ';
+        
+                // Prepare the query
+                $query = $this->db->prepare($sql);
+        
+                // Bind the parameters
+                $query->bindParam(':product_variant_id', $productVariantId);
+        
+                // Execute the query
+                $query->execute();
+        
+                // Fetch the result
+                $result = $query->fetch(PDO::FETCH_ASSOC);
+        
+                return $result;
+            } catch (\PDOException $e) {
+                // Handle the exception (e.g., log or throw a custom exception)
+                echo $e->getMessage();
+            }
+        }
+        
+      
+        function getAllSpecialOffers()
+        { // get all special offers
+         //product_variants_details is a view that contains the product variant details
+          //junctioned with other relevant tables
+         try {
+                $sql = '
+                SELECT *
+                FROM special_offers
 
-            $query->execute();
-        //s   var_dump($query->queryString);
-        //var_dump($tag);
-            return $query->fetchAll(PDO::FETCH_OBJ);
-        } catch (\PDOException $e) {
-            die("Connection failed: " . $e->getMessage());
-        }  
-            
-    }
+                    ';
 
+                $query = $this->db->prepare($sql);
+                $query->execute();
+                $result = $query->fetchAll(PDO::FETCH_ASSOC);
+                return $result;
+            } catch (\PDOException $e) {
+                
+                $e->getMessage();
+            }
+        }
 
+        public function showSpecialOffer(){
+            try {
+                $sql = '
+                    SELECT *
+                    FROM special_offers AS sp
+                    INNER JOIN product_variants_details AS pvd on so.product_variant_id = pvd.product_variants_details.product_variant_id
+                    LIMIT 1
+                ';
 
-
-
+                $query = $this->db->prepare($sql);
+                $query->execute();
+                $result = $query->fetch(PDO::FETCH_ASSOC);
+                return $result;
+            } catch (\PDOException $e) {
+                
+                $e->getMessage();
+            }
+        }
 
 
     }

@@ -40,5 +40,5 @@ if(SessionManager::getSessionVariable('error_message')){
             </div>
         </div>
     </header>
-
-    <?php include 'partials/message.php';  ?>
+    <?php include 'partials/message.php'; ?>
+    <?php include 'partials/auto-loader.php' ?>

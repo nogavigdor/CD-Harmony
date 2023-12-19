@@ -1,4 +1,17 @@
 /* Reset some default styles */
+/* Define colors using CSS variables */
+:root {
+  --background-color: #008080; /* Rich Teal Blue */
+  --text-color: #A80000; /* Deep Crimson Red */
+  --accent-color: #DAA520; /* Goldenrod Yellow */
+  --secondary-background: #FFF4E0; /* Soft Cream */
+  --menu-background: #006B6B; /* Deep Teal */
+  --menu-text: #FFF4E0; /* Soft Cream on Deep Teal */
+  --hover-states: #009494; /* Lighter Teal */
+  --border-color: #333333; /* Dark Gray */
+  --admin-menu-background: #333333; /* Dark Gray */
+}
+
 body,  p {
   margin: 0;
   padding: 0;
@@ -20,25 +33,16 @@ body {
 
 h1, h2, h3 {
   font-family: 'Oswald', sans-serif;
-  color:var(--secondary-background);
+
+ 
+  
 }
 
 .custom-text {
   font-family: 'Poppins', sans-serif;
 }
 
-/* Define colors using CSS variables */
-:root {
-  --background-color: #008080; /* Rich Teal Blue */
-  --text-color: #A80000; /* Deep Crimson Red */
-  --accent-color: #DAA520; /* Goldenrod Yellow */
-  --secondary-background: #FFF4E0; /* Soft Cream */
-  --menu-background: #006B6B; /* Deep Teal */
-  --menu-text: #FFF4E0; /* Soft Cream on Deep Teal */
-  --hover-states: #009494; /* Lighter Teal */
-  --border-color: #333333; /* Dark Gray */
-  --admin-menu-background: #333333; /* Dark Gray */
-}
+
 
 header {
   background-color: var(--menu-background);

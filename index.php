@@ -11,6 +11,7 @@ use Controllers\LoginController;
 use Controllers\UserController;
 use Controllers\AdminController;
 use Controllers\CompanyController;
+use Controllers\CartController;
 use Controllers\TestController;
 
 
@@ -32,15 +33,25 @@ route('/cdharmony/test', 'GET', function () {
 });
 
 // Add item to cart
-route('/cdharmony/cart/add/(\d+)', 'POST', function ($id) {
+/*route('/cdharmony/cart/add', 'POST', function () {
     $controller = new CartController();
-    $controller->addItem($id);
+    $requestBody = file_get_contents('php://input');
+    $requestData = json_decode($requestBody, true);
+    $quantity = $requestData['quantity'];
+    $product_variant_id = $requestData['product_variant_id'];
+    $controller->addToCart($quantity, $product_variant_id);
+    
+});*/
+route('/cdharmony/cart/add/(\d+)/id/(\d+)', 'GET', function ($qty,$product_variant_id) {
+    
+    $controller = new CartController();
+    $controller->addToCart($qty, $product_variant_id);
 });
 
 // Remove item from cart
 route('/cdharmony/cart/remove/(\d+)', 'POST', function ($id) {
     $controller = new CartController();
-    $controller->removeItem($id);
+    $controller->removeFromCart($id);
 });
 
 // Checkout
@@ -81,7 +92,7 @@ route('/cdharmony/admin/product/delete/(\d+)', 'DELETE', function ($id) {
 
 route('/cdharmony/admin/product/edit/(\d+)', 'GET', function ($id) {
     $controller = new ProductController();
-    $controller->editProduct($id);
+    $controller->showEditProductForm($id);
 });
 
 route('/cdharmony/admin/product/update/', 'PUT', function () {
@@ -89,13 +100,13 @@ route('/cdharmony/admin/product/update/', 'PUT', function () {
     $controller->updateProduct();
 });
 
-route('/cdharmony/admin/product/create/', 'POST', function () {
+route('/cdharmony/admin/product/add/', 'POST', function () {
     $controller = new ProductController();
-    $controller->createProduct();
+    $controller->addProduct();
 });
 route('/cdharmony/admin/product/add', 'GET', function () {
     $controller = new ProductController();
-    $controller->showProductForm();
+    $controller->showAddProductForm();
 });
 
 route('/cdharmony/article/(\d+)', 'GET', function ($id) {
@@ -123,9 +134,9 @@ route('/cdharmony/admin/article/create/(\d+)', 'POST', function ($id) {
     $controller->createArticle($id);
 });
 
-route('/cdharmony/special-offer/(\d+)', 'GET', function ($id) {
+route('/cdharmony/admin/special-offers/', 'GET', function () {
     $controller = new SpecialOfferController();
-    $controller->showSpecialOfferDetails($id);
+    $controller->showSpecialOffers();
 });
 
 
@@ -175,11 +186,7 @@ route('/cdharmony/search/', 'GET', function () {
     $controller->searchView();
 });
 
-//not implemented yet
-route('/cdharmony/search/', 'POST', function () {
-    $controller = new SearchController();
-    $controller->performSearch();
-});
+
 
 route('/cdharmony/admin/', 'GET', function () {
     $controller = new AdminController();

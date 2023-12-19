@@ -15,7 +15,7 @@ include 'header.php';
                     $specialOffer=$specialOfferController->showSpecialOffer();
                 ?>
 
-                <h2 class="text-base-100 text-2xl font-bold mb-4 "><?= $specialOffer->product_title ?></h2>
+                <h2 class="text-base-100 text-2xl font-bold mb-4 "><?= $specialOffer['product_title']; ?></h2>
        
                 <div class="bg-white relative w-full rounded">
                     <div class="p-4">
@@ -29,7 +29,7 @@ include 'header.php';
                         <p class="text-xl text-base-100 font-bold mb-2"><?= $specialOffer->description ?></p>
                         <p class="text-xl text-base-100 font-bold mb-2">Offer ends on <?php  ?></p>
                     </div>
-                    <img src="<?= BASE_URL.'/src'.$specialOffer->image_path.$specialOffer->image_name.'/';?>" alt="CD Harmony fan" class="w-1/2 object-cover">
+                    <img src="<?= BASE_URL.'/'.$specialOffer->image_path.'/'.$specialOffer->image_name;?>" alt="CD Harmony fan" class="w-1/2 object-cover">
                     <button class="btn btn-accent absolute right-2 bottom-2 w-1/3" data-product-id="1">Add to Cart</button>
                 </div>
             </Section>
@@ -103,5 +103,4 @@ include 'header.php';
         <?php
             include 'footer.php';
         ?>
-    </body>
-    </html>
+    

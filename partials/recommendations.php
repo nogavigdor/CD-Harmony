@@ -20,8 +20,8 @@
                 <div class="flex justify-center">
                     <img src="<?= BASE_URL . '/src/assets/images/albums/' . htmlspecialchars($recommendedProduct['image_name']) ?>" alt="Product Image" class="w-1/2 object-cover">
                 </div>
-                <div class="flex justify-center">
-                    <a href="<?= BASE_URL . '/product/' . $recommendedProduct['product_id'] ?>" class="btn btn-accent w-1/2">View Product</a>
+                <div class="flex justify-center mt-4">
+                    <a href="<?= BASE_URL . '/product/' . $recommendedProduct['product_id'] ?>" class="btn btn-primary w-1/2">View Product</a>
                 </div>
             </div>
         </div>

@@ -92,5 +92,10 @@
     </div>
 </main>
     <script src="/cdharmony/src/js/signupValidator.js"></script> 
-
+    <script>
+    document.getElementById('registrationForm').addEventListener('submit', function() {
+    // Show the loader
+    document.getElementById('loader').classList.remove('hidden');
+});
+</script>             
     <?php include 'footer.php'; ?>

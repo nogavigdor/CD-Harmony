@@ -21,7 +21,7 @@ $errors_out = SessionManager::getSessionVariable('errors_output');
         </div>
 
         <!-- Submit Button -->
-        <button type="submit" class="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-600">
+        <button id="loginSubmit" type="submit" class="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-600">
             Login
         </button>
     </form>
@@ -30,6 +30,11 @@ $errors_out = SessionManager::getSessionVariable('errors_output');
         <p>Don't have an account? <a text-accent text-xl href="./signup">Register here</a></p>
     </div>
 </div>
-
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function() {
+    // Show the loader
+    document.getElementById('loader').classList.remove('hidden');
+});
+</script>
 <?php include 'footer.php'; ?>
 

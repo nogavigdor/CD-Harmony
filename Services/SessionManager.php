@@ -61,6 +61,15 @@ class SessionManager
         }
     }
 
+    //returns true is the user is customer
+    public static function isCustomer()
+    {
+        if (!isset($_SESSION['user']['role'])) {
+            return false;
+        }
+        return self::getSessionVariable('user')['role'] == 3;
+    }
+
     //returns true if the user is an admin
     public static function isAdmin()
     {
@@ -73,6 +82,13 @@ class SessionManager
         
         
         return self::getSessionVariable('user')['role'] == 1;
+    }
+
+
+
+    public static function getSessionId()
+    {
+        return session_id();
     }
 
     //returns the user id of the logged in user

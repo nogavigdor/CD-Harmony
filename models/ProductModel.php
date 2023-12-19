@@ -136,8 +136,9 @@ namespace Models;
         }
 
         //Get product details by product id
+        //using product_details view
         function getProductDetails($id)
-        {   //implementing product_details view
+        {   
         try {
             $sql = '
                     SELECT * from product_details
@@ -155,15 +156,16 @@ namespace Models;
         } 
     }
 
-    //Get product variant details by product id
+    //Get product variants details by product id (using product_variants_details view)
+    //Currently it will give 2 variants since there are 2 conditions (new and used) for each product
      public function getProductVariantsDetails($id)
         {   //implementing product_details view
         try {
-            $sql = '
+           $sql = '
                     SELECT * from product_variants_details
                     WHERE product_id = :id  
              ';
-        
+      
         $query = $this->db->prepare($sql);
         $query->bindParam(':id', $id, \PDO::PARAM_INT);
         $query->execute();
@@ -174,6 +176,51 @@ namespace Models;
             die("Connection failed: " . $e->getMessage());
         }
     }
+
+    //Get product variant details by product variant id
+
+    public function getProductVariantDetails($VariantId) {
+
+        try {
+            $sql = '
+            SELECT
+            pv.product_variant_id,
+            pv.price,
+            pv.quantity_in_stock,
+            so.discount_sum AS discount,
+            p.product_id,
+            pv.condition_id,
+            p.title AS product_title,
+            p.product_description AS description,
+            a.title AS artist_title,
+            t.title AS tag_title,
+            ip.image_name,
+            ip.image_path,
+            con.title AS condition_title,        
+            pv.quantity_in_stock 
+        FROM
+            products p
+            INNER JOIN product_variants pv ON p.product_id = pv.product_id
+            INNER JOIN products_tags pt ON p.product_id = pt.product_id
+            INNER JOIN tags t ON pt.tag_id = t.tag_id
+            LEFT JOIN cds c ON p.product_id = c.product_id
+            LEFT JOIN artists a ON c.artist_id = a.artist_id
+            LEFT JOIN images_for_products ip ON p.product_id = ip.product_id
+            LEFT JOIN special_offers so ON pv.product_variant_id = so.product_variant_id
+            INNER JOIN conditions con ON pv.condition_id = con.condition_id
+            WHERE pv.product_variant_id = :VariantId
+            GROUP BY pv.product_variant_id
+             ';
+            $query = $this->db->prepare($sql);
+            $query->bindParam(':VariantId', $VariantId, \PDO::PARAM_INT);
+            $query->execute();
+            $product_variant_details = $query->fetch(\PDO::FETCH_ASSOC);
+            return $product_variant_details;
+        } catch (\PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
+        }  
+    }
+
        //update a product on the admin page
        public function updateProduct() {
         try {
@@ -234,6 +281,7 @@ namespace Models;
     }
 
     //Get products that have the same tags as the current product
+    //ordered by the biggest number of common tags
     public function getProductsByTags($productId, $tags) {
     // Gets the number of tags and creates a placeholder string for the query
         $placeholders = str_repeat('?,', count($tags) - 1) . '?';
@@ -265,6 +313,39 @@ namespace Models;
         $products = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
         return $products;
+    }
+
+    public function getAllVariants(){
+        try{
+            $sql='     
+            SELECT * FROM product_variants_details
+            ';
+            $query = $this->db->prepare($sql);
+            $query->execute();
+            return $query->fetchAll(PDO::FETCH_OBJ);
+        } catch (\PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
+        }
+    }
+
+    public function addProduct($productTitle, $description, $creationDate){
+        try{
+            $sql='     
+            INSERT INTO products (title, product_description, creation_date)
+            VALUES (:productTitle, :description, :creationDate)
+            ';
+            $query = $this->db->prepare($sql);
+            
+            $query->bindParam(':productTitle', $productTitle);
+            $query->bindParam(':description', $description);
+            $query->bindParam(':creationDate', $creationDate);
+            $query->execute();
+            $productId = $this->db->lastInsertId();
+            
+            return $productId;
+        } catch (\PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
+        }
     }
 
 

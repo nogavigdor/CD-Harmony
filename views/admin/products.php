@@ -14,7 +14,7 @@ use Services\SessionManager;
         <h2 class="text-2xl font-semibold mb-4">Product List</h2>
             <?php
             $products = new ProductController();
-            $productsList = $products->getProductsList(); 
+            $productsList = $products->getAllVariants(); 
             if (!empty($productsList)) {?>
             <table class="table-auto">
             <thead>

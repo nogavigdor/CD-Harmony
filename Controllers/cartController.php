@@ -1,64 +1,147 @@
-1. First item to the cart:
+<?php
+namespace Controllers;
+use Models\ProductModel;
+use Models\OrderModel;
+use Services\SessionManager;
 
-    keep the id of the product in the cart or session (price, qty)
+class CartController {
+    public function __construct() {
+        $this->productModel = new ProductModel();
+        $this->session = new SessionManager();
+        $this->orderModel = new OrderModel();
+        $this->session->startSession();
+    }
 
-2. same product being added to the cart
-    look inside the table or session if this product already exists
-        if it exists then just update the qty
+    public function addToCart($quantity, $product_variant_id) {
 
-        if do not exists then go to step 1
+        
+        // Check if the product variant ID and quantity are provided
+        if (!isset($product_variant_id) || !isset($quantity)) {
+            // Product variant ID or quantity are not provided, redirect to the home page
+            SessionManager::setSessionVariable('error_message', 'There was an error while adding the product to the cart. Please try again.');
+            echo "id_missing";
+            exit;
 
-3. increase only the qty from the cart page
+        }
+        $productVar = $this->productModel->getProductVariantDetails($product_variant_id);
+        
+        
 
-4. delete an item from the cart page
-
-cart_master:
-    id
-    session_id => session_id();
-    user_id 
-    discount_total
-    sub_total
-    grand_total
-    date_added
-    ip_address
-
-
-cart_details
-    id
-    cart_id
-    product_id
-    qty
-    price
-    discount
-
-    press checkout
-    Summary of the cart
-    grab shipping address
-    place order
-
-    create order_master
-    create lines_products
-    (connect to stripe)
-after stripe respone update order master status_id to paid or whatever...
-transsactions table - transcation id, order_id, amount, date, status_id
-
-pressing    
-
-order_master:
-    id    
-    user_id 
-    discount_total
-    sub_total
-    grand_total
-    date_ordered
-    status_id
+        $productVarPrice = $productVar['price'];
+        
+        $productVarDiscount = $productVar['discount'];
+        //checks if cart exits
+        if (SessionManager::isVar('cart')) {
+            $cart = SessionManager::getSessionVariable('cart');
+            // Check if the product variant is already in the cart
+            if(isset($cart[$product_variant_id])) {
+                // Product variant is already in the cart, increase the quantity
+                
+                if($quantity==0){
+                    $cart[$product_variant_id]['quantity'] += 1;
+                }
+                else{
+                    $cart[$product_variant_id]['quantity'] = $quantity;
+                }
+            } else {
+                // Product variant is not in the cart, add it
+                $cart[$product_variant_id] = [
+                    'product_variant_id' => $product_variant_id,
+                    'title' => $productVar['product_title'],   
+                    'condition' => $productVar['condition_title'],
+                    'image' => $productVar['image_path'].$productVar['image_name'],
+                    'quantity' => $quantity,
+                    'price' => $productVarPrice,
+                    'quantity_in_stock' => $productVar['quantity_in_stock'],
+                    'discount' => $productVarDiscount
+                ];
 
 
-order_details
-    id
-    order_id
-    product_id
-    qty
-    price
-    discount
+               
+            }
+        } else {
+            // Cart is empty, adds the product variant
+            $cart = [
+                $product_variant_id => [
+                    'product_variant_id' => $product_variant_id,
+                    'title' => $productVar['product_title'],   
+                    'condition' => $productVar['condition_title'],
+                    'image' => $productVar['image_path'].$productVar['image_name'],
+                    'quantity' => $quantity,
+                    'price' => $productVarPrice,
+                    'quantity_in_stock' => $productVar['quantity_in_stock'],
+                    'discount' => $productVarDiscount
+                ]
+            ];
+        }
+        // Save the cart in the session
+        SessionManager::setSessionVariable('cart', $cart);
+        //header('Location:'. BASE_URL. '/cart');
+        //exit();
+        //here please calsulate the total quantity of product that you have in session
+        $cart = SessionManager::getSessionVariable('cart');
+        $total_qty=0;
+        foreach ($cart as $productVarId => $cartItem) {
+            $total_qty+=$cartItem['quantity'];
+        }
+        
+        echo "success__##__".$total_qty;
+    }
 
+    public function removeFromCart($productVarId) {
+        if (SessionManager::isVar('cart')) {
+            $cart = SessionManager::getSessionVariable('cart');
+            if (isset($cart[$productVarId])) {
+                unset($cart[$productVarId]);
+                SessionManager::setSessionVariable('cart', $cart);
+            }
+        }
+        header('Location:'. BASE_URL. '/cart');
+        exit();
+    }
+
+    public function emptyCart() {
+        SessionManager::unsetSessionVariable('cart');
+    }
+
+    public function viewCart() {
+        $cart = SessionManager::isVar('cart') ? SessionManager::getSessionVariable('cart') : [];
+        include 'views/cart.php';
+    }
+
+    public function checkout() {
+
+    // Check if the user is logged and  a customer before checkout
+    if (!SessionManager::isVar('user_id')&& SessionManager::isCustomer()) {
+        // User is not logged in, redirect to the login page
+        SessionManager::setSessionVariable('error_message', 'Please login in order to checkout.');
+        header('Location: /login');
+        exit;
+    }
+    //user is logged in as a customer and therefore checkout is allowed
+    // Check if the cart is not empty and if there is at least one product variant in the cart
+        if (SessionManager::isVar('cart') && count(SessionManager::getSessionVariable('cart')) > 0) {
+            $cart = SessionManager::getSessionVariable('cart');
+            $userId = SessionManager::getSessionVariable('user_id');
+    
+          
+                $orderPlaced = $this->orderModel->createOrder($userId, $cart);
+    
+                if ($orderPlaced) {
+                    // Order placed successfully
+                     // Empty the cart
+                    SessionManager::unsetSessionVariable('cart');
+                    SessionManager::setSessionVariable('success_message', 'Your order has been placed successfully.');
+                    header("Location: " . BASE_URL);
+                    exit;
+                } else {
+                    // An error occurred while placing the order
+                    SessionManager::setSessionVariable('error_message', 'An error occurred while placing your order. Please try again.');
+                    header("Location: " . BASE_URL . "/cart");
+                    exit;
+                }
+          
+        }
+    }
+
+}

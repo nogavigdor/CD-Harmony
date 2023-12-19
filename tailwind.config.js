@@ -27,6 +27,7 @@ module.exports = {
         'base-100': '#F9FBDF',
         'placeholder': 'gray-400', 
         'buttonText':'white',
+        'text': '#333333',
       },
     },
   },

@@ -13,6 +13,7 @@ use Services\SessionManager;
 </head>
 <body class="relative flex items-center justify-center min-h-screen">
 <?php include 'partials/message.php';  ?>
+<?php include 'partials/auto-loader.php'; ?>
 <main class="container mx-auto my-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
 
 <section class="">
@@ -52,5 +53,12 @@ use Services\SessionManager;
 </section>
 
 </main>
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function() {
+    // Show the loader
+    document.getElementById('loader').classList.remove('hidden');
+});
+</script>
+
 </body>
 </html>

@@ -204,23 +204,27 @@
                 cart_master_id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
                 creation_date timestamp NOT NULL,
                 session_id varchar(100) NOT NULL,
-                discount decimal(10,2) NOT NULL,
+                discount_total decimal(10,2) NOT NULL,
                 sub_total decimal(10,2) NOT NULL,
                 grand_total decimal(10,2) NOT NULL,
                 user_id int,
                 FOREIGN KEY (user_id) REFERENCES users (user_id)
             ) ENGINE=InnoDB;
+            
 
             CREATE TABLE cart_items
             (
                 quantity int NOT NULL,
                 price decimal(10,2),
+                discount decimal (10,2),
+                total_price decimal(10,2),
                 cart_master_id int,
                 product_variant_id int,
                 CONSTRAINT PK_cart_line PRIMARY KEY (cart_master_id, product_variant_id),
                 FOREIGN KEY (cart_master_id) REFERENCES cart_master (cart_master_id),
                 FOREIGN KEY (product_variant_id) REFERENCES product_variants (product_variant_id)
             ) ENGINE=InnoDB;
+
 
             CREATE TABLE orders
             (
@@ -310,6 +314,7 @@
         p.product_id;
     /* Second view : Creates a view that includes all the variations of the products */
     /* In my specific webshop scneario, it will create a view that includes all the new/used variations */
+    /* It includes price, discount, quantaty */
     /* and any other detail which is joint from other tables that gives a better overview of the product */
     /* such as product title, product description, the condition title, artist title, release date, image name, image path, and tag titles */
     /* It's important to note that I've concatenated the tag titles to one string for better access in the front end */
@@ -321,16 +326,18 @@ SELECT
     p.product_description,
     pv.creation_date AS variant_creation_date,
     pv.price,
+    COALESCE(s.discount_sum, 0) AS discount,
     pv.quantity_in_stock,
     con.title AS condition_title,
     a.title AS artist_title,
-    c.release_date,
+    c.release_date,A
     ip.image_name,
     ip.image_path,
     GROUP_CONCAT(DISTINCT t.title) AS tag_titles
 FROM
     product_variants pv
 LEFT JOIN products p ON pv.product_id = p.product_id
+LEFT JOIN special_offers s ON pv.product_variant_id = s.product_variant_id
 LEFT JOIN conditions con ON pv.condition_id = con.condition_id
 LEFT JOIN cds c ON c.product_id = p.product_id
 LEFT JOIN artists a ON a.artist_id = c.artist_id
@@ -388,3 +395,52 @@ JOIN products p ON pv.product_id = p.product_id
 LEFT JOIN special_offers so ON pv.product_variant_id = so.product_variant_id
 JOIN orders_status os ON o.order_status_id = os.order_status_id
 JOIN orders_payment op ON o.order_payment_id = op.order_payment_id;
+
+
+/* Triggers */
+/* Here are my triggers for updating the total amounts in my cart master table */
+/* after each insert of a new cart item */
+
+CREATE TRIGGER after_cart_item_insert
+AFTER INSERT ON cart_items
+FOR EACH ROW
+BEGIN
+   UPDATE cart_master
+   SET grand_total = grand_total + NEW.total_price,
+       sub_total = sub_total + NEW.price,
+       discount_total = discount_total + NEW.discount
+   WHERE id = NEW.cart_master_id;
+   
+   UPDATE cart_items
+   SET total_price = NEW.quantity * NEW.price_per_item
+   WHERE cart_master_id = NEW.cart_master_id AND product_variant_id = NEW.product_variant_id;
+END;
+
+/* After each update of a cart item */
+CREATE TRIGGER after_cart_item_update
+AFTER UPDATE ON cart_items
+FOR EACH ROW
+BEGIN
+   UPDATE cart_master
+   SET grand_total = grand_total - OLD.total_price + NEW.total_price,
+       sub_total = sub_total - OLD.price + NEW.price,
+       discount_total = discount_total - OLD.discount + NEW.discount
+   WHERE id = NEW.cart_master_id;
+   
+   UPDATE cart_items
+   SET total_price = NEW.quantity * NEW.price_per_item
+   WHERE cart_master_id = NEW.cart_master_id AND product_variant_id = NEW.product_variant_id;
+END;
+
+/* After each delete of a cart item */
+/* In this case there is no need to handle the total price of the cart item because it will be deleted */
+CREATE TRIGGER after_cart_item_delete
+AFTER DELETE ON cart_items
+FOR EACH ROW
+BEGIN
+   UPDATE cart_master
+   SET grand_total = grand_total - OLD.total_price,
+       sub_total = sub_total - OLD.price,
+       discount_total = discount_total - OLD.discount
+   WHERE id = OLD.cart_master_id;
+END;

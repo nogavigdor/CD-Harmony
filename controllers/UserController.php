@@ -2,6 +2,7 @@
 namespace Controllers;
 
 use Models\UserModel;
+use Models\CartModel;
 use \Services\Validator;
 use \Services\SessionManager;
 
@@ -73,6 +74,7 @@ class UserController {
                 $errType['general'] = 'Email already exists. Please try again with a different email.'; 
                 //if the user was not created successfully, the user will be redirected to the signup page
                 SessionManager::setSessionVariable('output_errors', $errType);
+                SessionManager::setSessionVariable('error_message', $email . ' already exists. Please try to signup with a different email.');
                 header("Location: " . BASE_URL . "/signup");
                 exit();
             }
@@ -127,7 +129,7 @@ class UserController {
 
             $userData = array(
                 'logged_in' => true,
-                'id' => $user['user_id'],
+                'usr_id' => $user['user_id'],
                 'email' => $user['email'],
                 'role' => $user['role_id'],
                 'first_name' => isset($user['first_name']) ? $user['first_name'] : "",
@@ -136,8 +138,9 @@ class UserController {
             //sets the user data in the session variable
             SessionManager::setSessionVariable('user', $userData);
 
-            $success_message = "Hi " . $user['first_name']. ' you are now logged in';
+            $success_message = "Hi " . $user['first_name']. ', you are now logged in';
             SessionManager::setSessionVariable('success_message', $success_message);
+            
             header("Location: " . BASE_URL . "/");
             exit();
         } else {

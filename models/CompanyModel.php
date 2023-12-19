@@ -3,7 +3,7 @@ namespace Models;
 use \DataAccess\DBConnector;
 use PDO; 
 
-class AdminModel 
+class CompanyModel 
 {
     private $db; 
 

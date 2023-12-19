@@ -12,7 +12,7 @@
                      </div>
                  <?php endif; ?>
                 <div class="p-4">
-                <h2 class="text-lg text-base-500 font-semibold"><?= htmlspecialchars($product->product_title) ?></h2>
+                <p class="text-lg text-primary font-semibold"><?= htmlspecialchars($product->product_title) ?></p>
                 <p class="mt-2 text-lg  text-base-500"><?= htmlspecialchars($product->artist_title) ?></p>
                 <p class="mt-2"><?= htmlspecialchars($product->tag_title) ?></p>
                 <div class="mt-4">
