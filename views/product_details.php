@@ -7,7 +7,7 @@ use Controllers\ProductController;
                     <?php
                         
                         $controller = new ProductController();
-                        $productVars = $controller->getProductVariantDetails($product->product_id);
+                        $productVars = $controller->getProductVariantsDetails($product->product_id);
                     
                         // Creates an array of variants, keyed by the condition
                         $variants = [];
@@ -65,7 +65,7 @@ use Controllers\ProductController;
                                       <div class="flex gap-x-4 ">
                                             <?php if (isset($variants['new'])): ?>
                                                 <input type="radio" checked class="radio radio-primary" name="condition" value="<?php echo $variants['new']['product_variant_id']; ?>" id="new" class="mr-1" <?php echo $variants['new']['quantity_in_stock'] > 0 ? '' : 'disabled'; ?>>
-                                                <label for="new">New: <?php echo $variants['used']['price']-$variants['used']['discount'].' Kr'; ?>
+                                                <label for="new">New: <?php echo $variants['new']['price']-$variants['new']['discount'].' Kr'; ?>
                                                     <?php if ($variants['new']['quantity_in_stock'] == 0): ?>
                                                         <span class="text-gray-800">(Out of stock)</span>
                                                     <?php elseif ($variants['new']['quantity_in_stock'] == 1): ?>
@@ -141,7 +141,7 @@ document.querySelector('.add-to-cart-form').addEventListener('submit', function(
     }
 */
 const baseURL = window.location.origin; // Gets the origin (e.g., http://localhost)
-const relativePath = '/cdharmony/cart/add';
+const relativePath = '/cdharmony/cart/id';
 
 
     if (selectedVariantId) {
@@ -153,11 +153,14 @@ const relativePath = '/cdharmony/cart/add';
         const xhttp = new XMLHttpRequest();
         xhttp.onload = function() {
            // document.getElementById("demo").innerHTML =
-            alert(this.responseText);
+            //alert(this.responseText);
 
             arr_response=Array();
             arr_response=this.responseText.split("__##__");
 
+            // Creates a new div for for alers/sucess message
+            let messageDiv = document.createElement('div');
+            messageDiv.classList.add('fixed', 'top-20', 'left-1/2', 'transform', '-translate-x-1/2', 'm-6', 'p-4', 'rounded', 'shadow-lg', 'transition', 'duration-500', 'ease-in-out', 'transform', 'z-50');
 
 
 
@@ -165,12 +168,28 @@ const relativePath = '/cdharmony/cart/add';
                 window.location.reload();
             }
             else if(arr_response[0]=="success"){
-                var qty=arr_response[1];
+                let qty=arr_response[1];
                 document.getElementById("cartItemCount").innerHTML=qty;
+
+                // Sets the success upon adding an item to the cart
+                messageDiv.textContent = 'Item added';
+                messageDiv.classList.add('bg-green-800', 'text-white');
             }
+            else {
+                // Sets the error message upon adding an item to the cart
+                messageDiv.textContent = 'Out of stock.';
+                messageDiv.classList.add('bg-red-800', 'text-white');
+            }
+              // Adds the message alers/success message div to the DOM
+                document.body.appendChild(messageDiv);
+
+                // Remove the message div after 3 seconds
+                setTimeout(function() {
+                    messageDiv.remove();
+                }, 1000);
 
         }
-        xhttp.open("GET", baseURL+relativePath+"/0/id/"+selectedVariantId);
+        xhttp.open("GET", baseURL+relativePath+"/"+selectedVariantId);
         xhttp.send();
         
         return false;

@@ -17,33 +17,34 @@ use Controllers\ProductController;
     // Iterate through cart items and display each one
     if (SessionManager::isVar('cart')) {
         $cart = SessionManager::getSessionVariable('cart');
-        $sub_total=0;
+        $sub_total=0;   
         $discount_total=0;
         $grand_total=0;
-        foreach ($cart as $productVarId => $cartItem) {
-            // Replace the following with actual product information retrieval logic
-            $productName = $cartItem['title']; // Replace with actual product name
-            $productImage = 'product-image.jpg'; // Replace with actual product image
-            $stock=$cartItem['quantity_in_stock'];
 
-            // Output each product in the cart
+    //to keet the cart details accuracy, I'll only be using the quantiy from the cart session
+    //and the other data I'll pull from the database and not from the cart session
+    //in order to have the most accurrate data
+    foreach ($cart as $product_var_id => $cartItem) {
+        $quantity=$cartItem['quantity'];
+       
             ?>
             <div class="flex items-center border-b border-gray-300 py-2">
-                <img src="<?= $productImage ?>" alt="<?= $productName ?>" class="w-16 h-16 object-cover mr-4">
+        
+                <img src="<?= BASE_URL.IMAGE_PATH.$cartItem['image']; ?>" alt="<?= $cartItem['product_title'] ?>" class="w-16 h-16 object-cover mr-4">
                 <div class="flex-1">
-                    <h2 class="text-lg font-semibold"><?= $productName ?></h2>
-                    <p class="text-gray-600" >Quantity: <input type="number" min="1" max="<?= $stock?>" id="qty__<?= $productVarId ?>" name="qty__<?= $productVarId ?>" value="<?= $cartItem['quantity'] ?>" /><span id="err__<?= $productVarId ?>"></span></p>
-                    <p class="text-gray-600">Stock: <?= $stock?></p>
-                    <input type="hidden" value="<?= $stock?>" id="stk__<?= $productVarId ?>" name="stk__<?= $productVarId ?>" />
+                    <h2 class="text-lg font-semibold"><?= $cartItem['product_title']?></h2>
+                    <p class="text-gray-600" >Quantity: <input type="number" min="1" max="<?= $cartItem['quantity_in_stock']?>" id="qty__<?= $product_var_id ?>" name="qty__<?= $product_var_id ?>" value="<?= $quantity ?>" /><span id="err__<?= $product_var_id ?>"></span></p>
+                    <p class="text-gray-600">Stock: <?= $cartItem['quantity_in_stock']?></p>
+                    <input type="hidden" value="<?= $cartItem['quantity_in_stock']?>" id="stk__<?= $product_var_id ?>" name="stk__<?= $product_var_id ?>" />
                     <p class="text-gray-600">Price: $<?= number_format($cartItem['price'], 2) ?></p>
                     <?php if ($cartItem['discount'] > 0): ?>
-                        <p class="text-gray-600">Discount: <?= $cartItem['discount'] ?>%</p>
+                        <p class="text-gray-600">Discount: <?= $cartItem['discount'] ?></p>
                     <?php endif; ?>
                 </div>
                 <div class="flex items-center">
                     <!-- Add your update and delete logic here -->
-                    <button class="bg-blue-500 text-white px-2 py-1 mr-2" id="upd__<?= $productVarId ?>" onclick="updateProductQty(this.id);">Update</button>
-                    <button class="bg-red-500 text-white px-2 py-1">Delete</button>
+                    <button class="bg-blue-500 text-white px-2 py-1 mr-2" id="upd__<?= $product_var_id ?>" onclick="updateProductQty(this.id);">Update</button>
+                    <button class="bg-red-500 text-white px-2 py-1" id="dlt__<?= $product_var_id ?>" onclick="deleteProducVar(this.id);" >Delete</button>
                 </div>
             </div>
             <?php
@@ -53,22 +54,23 @@ use Controllers\ProductController;
         echo "<p>Your cart is empty.</p>";
     }
     ?>
-    <button id="step-cart" class="btn"></button>
+    <button id="checkout" class="btn">Checkout</button>
     </main>
     <script>
         const baseURL = window.location.origin; // Gets the origin (e.g., http://localhost)
-        const relativePath = '/cdharmony/cart/add';
+        const relativePath = '/cdharmony/update-cart/qty';
         function updateProductQty(id){
             //alert(id);
             tmp_arr=Array();
             tmp_arr=id.split("__");
 
             varientId=tmp_arr[1];
-
+            //targeting the quantity field value
             qty=parseInt(document.getElementById("qty__"+varientId).value);
+            //tareting the stock field value
             stock=parseInt(document.getElementById("stk__"+varientId).value);
             //alert(qty+"  "+stock);
-            
+            //preveing the user from updating the quantity if the quantity is less than 1 or greater than the stock
             if(qty<1 || qty>stock){
                 document.getElementById("err__"+varientId).innerHTML="Invalid Quantity";
                 return false;
@@ -77,11 +79,12 @@ use Controllers\ProductController;
             }
 
 
-            //actual call to the controller starts from here to update the quantity
+            //Actual call to the controller starts from here to update the quantity
+            
             const xhttp = new XMLHttpRequest();
             xhttp.onload = function() {
-            // document.getElementById("demo").innerHTML =
-                alert(this.responseText);
+           
+               // alert(this.responseText);
 
                 arr_response=Array();
                 arr_response=this.responseText.split("__##__");
@@ -106,6 +109,22 @@ use Controllers\ProductController;
 
 
         }
+/*
+        deleteProducVar(id){
+            tmp_arr=Array();
+            tmp_arr=id.split("__");
+
+            varientId=tmp_arr[1];
+            //alert(varientId);
+            const xhttp = new XMLHttpRequest();
+            xhttp.onload = function() {
+           
+             //   alert(this.responseText);
+
+                arr_response=Array();
+                arr_response=this.responseText.split("__##__");
+        }
+        */
     </script>
 
 

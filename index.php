@@ -42,10 +42,17 @@ route('/cdharmony/test', 'GET', function () {
     $controller->addToCart($quantity, $product_variant_id);
     
 });*/
-route('/cdharmony/cart/add/(\d+)/id/(\d+)', 'GET', function ($qty,$product_variant_id) {
+
+route('/cdharmony/cart/id/(\d+)', 'GET', function ($product_variant_id) {
     
     $controller = new CartController();
-    $controller->addToCart($qty, $product_variant_id);
+    $controller->addToCart($product_variant_id);
+});
+// update cart
+route('/cdharmony/update-cart/qty/(\d+)/id/(\d+)', 'GET', function ($qty,$product_variant_id) {
+    
+    $controller = new CartController();
+    $controller->updateCart($qty, $product_variant_id);
 });
 
 // Remove item from cart

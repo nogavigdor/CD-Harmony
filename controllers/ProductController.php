@@ -91,6 +91,16 @@ class ProductController
         }
     }
 
+    public function getProductVariantsDetails($id)
+    {
+        try {
+            $productVariantsDetails = $this->productModel->getProductVariantsDetails($id);
+            return $productVariantsDetails;
+        } catch (\PDOException $ex) {
+            error_log('PDO Exception: ' . $ex->getMessage());
+        }
+    }
+
     public function getProductsList()
     {
         try {
