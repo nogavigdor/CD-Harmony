@@ -14,7 +14,7 @@
                  <?php endif; ?>
                 <div class="p-2">
                 <h2 class="text-lg text-gray-900 font-semibold"><?= htmlspecialchars($article->title) ?></h2>
-                <p class="mt-2 text-lg  text-base-500 absolute left-2 bottom-0"><?= htmlspecialchars($article->first_name) ?></p>
+                
                 <div class="mt-2">
                     <div class="mt-2 flex justify-start absolute bottom-0 right-2    w-1/3">
                         <a href="<?= BASE_URL ?>/article/<?= $article->article_id ?>" class=" btn btn-secondary text-white">Read Article</a>

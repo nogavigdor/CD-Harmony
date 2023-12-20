@@ -13,24 +13,29 @@ include 'header.php';
              <Section class="col-span-3 sm:col-span-2 pt-4">
                 <?php $specialOfferController= new SpecialOfferController(); 
                     $specialOffer=$specialOfferController->showSpecialOffer();
+                    $offerEndDate = new DateTime($specialOffer['special_offer_end_date']);
+                    $formattedOfferEndDate = $offerEndDate->format('d F Y');
+                    
                 ?>
 
-                <h2 class="text-base-100 text-2xl font-bold mb-4 "><?= $specialOffer['product_title']; ?></h2>
+                <h2 class="text-base-100 text-2xl font-bold mb-4 headline   ">Special Offer</h2>
        
                 <div class="bg-white relative w-full rounded">
                     <div class="p-4">
+                        <p class="text-xl text-secondary font-bold mb-2"><?= $specialOffer['product_title']; ?></p>
                         <p class="text-xl text-secondary font-bold mb-2"></p>
                         <p class="text-xl text-secondary font-bold mb-2">
-                        <?= $specialOffer->offer_title ?>
+                        <?= $specialOffer['title'];?>
                         </p>
-                        <p class="text-xl text-secondary font-bold mb-2">Only <?= $specialOffer->discounted_price ?> Kr </p>
+                        <p class="countdown text-xl text-secondary  font-bold mb-2">Offer ends: <?= $formattedOfferEndDate ?></p>
                     </div>
-                    <div class="mask mask-star  bg-secondary w-[500px] h-[500px] shadow-lg absolute top-[-100px] right-[50px] text-white p-4 flex flex-col justify-center items-center">
-                        <p class="text-xl text-base-100 font-bold mb-2"><?= $specialOffer->description ?></p>
-                        <p class="text-xl text-base-100 font-bold mb-2">Offer ends on <?php  ?></p>
-                    </div>
-                    <img src="<?= BASE_URL.'/'.$specialOffer->image_path.'/'.$specialOffer->image_name;?>" alt="CD Harmony fan" class="w-1/2 object-cover">
-                    <button class="btn btn-accent absolute right-2 bottom-2 w-1/3" data-product-id="1">Add to Cart</button>
+                    <div class="mask mask-star  bg-base-100 w-[500px] border-4 border-secondary h-[500px] shadow-lg absolute top-[-100px] right-[50px] text-white p-4 flex flex-col justify-center items-center">
+
+                        <p class="text-xl text-secondary font-bold mb-2">Only <?=  $specialOffer['price']-$specialOffer['discount'] ?> DKK</p>
+                        <p class="text-xl text-secondary text-line font-bold mb-2">Was <?= $specialOffer['price'] ?> DKK</p>
+                    </div> 
+                    <img src="<?= BASE_URL.IMAGE_PATH.$specialOffer['image_name'];?>" alt="CD Harmony fan" class="w-1/2 object-cover">
+                    <a href="<?= BASE_URL.'/product/'.$specialOffer['product_id']; ?>" class="btn btn-accent text-white absolute right-2 bottom-2 w-1/3">View More details</a>
                 </div>
             </Section>
                     <!-- Articles section -->

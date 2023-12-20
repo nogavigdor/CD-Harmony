@@ -16,9 +16,39 @@ use Controllers\ProductController;
                             $variants[$productVar['condition_title']] = $productVar;
                         }
                             ?>
+
 <div class="container min-h-screen mx-auto px-4 sm:px-6 lg:px-8 sm:mb-16 sm:mt-16"  >
     <!-- Product Card -->
-             <div class="bg-white shadow-lg p-4 flex flex-col   ">
+             <div class="relative bg-white shadow-lg p-4 flex flex-col   ">
+           <?php
+             ?>
+                    <?php
+                    if ($variants['new']['discount']>0)  {
+                       
+                        ?>   
+                     <div class="badge w-72 h-16 absolute top-0 left-0 transform -translate-y-4 -translate-x-4 flex bg-base-100 border-secondary border-4 rounded-lg">
+                      <span class="p-4 font-bold text-xl text-secondary">
+                        <?php
+                        echo 'Special offer for new version!';
+                        ?>
+                        </span>
+                    </div>
+                        <?php
+                    }
+
+                    if ($variants['used']['discount']>0) { ?>
+                            
+                     <div class="badge w-72 h-16 absolute top-0 left-0 transform -translate-y-4 -translate-x-4 flex bg-base-100 border-secondary border-4 rounded-lg">
+                      <span class="p-4 font-bold text-xl text-secondary">
+                    <?php
+                        echo 'Special offer for used version!';
+                     ?>
+                     </span>
+                    </div>
+                    <?php
+                    }
+                    ?>
+            
                 <div class="flex flex-col md:flex-row ">
                     <div class="mr-4 md:w-1/3   ">
                     <img  class="w-full rounded-md object-contain md:object-cover"  src="<?= BASE_URL ?>/src/assets/images/albums/<?php echo htmlspecialchars($product->image_name) ?>" alt="Product Image">
@@ -35,7 +65,7 @@ use Controllers\ProductController;
                                       <div class="flex gap-x-4 ">
                                             <?php if (isset($variants['new'])): ?>
                                                 <input type="radio" checked class="radio radio-primary" name="condition" value="<?php echo $variants['new']['product_variant_id']; ?>" id="new" class="mr-1" <?php echo $variants['new']['quantity_in_stock'] > 0 ? '' : 'disabled'; ?>>
-                                                <label for="new">New: <?php echo $variants['new']['price'].' Kr'; ?>
+                                                <label for="new">New: <?php echo $variants['used']['price']-$variants['used']['discount'].' Kr'; ?>
                                                     <?php if ($variants['new']['quantity_in_stock'] == 0): ?>
                                                         <span class="text-gray-800">(Out of stock)</span>
                                                     <?php elseif ($variants['new']['quantity_in_stock'] == 1): ?>
@@ -50,7 +80,7 @@ use Controllers\ProductController;
                                         <!-- Used variant -->
                                             <?php if (isset($variants['used'])): ?>
                                                 <input type="radio" class="radio radio-primary" name="condition" value="<?php echo $variants['used']['product_variant_id']; ?>" id="used" class="mr-1" <?php echo $variants['used']['quantity_in_stock'] > 0 ? '' : 'disabled'; ?>>
-                                                <label for="used">Used: <?php echo $variants['used']['price'].' Kr'; ?>
+                                                <label for="used">Used: <?php echo $variants['used']['price']-$variants['used']['discount'].' Kr'; ?>
                                                     <?php if ($variants['used']['quantity_in_stock'] == 0): ?>
                                                         <span class="text-gray-800">(Out of stock)</span>
                                                     <?php elseif ($variants['used']['quantity_in_stock'] == 1): ?>

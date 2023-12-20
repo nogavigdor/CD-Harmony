@@ -146,14 +146,14 @@ namespace Models;
                 $e->getMessage();
             }
         }
-
+        //get the special offer details by product variant id
         public function showSpecialOffer(){
             try {
                 $sql = '
-                    SELECT *
-                    FROM special_offers AS sp
-                    INNER JOIN product_variants_details AS pvd on so.product_variant_id = pvd.product_variants_details.product_variant_id
-                    LIMIT 1
+                SELECT so.*, pvd.*
+                FROM special_offers AS so
+                INNER JOIN product_variants_details AS pvd ON so.product_variant_id = pvd.product_variant_id
+                LIMIT 1
                 ';
 
                 $query = $this->db->prepare($sql);
