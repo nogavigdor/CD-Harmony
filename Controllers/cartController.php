@@ -20,22 +20,14 @@ class CartController {
         // Check if the product variant ID and quantity are provided
         if (!isset($product_variant_id) || !isset($quantity)) {
             // Product variant ID or quantity are not provided, redirect to the home page
-            SessionManager::setSessionVariable('error_message', 'There was an error while adding the product to the cart. Please try again.');
+
             echo "id_missing";
             exit;
 
         }
         $productVar = $this->productModel->getProductVariantDetails($product_variant_id);
         
-        
-
-        $productVarPrice = $productVar['price'];
-        
-        $productVarDiscount = $productVar['discount'];
-
         $productVarStock = $productVar['quantity_in_stock'];
-       
-        
 
 
         //checks if cart exits
@@ -67,9 +59,9 @@ class CartController {
                     'condition' => $productVar['condition_title'],
                     'image' => $productVar['image_name'],
                     'quantity' => $quantity,
-                    'price' => $productVarPrice,
+                    'price' => $productVar['price'],
                     'quantity_in_stock' => $productVar['quantity_in_stock'],
-                    'discount' => $productVarDiscount
+                    'discount' => $productVar['discount'],
                 ];
 
 
@@ -85,13 +77,14 @@ class CartController {
                     'condition' => $productVar['condition_title'],
                     'image' => $productVar['image_name'],
                     'quantity' => $quantity,
-                    'price' => $productVarPrice,
+                    'price' => $productVar['price'],
                     'quantity_in_stock' => $productVar['quantity_in_stock'],
-                    'discount' => $productVarDiscount
+                    'discount' => $productVar['discount'],
              
                 ]
-            ];
+            ];  
         }
+        
         // Save the cart in the session
         SessionManager::setSessionVariable('cart', $cart);
         //header('Location:'. BASE_URL. '/cart');
@@ -100,15 +93,19 @@ class CartController {
         $cart = SessionManager::getSessionVariable('cart');
         $total_qty=0;
         foreach ($cart as $productVarId => $cartItem) {
-            $total_qty+=$cartItem['quantity'];
+            if(isset($cartItem['quantity'])){
+                $total_qty+=$cartItem['quantity'];
+            }
         }
-        
+    
         echo "success__##__".$total_qty;
+
+        
     }
 
     public function updateCart($quantity, $product_variant_id) {
        
-        
+       
         // Check if the product variant ID and quantity are provided
         if (!isset($product_variant_id) || !isset($quantity)) {
             // Product variant ID or quantity are not provided, redirect to the home page
@@ -120,10 +117,9 @@ class CartController {
         $productVar = $this->productModel->getProductVariantDetails($product_variant_id);
         
         
-
-        $productVarPrice = $productVar['price'];
-        
-        $productVarDiscount = $productVar['discount'];
+        $productVarPrice =$productVar['price'];
+ 
+        $productVarDiscount = $productVar['discount']??0;
 
         $productVarStock = $productVar['quantity_in_stock'];
        
@@ -159,9 +155,9 @@ class CartController {
                     'condition' => $productVar['condition_title'],
                     'image' => $productVar['image_name'],
                     'quantity' => $quantity,
-                    'price' => $productVarPrice,
+                    'price' => $productVar['price'],
                     'quantity_in_stock' => $productVar['quantity_in_stock'],
-                    'discount' => $productVarDiscount
+                    'discount' => $productVar['discount'],
                 ];
 
 
@@ -177,9 +173,9 @@ class CartController {
                     'condition' => $productVar['condition_title'],
                     'image' => $productVar['image_name'],
                     'quantity' => $quantity,
-                    'price' => $productVarPrice,
+                    'price' => $productVar['price'],
                     'quantity_in_stock' => $productVar['quantity_in_stock'],
-                    'discount' => $productVarDiscount
+                    'discount' => $productVar['discount'],
              
                 ]
             ];
@@ -192,22 +188,34 @@ class CartController {
         $cart = SessionManager::getSessionVariable('cart');
         $total_qty=0;
         foreach ($cart as $productVarId => $cartItem) {
-            $total_qty+=$cartItem['quantity'];
+            if(isset($cartItem['quantity'])){
+                $total_qty+=$cartItem['quantity'];
+            }
         }
         
         echo "success__##__".$total_qty;
     }
 
-    public function removeFromCart($productVarId) {
+    public function deleteFromCart($productVarId) {
+        
         if (SessionManager::isVar('cart')) {
+   ;
             $cart = SessionManager::getSessionVariable('cart');
             if (isset($cart[$productVarId])) {
                 unset($cart[$productVarId]);
                 SessionManager::setSessionVariable('cart', $cart);
             }
+
+            $total_qty=0;
+            foreach ($cart as $productVarId => $cartItem) {
+                if(isset($cartItem['quantity'])){
+                    $total_qty+=$cartItem['quantity'];
+                }
+            }
+            
+            echo "success";
         }
-        header('Location:'. BASE_URL. '/cart');
-        exit();
+        
     }
 
     public function emptyCart() {
@@ -219,39 +227,6 @@ class CartController {
         include 'views/cart.php';
     }
 
-    public function checkout() {
-
-    // Check if the user is logged and  a customer before checkout
-    if (!SessionManager::isVar('user_id')&& SessionManager::isCustomer()) {
-        // User is not logged in, redirect to the login page
-        SessionManager::setSessionVariable('error_message', 'Please login in order to checkout.');
-        header('Location: /login');
-        exit;
-    }
-    //user is logged in as a customer and therefore checkout is allowed
-    // Check if the cart is not empty and if there is at least one product variant in the cart
-        if (SessionManager::isVar('cart') && count(SessionManager::getSessionVariable('cart')) > 0) {
-            $cart = SessionManager::getSessionVariable('cart');
-            $userId = SessionManager::getSessionVariable('user_id');
-    
-          
-                $orderPlaced = $this->orderModel->createOrder($userId, $cart);
-    
-                if ($orderPlaced) {
-                    // Order placed successfully
-                     // Empty the cart
-                    SessionManager::unsetSessionVariable('cart');
-                    SessionManager::setSessionVariable('success_message', 'Your order has been placed successfully.');
-                    header("Location: " . BASE_URL);
-                    exit;
-                } else {
-                    // An error occurred while placing the order
-                    SessionManager::setSessionVariable('error_message', 'An error occurred while placing your order. Please try again.');
-                    header("Location: " . BASE_URL . "/cart");
-                    exit;
-                }
-          
-        }
-    }
+   
 
 }

@@ -22,12 +22,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Update cart item count
  
-
+/*
     // Show cart slider
     document.getElementById('cartSlider').style.transform = 'translateX(0)';
 
     // Update cart items and total price
- 
+ */
 });
 
 });

@@ -38,6 +38,9 @@ h1, h2, h3 {
   
 }
 
+/* Override DaisyUI button styles */
+
+
 .custom-text {
   font-family: 'Poppins', sans-serif;
 }
@@ -121,9 +124,7 @@ footer {
   text-align: right;
 }
 
-.social-icons {
-  /* Style your social media icons here */
-}
+
 
 /* Dropdown menu styles */
 .dropdown {

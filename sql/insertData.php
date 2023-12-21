@@ -43,7 +43,6 @@ try {
             $albumName = $album['album_name'];
             $description = $album['description'];
             $releaseDate = date('Y-m-d', strtotime($album['release_date']));
-            $imagePath = pathinfo($album['image_url'], PATHINFO_DIRNAME);
             $imageName = pathinfo($album['image_url'], PATHINFO_BASENAME);
             $creationDate = date('Y-m-d H:i:s');
 
@@ -57,9 +56,7 @@ try {
             $productId = $db->lastInsertId();
 
             // Insert album images into the images_for_products table
-            $stmtImages = $db->prepare("INSERT INTO images_for_products (title, image_path, image_name, main_image, product_id) VALUES (:albumName, :imagePath, :imageName, 1, :productId)");
-            $stmtImages->bindParam(':albumName', $albumName, PDO::PARAM_STR);
-            $stmtImages->bindParam(':imagePath', $imagePath, PDO::PARAM_STR);
+            $stmtImages = $db->prepare("INSERT INTO images_for_products (image_name, main_image, product_id) VALUES (:imageName, 1, :productId)");
             $stmtImages->bindParam(':imageName', $imageName, PDO::PARAM_STR);
             $stmtImages->bindParam(':productId', $productId, PDO::PARAM_INT);
             $stmtImages->execute();
@@ -1457,25 +1454,29 @@ Personally, "The Head on the Door" has been a companion during introspective mom
 In the ever-changing landscape of music, "The Head on the Door" stands as a testament to The Cure\'s ability to evolve while staying true to their unique sound. It\'s more than an album; it\'s a captivating chapter in the ongoing story of a band that has left an indelible mark on the world of alternative music.',
 date('Y-m-d H:i:s'), date('Y-m-d H:i:s'), $user_idAdmin);
 
-// Get the last inserted product_variant_id
 /*
+// Get the last inserted product_variant_id
+$productVariantId = $db->lastInsertId();
 $discountSum = 50;
 $specialOfferTitle = "Exclusive Deal";
 $specialOfferDescription = "Get a special discount!";
 $specialOfferStartDate = date('Y-m-d H:i:s'); // Set the start date to the current date and time
 $specialOfferEndDate = date('Y-m-d H:i:s', strtotime('+60 days')); // Set the end date 30 days from now
-$productVariantId = 33;
+$isHomepage = 1;
 
-$stmtSpecialOffer = $db->prepare("INSERT INTO special_offers (title, special_offer_description, discount_sum, special_offer_start_date, special_offer_end_date, product_variant_id) VALUES (:title, :special_offer_description, :discount_sum, :startDate, :endDate, :productVariantId)");
+
+$stmtSpecialOffer = $db->prepare("INSERT INTO special_offers (title, special_offer_description, is_homepage, discount_sum, special_offer_start_date, special_offer_end_date, product_variant_id) VALUES (:title, :special_offer_description, :is_homepage, :discount_sum, :startDate, :endDate, :productVariantId)");
+
 $stmtSpecialOffer->bindParam(':title', $specialOfferTitle, PDO::PARAM_STR);
 $stmtSpecialOffer->bindParam(':special_offer_description', $specialOfferDescription, PDO::PARAM_STR);
+$stmtSpecialOffer->bindParam(':is_homepage', $isHomepage, PDO::PARAM_BOOL);
 $stmtSpecialOffer->bindParam(':discount_sum', $discountSum, PDO::PARAM_INT);
 $stmtSpecialOffer->bindParam(':startDate', $specialOfferStartDate, PDO::PARAM_STR);
 $stmtSpecialOffer->bindParam(':endDate', $specialOfferEndDate, PDO::PARAM_STR);
 $stmtSpecialOffer->bindParam(':productVariantId', $productVariantId, PDO::PARAM_INT);
 $stmtSpecialOffer->execute();
-
 */
+
  // Commit the transaction
  $db->commit();
 

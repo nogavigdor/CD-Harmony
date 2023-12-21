@@ -134,9 +134,9 @@ class UserController {
                 'role' => $user['role_id'],
                 'first_name' => isset($user['first_name']) ? $user['first_name'] : "",
             );
-
             //sets the user data in the session variable
             SessionManager::setSessionVariable('user', $userData);
+            $user=SessionManager::getSessionVariable('user');
 
             $success_message = "Hi " . $user['first_name']. ', you are now logged in';
             SessionManager::setSessionVariable('success_message', $success_message);

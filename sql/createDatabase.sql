@@ -156,7 +156,8 @@
                 special_offer_id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
                 title varchar(100) NOT NULL,
                 special_offer_description varchar(300) NOT NULL,
-                discount_sum int NOT NULL,
+                is_homepage tinyint(1) NOT NULL,
+                discount_sum decimal(10,2) NOT NULL,
                 special_offer_start_date timestamp NOT NULL,
                 special_offer_end_date timestamp NOT NULL,
                 product_variant_id int,
@@ -166,8 +167,6 @@
             CREATE TABLE images_for_products
             (
                 image_for_product_id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
-                title varchar(100) NOT NULL,
-                image_path varchar(255) NOT NULL,
                 image_name varchar(255) NOT NULL,
                 main_image tinyint(1) NOT NULL,
                 product_id int,
@@ -275,7 +274,6 @@
             (
                 image_for_article_id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
                 title varchar(100) NOT NULL,
-                image_path varchar(255) NOT NULL,
                 image_name varchar(255) NOT NULL,
                 main_image tinyint(1) NOT NULL,
                 article_id int,
@@ -300,7 +298,6 @@
         c.release_date,
         a.title AS artist_title,
         ip.image_name,
-        ip.image_path,
         ip.main_image,
         GROUP_CONCAT(DISTINCT t.title) AS tag_titles
     FROM
@@ -330,9 +327,8 @@ SELECT
     pv.quantity_in_stock,
     con.title AS condition_title,
     a.title AS artist_title,
-    c.release_date,A
+    c.release_date,
     ip.image_name,
-    ip.image_path,
     GROUP_CONCAT(DISTINCT t.title) AS tag_titles
 FROM
     product_variants pv
@@ -345,7 +341,7 @@ LEFT JOIN images_for_products ip ON ip.product_id = p.product_id AND ip.main_ima
 LEFT JOIN products_tags pt ON pt.product_id = p.product_id
 LEFT JOIN tags t ON t.tag_id = pt.tag_id
 GROUP BY
-    pv.product_variant_id, p.product_id, pv.creation_date, pv.price, pv.quantity_in_stock, con.title, a.title, c.release_date, ip.image_name, ip.image_path;
+    pv.product_variant_id, p.product_id, pv.creation_date, pv.price, pv.quantity_in_stock, con.title, a.title, c.release_date, ip.image_name;
 
 /*Third View - customer details overveiew - will be used for the admin panel*/
 /*includes the user id, first name, last name, email, registration date, total orders, total items purchased, and total amount spent*/
@@ -401,6 +397,117 @@ JOIN orders_payment op ON o.order_payment_id = op.order_payment_id;
 /* Here are my triggers for updating the total amounts in my cart master table */
 /* after each insert of a new cart item */
 
+/*
+The next three triggers automatically update the product_variants_details view whenever there is an insertion, 
+update, or deletion in the product_variants table. 
+*/
+DELIMITER //
+CREATE TRIGGER after_product_variant_insert
+AFTER INSERT ON product_variants
+FOR EACH ROW
+BEGIN
+    REPLACE INTO product_variants_details
+    SELECT
+        pv.product_variant_id,
+        p.product_id,
+        p.title AS product_title,
+        p.product_description,
+        pv.creation_date AS variant_creation_date,
+        pv.price,
+        COALESCE(s.discount_sum, 0) AS discount,
+        pv.quantity_in_stock,
+        con.title AS condition_title,
+        a.title AS artist_title,
+        c.release_date,
+        ip.image_name,
+        GROUP_CONCAT(DISTINCT t.title) AS tag_titles
+    FROM
+        product_variants pv
+    LEFT JOIN products p ON pv.product_id = p.product_id
+    LEFT JOIN special_offers s ON pv.product_variant_id = s.product_variant_id
+    LEFT JOIN conditions con ON pv.condition_id = con.condition_id
+    LEFT JOIN cds c ON c.product_id = p.product_id
+    LEFT JOIN artists a ON a.artist_id = c.artist_id
+    LEFT JOIN images_for_products ip ON ip.product_id = p.product_id AND ip.main_image = 1
+    LEFT JOIN products_tags pt ON pt.product_id = p.product_id
+    LEFT JOIN tags t ON t.tag_id = pt.tag_id
+    WHERE pv.product_variant_id = NEW.product_variant_id
+    GROUP BY pv.product_variant_id, p.product_id, pv.creation_date, pv.price, pv.quantity_in_stock, con.title, a.title, c.release_date, ip.image_name;
+END;
+//
+DELIMITER ;
+
+-- Trigger for UPDATE operation on product_variants
+DELIMITER //
+CREATE TRIGGER after_product_variant_update
+AFTER UPDATE ON product_variants
+FOR EACH ROW
+BEGIN
+    REPLACE INTO product_variants_details
+    SELECT
+        pv.product_variant_id,
+        p.product_id,
+        p.title AS product_title,
+        p.product_description,
+        pv.creation_date AS variant_creation_date,
+        pv.price,
+        COALESCE(s.discount_sum, 0) AS discount,
+        pv.quantity_in_stock,
+        con.title AS condition_title,
+        a.title AS artist_title,
+        c.release_date,
+        ip.image_name,
+        GROUP_CONCAT(DISTINCT t.title) AS tag_titles
+    FROM
+        product_variants pv
+    LEFT JOIN products p ON pv.product_id = p.product_id
+    LEFT JOIN special_offers s ON pv.product_variant_id = s.product_variant_id
+    LEFT JOIN conditions con ON pv.condition_id = con.condition_id
+    LEFT JOIN cds c ON c.product_id = p.product_id
+    LEFT JOIN artists a ON a.artist_id = c.artist_id
+    LEFT JOIN images_for_products ip ON ip.product_id = p.product_id AND ip.main_image = 1
+    LEFT JOIN products_tags pt ON pt.product_id = p.product_id
+    LEFT JOIN tags t ON t.tag_id = pt.tag_id
+    WHERE pv.product_variant_id = NEW.product_variant_id
+    GROUP BY pv.product_variant_id, p.product_id, pv.creation_date,
+
+/*
+This trigger updates the product_details view after an INSERT, UPDATE, or DELETE operation
+ on the products table. The REPLACE INTO statement first
+deletes the row if it exists and then inserts a new row. 
+*/
+DELIMITER //
+CREATE TRIGGER after_product_details_change
+AFTER INSERT, UPDATE, DELETE ON products
+FOR EACH ROW
+BEGIN
+    -- Update the corresponding rows in product_details
+    REPLACE INTO product_details
+    (product_id, product_title, product_description, release_date, artist_title, image_name, main_image, tag_titles)
+    SELECT
+        p.product_id,
+        p.title AS product_title,
+        p.product_description,
+        c.release_date,
+        a.title AS artist_title,
+        ip.image_name,
+        ip.main_image,
+        GROUP_CONCAT(DISTINCT t.title) AS tag_titles
+    FROM
+        products p
+    LEFT JOIN cds c ON c.product_id = p.product_id
+    LEFT JOIN artists a ON a.artist_id = c.artist_id
+    LEFT JOIN images_for_products ip ON ip.product_id = p.product_id AND ip.main_image = 1
+    LEFT JOIN products_tags pt ON pt.product_id = p.product_id
+    LEFT JOIN tags t ON t.tag_id = pt.tag_id
+    WHERE
+        p.product_id = NEW.product_id;
+END;
+//
+DELIMITER ;
+
+
+
 CREATE TRIGGER after_cart_item_insert
 AFTER INSERT ON cart_items
 FOR EACH ROW
@@ -444,3 +551,46 @@ BEGIN
        discount_total = discount_total - OLD.discount
    WHERE id = OLD.cart_master_id;
 END;
+
+/*
+ This trigger updates the order_details view after an order is inserted into the orders table.
+The REPLACE INTO statement first deletes the row if it exists and then inserts a new row,
+just like the previous 2 triggers.
+
+*/
+DELIMITER //
+CREATE TRIGGER after_order_insert
+AFTER INSERT ON orders
+FOR EACH ROW
+BEGIN
+
+    REPLACE INTO order_details
+    (user_id, first_name, last_name, email, order_id, product_variant_id, product_title, item_price, quantity, total_price, discount, order_status, order_payment)
+    SELECT
+        u.user_id,
+        u.first_name,
+        u.last_name,
+        u.email,
+        o.order_id,
+        pv.product_variant_id,
+        p.title AS product_title,
+        pv.price AS item_price,
+        ol.quantity,
+        (pv.price * ol.quantity) AS total_price,
+        IFNULL(so.discount_sum, 0) AS discount,
+        os.status_title AS order_status,
+        op.status_title AS order_payment
+    FROM
+        orders o
+    JOIN users u ON o.user_id = u.user_id
+    JOIN orders_lines ol ON o.order_id = ol.order_id
+    JOIN product_variants pv ON ol.product_variant_id = pv.product_variant_id
+    JOIN products p ON pv.product_id = p.product_id
+    LEFT JOIN special_offers so ON pv.product_variant_id = so.product_variant_id
+    JOIN orders_status os ON o.order_status_id = os.order_status_id
+    JOIN orders_payment op ON o.order_payment_id = op.order_payment_id
+    WHERE
+        o.order_id = NEW.order_id;
+END;
+//
+DELIMITER ;

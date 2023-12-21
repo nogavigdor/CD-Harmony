@@ -12,6 +12,8 @@ use Controllers\UserController;
 use Controllers\AdminController;
 use Controllers\CompanyController;
 use Controllers\CartController;
+use Controllers\CheckoutController;
+use Controllers\OrderController;
 use Controllers\TestController;
 
 
@@ -49,21 +51,27 @@ route('/cdharmony/cart/id/(\d+)', 'GET', function ($product_variant_id) {
     $controller->addToCart($product_variant_id);
 });
 // update cart
-route('/cdharmony/update-cart/qty/(\d+)/id/(\d+)', 'GET', function ($qty,$product_variant_id) {
+route('/cdharmony/cart/update-cart/qty/(\d+)/id/(\d+)', 'GET', function ($qty,$product_variant_id) {
     
     $controller = new CartController();
     $controller->updateCart($qty, $product_variant_id);
 });
 
 // Remove item from cart
-route('/cdharmony/cart/remove/(\d+)', 'POST', function ($id) {
+route('/cdharmony/cart/delete-from-cart/id/(\d+)', 'GET', function ($id) {
     $controller = new CartController();
-    $controller->removeFromCart($id);
+    $controller->deleteFromCart($id);
 });
 
-// Checkout
+// Checkout view
+route('/cdharmony/cart/checkout', 'GET', function () {
+    $controller = new CheckoutController();
+    $controller->checkoutView();
+});
+
+// Checkout cart
 route('/cdharmony/cart/checkout', 'POST', function () {
-    $controller = new CartController();
+    $controller = new CheckoutController();
     $controller->checkout();
 });
 
@@ -73,10 +81,10 @@ route('/cdharmony/cart', 'GET', function () {
     $controller->viewCart();
 });
 
-
-route('/cdharmony/account', 'GET', function () {
-    $controller = new UserController();
-    $controller->accountView();
+// View order confirmation
+route('/cdharmony/order-confirmation', 'GET', function () {
+    $controller = new OrderController();
+    $controller->viewOrderConfirmation();
 });
 
 //Shows product details
@@ -187,11 +195,7 @@ route('/cdharmony/signup/', 'POST', function() {
     $controller->createAccount();
 });
 
-//not implemented yet
-route('/cdharmony/search/', 'GET', function () {
-    $controller = new SearchController();
-    $controller->searchView();
-});
+
 
 
 

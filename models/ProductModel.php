@@ -26,7 +26,6 @@ namespace Models;
                 a.title AS artist_title,
                 t.title AS tag_title,
                 ip.image_name,
-                ip.image_path,
                 con.title AS condition_title,        
                 pv.quantity_in_stock 
                 FROM
@@ -58,7 +57,6 @@ namespace Models;
                 a.title AS artist_title,
                 t.title AS tag_title,
                 ip.image_name,
-                ip.image_path,
                 SUM(CASE WHEN pv.condition_id = 1 THEN pv.quantity_in_stock ELSE 0 END) AS new_quantity,
                 SUM(CASE WHEN pv.condition_id = 2 THEN pv.quantity_in_stock ELSE 0 END) AS used_quantity,
                 MAX(CASE WHEN pv.condition_id = 1 THEN pv.price END) AS new_price,
@@ -104,7 +102,6 @@ namespace Models;
                 a.title AS artist_title,
                 t.title AS tag_title,
                 ip.image_name,
-                ip.image_path,
                 SUM(CASE WHEN pv.condition_id = 1 THEN pv.quantity_in_stock ELSE 0 END) AS new_quantity,
                 SUM(CASE WHEN pv.condition_id = 2 THEN pv.quantity_in_stock ELSE 0 END) AS used_quantity,
                 MAX(CASE WHEN pv.condition_id = 1 THEN pv.price END) AS new_price,
@@ -195,7 +192,6 @@ namespace Models;
             a.title AS artist_title,
             t.title AS tag_title,
             ip.image_name,
-            ip.image_path,
             con.title AS condition_title,        
             pv.quantity_in_stock 
         FROM
@@ -234,7 +230,6 @@ namespace Models;
             a.title AS artist_title,
             t.title AS tag_title,
             ip.image_name,
-            ip.image_path,
             con.title AS condition_title,        
             pv.quantity_in_stock 
         FROM
@@ -288,7 +283,7 @@ namespace Models;
         $limit = 3;
         $query = "
         SELECT p.product_id, p.title AS product_title, p.product_description, a.title as artist_title,
-        COUNT(pt.tag_id) as common_tag_count, GROUP_CONCAT(t.title) as common_tags, ip.image_name, ip.image_path
+        COUNT(pt.tag_id) as common_tag_count, GROUP_CONCAT(t.title) as common_tags, ip.image_name
         FROM products p
         INNER JOIN products_tags pt ON p.product_id = pt.product_id
         INNER JOIN tags t ON t.tag_id = pt.tag_id
@@ -347,8 +342,198 @@ namespace Models;
             die("Connection failed: " . $e->getMessage());
         }
     }
+    //checks if a tag already exists in the table
+    public function getTagIdByTitle($tag){
+        try{
+            $sql='     
+            SELECT * FROM tags WHERE title = :tag
+            ';
+            $query = $this->db->prepare($sql);
+            $query->bindParam(':tag', $tag);
+            $query->execute();
+            $result = $query->fetch(PDO::FETCH_OBJ);
+            // Check if a tag was found
+            if ($result) {
+                return $result->tag_id;
+            } else {
+                // Return null or any value that makes sense in your context
+                return null;
+            }
+            return $tag;
+        } catch (\PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
+        }
+    }
+    //inserts a new tag into the tags table and return's its tag id
+    public function insertTag($tag){
+        try{
+            $sql='     
+            INSERT INTO tags (title)
+            VALUES (:tag)
+            ';
+            $query = $this->db->prepare($sql);
+            
+            $query->bindParam(':tag', $tag);
+            $query->execute();
+            $tagId = $this->db->lastInsertId();
+            //returns new tag id
+            return $tagId;
+        } catch (\PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
+        }
+    }
 
+    public function addProductTag($productId, $tagId){
+        try{
+            $sql='     
+            INSERT INTO products_tags (product_id, tag_id)
+            VALUES (:productId, :tagId)
+            ';
+            $query = $this->db->prepare($sql);
+            
+            $query->bindParam(':productId', $productId);
+            $query->bindParam(':tagId', $tagId);
+            $query->execute();
+            return true;
+        } catch (\PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
+        }
+    }
 
-
+    public function addTag($tag,$newProductId) {
+        try{
+            $sql='     
+            INSERT INTO tags (title, product_id)
+            VALUES (:tag, :newProductId)
+            ';
+            $query = $this->db->prepare($sql);
+            
+            $query->bindParam(':tag', $tag);
+            $query->bindParam(':newProductId', $newProductId);
+            $query->execute();
+            $this->addProductTag($newProductId, $tagId);
+            return true;
+        } catch (\PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
+        }
+    }
+    
+    public function insertCd($cdId, $releaseDate, $artistId){
+        try{
+            $sql='     
+            INSERT INTO cds (product_id, artist_id, release_date)
+            VALUES (:productId, :artistId, :releaseDate)
+            ';
+            $query = $this->db->prepare($sql);
+            
+            $query->bindParam(':productId', $productId);
+            $query->bindParam(':artistId', $artistId);
+            $query->bindParam(':releaseDate', $releaseDate);
+            $query->execute();
+            return true;
+        } catch (\PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
+        }
 
     }
+
+    public function insertProductVariant($newProductId, $price, $quantityInStock){
+        try{
+            $sql='     
+            INSERT INTO product_variants (product_id, price, quantity_in_stock)
+            VALUES (:newProductId, :price, :quantityInStock)
+            ';
+            $query = $this->db->prepare($sql);
+            
+            $query->bindParam(':newProductId', $newProductId);
+            $query->bindParam(':price', $price);
+            $query->bindParam(':quantityInStock', $quantityInStock);
+            $query->execute();
+            return $this->db->lastInsertId();
+        } catch (\PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
+        }
+
+    }
+
+    public function checkArtist($newProductId, $artistTitle){
+        try{
+            $sql='     
+            SELECT artist_id FROM artists WHERE title = :artistTitle
+            LIMIT 1
+            ';
+            $query = $this->db->prepare($sql);
+            $query->bindParam(':artistTitle', $artistTitle);
+            $query->execute();
+            $result = $query->fetch(PDO::FETCH_OBJ);
+            // Check if an artist was found
+            if ($result) {
+          
+                return $artistId;
+            } else {
+                // no artist was found
+                return null;
+            }
+            return $artistTitle;
+        } catch (\PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
+        }
+    }
+    //inserts a new artist into the artists table and return's its artist id
+    public function insertArtist($artistTitle){
+        try{
+            $sql='     
+            INSERT INTO artists (title)
+            VALUES (:artistTitle)
+            ';
+            $query = $this->db->prepare($sql);
+            
+            $query->bindParam(':artistTitle', $artistTitle);
+            $query->execute();
+            $artistId = $this->db->lastInsertId();
+            //returns new artist id
+            return $artistId;
+        } catch (\PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
+        }
+    }
+
+
+    public function addCd($cdId, $releaseDate, $artistId){
+        try{
+            $sql='     
+            INSERT INTO cds (product_id, artist_id, release_date)
+            VALUES (:productId, :artistId, :releaseDate)
+            ';
+            $query = $this->db->prepare($sql);
+            
+            $query->bindParam(':productId', $productId);
+            $query->bindParam(':artistId', $artistId);
+            $query->bindParam(':releaseDate', $releaseDate);
+            $query->execute();
+            return $this->db->lastInsertId();
+        } catch (\PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
+        }
+
+    }
+
+    public function insertImage( $newProductId, $image_name, $main_image){
+        try{
+            $sql='     
+            INSERT INTO images_for_products (product_id, image_name, main_image)
+            VALUES (:newProductId, :image_name, :main_image)
+            ';
+            $query = $this->db->prepare($sql);
+            
+            $query->bindParam(':newProductId', $newProductId);
+            $query->bindParam(':image_name', $image_name);
+            $query->bindParam(':main_image', $main_image);
+            $query->execute();
+            return true;
+        } catch (\PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
+        }
+
+    }
+   }

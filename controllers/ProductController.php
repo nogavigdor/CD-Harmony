@@ -138,12 +138,65 @@ class ProductController
         }
     }
 
+    //adds ads a tag to a product
+    public function addTagToProduct($newProductId, $tag) {
+        //Checks if the tag already exists
+        $tagId = $this->productModel->getTagIdByTitle($tag);
+   
+        if (!$tagId) {
+            // If the tag doesn't exist, insert it and get the new tag id
+            $tagId = $this->productModel->insertTag($tag);
+        }
+      
+        //Associate the tag id with the new product id
+       $tagId =  $this->productModel->addProductTag($newProductId, $tagId);
+       echo $tagId;
+       exit;
+
+        return $tagId;
+    }
+    
+    private function getTagIdByTitle($tag) {
+        // Query the tags table to get the tag_id by title
+        $sql = 'SELECT tag_id FROM tags WHERE title = :tag';
+        $query = $this->db->prepare($sql);
+        $query->bindParam(':tag', $tag);
+        $query->execute();
+    
+        $result = $query->fetch(PDO::FETCH_ASSOC);
+    
+        return $result ? $result['tag_id'] : null;
+    }
+    
+    // Insert a new tag and return the last inserted tag_id
+    private function insertTag($tag) {
+        // Insert a new tag and retrieve the last inserted tag_id
+        $sql = 'INSERT INTO tags (title) VALUES (:tag)';
+        $query = $this->db->prepare($sql);
+        $query->bindParam(':tag', $tag);
+        $query->execute();
+    
+        return $this->db->lastInsertId();
+    }
+    
+    private function addProductTag($productId, $tagId) {
+        // Insert into the junction table (e.g., product_tags)
+        $sql = 'INSERT INTO product_tags (product_id, tag_id) VALUES (:productId, :tagId)';
+        $query = $this->db->prepare($sql);
+        $query->bindParam(':productId', $productId);
+        $query->bindParam(':tagId', $tagId);
+        $query->execute();
+    }
+    
+
     public function addProduct()
     {
         try {
+            //verifying if the user is logged as admin
             if(AdminController::authorizeAdmin()) {
                 // Validate the CSRF token on form submission - to ensure that only by authorized admin users
                 if (SessionManager::validateCSRFToken($_POST['csrf_token'])) {
+                      
                     // CSRF token is valid
                     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $errType=[];
@@ -169,7 +222,7 @@ class ProductController
                         $releaseDate = trim($_POST['releaseDate']);
                         $artistTitle = htmlspecialchars(trim($_POST['artistTitle']));
 
-
+                   
 
                        // print_r($file);
 
@@ -185,20 +238,72 @@ class ProductController
 
 
                         $productModel = new ProductModel();
-                        echo $newProductId = $productModel->addProduct($productTitle, $description, $creationDate);
-                        exit;
-                        if ($success) {
+                        $newProductId = $productModel->addProduct($productTitle, $description, $creationDate);
+                        
+                        if ($newProductId) {
 
-                            //image upload code
-                            $image = $this->imageHandler->handleImageUpload($file,"./src/assets/images/albums/");
+                           
+                            $arr_tags=[];
+                            //creating an array of tags
+                            $arr_tags=explode(",",$tags);
+
+                            foreach($arr_tags as $tag){
+                                //calling a class method to add a tag to a product
+                               $success =  $this->addTagtoProduct($tag, $newProductId);
+                             
+                            }
+                            //product and tag were added successfully
+                            if ($success) {
+                               //now insert product id into cds table
+                                 $artistId = $productModel->checkArtist($newProductId, $artistTitle);
+                                    if(!$artistId){
+                                        $artistId=$productModel->insertArtist($artistTitle);
+                                    }
+                                    
+
+
+                                $cdInserted = $productModel->insertCD($newProductId, $releaseDate, $artistId);
+
+
+                                if($cdInserted){
+                                   $new_products_var_added = $this->productModel->insertProductVariant($newProductId, $price, $quantityInStock);
+                                }
+
+
+                                if ($new_products_var_added) {
+
+                                        //image upload code
+                                        $image = $this->imageHandler->handleImageUpload($file,"./src/assets/images/albums/");
+
+                                        $msg=array();
+                                        $msg=$this->imageHandler->getMessages();
+                                        //print_r($msg);
+
+
+                                        //exit;
+                                        if(count($msg)>0){
+                                            $errType['image']=$msg;
+                                            SessionManager::setSessionVariable('errors_output', $errType);
+                                            header('Location:'. BASE_URL. '/admin/product/edit/'. $new_products_var_added);
+                                            exit;
+                                        }
+                                        else{
+                                            $image_name = $image;
+                                            $main_image = 1;
+                                            $image_added = $productModel->insertImage( $newProductId, $image_name, $main_image);
+                                        }
+
+                                        //sets the success message in the session variable
+                                        SessionManager::setSessionVariable('success_message', 'Product added successfully');   
+
+
+                                }
 
 
 
 
-                            exit;
+                            }
 
-                            //sets the success message in the session variable
-                            SessionManager::setSessionVariable('success_message', 'Product added successfully');
                         }
                     }
                 }

@@ -17,7 +17,7 @@ module.exports = {
         'cta': ['Oswald', 'sans'], // Use 'Oswald' for call to action buttons
       },
       text: {
-        'cta': '#fff', // Use 'Oswald' for call to action buttons
+        'cta': '#DE5529', // Use 'Oswald' for call to action buttons
       },
       colors: {
         'primary': '#008080',

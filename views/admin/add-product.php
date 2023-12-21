@@ -77,7 +77,7 @@ SessionManager::generateCSRFToken();
                 <div class="mb-4">
                     <label for="tags" class="block text-sm font-medium text-gray-700">Tags with comma seperated:</label>
                     <textarea   class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
- name="tags" id="tags"></textarea>
+                    name="tags" id="tags"></textarea>
                       
                 <!-- Image Upload -->
                 <div class="mb-4">

@@ -65,7 +65,7 @@ use Controllers\ProductController;
                                       <div class="flex gap-x-4 ">
                                             <?php if (isset($variants['new'])): ?>
                                                 <input type="radio" checked class="radio radio-primary" name="condition" value="<?php echo $variants['new']['product_variant_id']; ?>" id="new" class="mr-1" <?php echo $variants['new']['quantity_in_stock'] > 0 ? '' : 'disabled'; ?>>
-                                                <label for="new">New: <?php echo $variants['new']['price']-$variants['new']['discount'].' Kr'; ?>
+                                                <label for="new">New: <?php echo $variants['new']['price']-$variants['new']['discount'].' DKK'; ?>
                                                     <?php if ($variants['new']['quantity_in_stock'] == 0): ?>
                                                         <span class="text-gray-800">(Out of stock)</span>
                                                     <?php elseif ($variants['new']['quantity_in_stock'] == 1): ?>
@@ -79,14 +79,14 @@ use Controllers\ProductController;
                                         <div class="flex gap-x-4 ">             
                                         <!-- Used variant -->
                                             <?php if (isset($variants['used'])): ?>
-                                                <input type="radio" class="radio radio-primary" name="condition" value="<?php echo $variants['used']['product_variant_id']; ?>" id="used" class="mr-1" <?php echo $variants['used']['quantity_in_stock'] > 0 ? '' : 'disabled'; ?>>
-                                                <label for="used">Used: <?php echo $variants['used']['price']-$variants['used']['discount'].' Kr'; ?>
+                                                <input type="radio" class="radio radio-primary" name="condition" value="<?= $variants['used']['product_variant_id']; ?>" id="used" class="mr-1" <?php echo $variants['used']['quantity_in_stock'] > 0 ? '' : 'disabled'; ?>>
+                                                <label for="used">Used: <?= $variants['used']['price']-$variants['used']['discount'].' DKK'; ?>
                                                     <?php if ($variants['used']['quantity_in_stock'] == 0): ?>
                                                         <span class="text-gray-800">(Out of stock)</span>
                                                     <?php elseif ($variants['used']['quantity_in_stock'] == 1): ?>
                                                         <span class="text-gray-800">(Only one left in stock)</span>
                                                     <?php else: ?>
-                                                        <span class="text-gray-800">(<?php echo $variants['used']['quantity_in_stock']; ?> in stock)</span>
+                                                        <span class="text-gray-800">(<?= $variants['used']['quantity_in_stock']; ?> in stock)</span>
                                                     <?php endif; ?>
                                                 </label>
                                                         <?php endif; ?>
@@ -105,9 +105,9 @@ use Controllers\ProductController;
              
                     </div>
                       <div class="flex flex-col mt-8 md:w-1/2">      
-                            <p class="headline text-primary text-2xl mt-2"><?= $product->product_title ?></p>
-                            <p class="text-xl text-primary mt-2    "><?= $product->artist_title ?></p>
-                            <p class="mt-2"><?= $product->product_description ?></p>
+                            <p class="headline text-primary text-2xl mt-2"><?= htmlspecialchars($product->product_title) ?></p>
+                            <p class="text-xl text-primary mt-2    "><?= htmlspecialchars($product->artist_title) ?></p>
+                            <p class="mt-2"><?= htmlspecialchars($product->product_description) ?></p>
                         
                       </div> 
                 </div>
@@ -140,8 +140,9 @@ document.querySelector('.add-to-cart-form').addEventListener('submit', function(
         selectedVariantId = usedVariantId;
     }
 */
-const baseURL = window.location.origin; // Gets the origin (e.g., http://localhost)
-const relativePath = '/cdharmony/cart/id';
+
+const baseURL = window.location.origin;     
+
 
 
     if (selectedVariantId) {
@@ -153,7 +154,7 @@ const relativePath = '/cdharmony/cart/id';
         const xhttp = new XMLHttpRequest();
         xhttp.onload = function() {
            // document.getElementById("demo").innerHTML =
-            //alert(this.responseText);
+           // alert(this.responseText);
 
             arr_response=Array();
             arr_response=this.responseText.split("__##__");
@@ -189,7 +190,7 @@ const relativePath = '/cdharmony/cart/id';
                 }, 1000);
 
         }
-        xhttp.open("GET", baseURL+relativePath+"/"+selectedVariantId);
+        xhttp.open("GET", baseURL+relativePath+"cart/id/"+selectedVariantId);
         xhttp.send();
         
         return false;
