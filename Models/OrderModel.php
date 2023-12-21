@@ -40,7 +40,6 @@ use Exception;
                     VALUES (:quantity, :price, :order_id, :product_variant_id)
                 ");
                 foreach ($items as $productVarId => $item) {
-                    print_r($item);
                     if (isset($item['quantity']) && isset($item['price'])) {
                         $item['quantity'] = (int)$item['quantity'];
                         $item['price'] = (float)$item['price'];
@@ -77,6 +76,38 @@ use Exception;
                 INNER JOIN users u ON u.id = o.user_id
             ");
             $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        public function getOrder($orderId) {
+            $stmt = $this->db->prepare("
+                SELECT o.id, o.creation_date, o.order_status_id, o.order_payment_id, o.user_id, os.name AS order_status_name, op.name AS order_payment_name, u.email AS user_email
+                FROM orders o
+                INNER JOIN order_status os ON os.id = o.order_status_id
+                INNER JOIN order_payment op ON op.id = o.order_payment_id
+                INNER JOIN users u ON u.id = o.user_id
+                WHERE o.id = :order_id
+            ");
+            $stmt->execute([
+                'order_id' => $orderId
+            ]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+
+
+
+  
+            public function getOrderLines($orderId) {
+                // Function code here
+            
+        
+            $stmt = $this->db->prepare("
+                SELECT * from invoice_details
+                WHERE order_id = :order_id
+            ");
+            $stmt->execute([
+                'order_id' => $orderId
+            ]);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
     }
