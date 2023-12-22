@@ -17,18 +17,18 @@ document.addEventListener('DOMContentLoaded', function () {
       }
   });
 
-  document.querySelector('.btn.btn-secondary').addEventListener('click', function(event) {
-    event.preventDefault();
+  //document.querySelector('.btn.btn-secondary').addEventListener('click', function(event) {
+  ////  event.preventDefault();
 
     // Update cart item count
  
-/*
+
     // Show cart slider
-    document.getElementById('cartSlider').style.transform = 'translateX(0)';
+  //  document.getElementById('cartSlider').style.transform = 'translateX(0)';
 
     // Update cart items and total price
- */
-});
+ 
+//});
 
 });
 

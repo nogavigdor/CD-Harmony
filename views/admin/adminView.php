@@ -12,7 +12,7 @@ use Services\SessionManager;
 
         <!-- Content Area -->
         <div class="flex-1 p-8">
-           <?= 'implement number of products, number of users number of orders'; ?>
+          <h1> <?= 'Welcome to mini admin of CD Harmony.'; ?></h1>
         </div>
    
 </main>

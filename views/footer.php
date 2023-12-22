@@ -21,10 +21,9 @@
   </div>
   <nav>
     <header class="footer-title">Usefull links</header>
-    <a href="<?= BASE_URL.'/contact'; ?>"class="link link-hover">Contact Us</a>
-    <a class="link link-hover">Design</a>
-    <a class="link link-hover">Marketing</a>
-    <a class="link link-hover">Advertisement</a>
+    <a href="<?= BASE_URL.'/contact'; ?>" class="link link-hover">Contact Us</a>
+    <a href="<?= BASE_URL.'/login'; ?>"> Login</a>
+    <a href="<?= BASE_URL.'/signup'; ?>"> Signup</a> 
   </nav>
   <!-- Newsletter -->
   <!--

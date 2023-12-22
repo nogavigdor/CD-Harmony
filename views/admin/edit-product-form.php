@@ -66,6 +66,8 @@ SessionManager::generateCSRFToken();
                     <input type="file" name="UpdateImage" id="updateImage"
                         class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                 </div>
+                 <input type="hidden" name="product_id" value="<?= $productDetails->product_id ?? ''; ?>">
+                 
             </form>
         </div>
     </div>

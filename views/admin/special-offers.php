@@ -35,8 +35,10 @@ use Models\SpecialOfferModel;
                             <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($offer['title']) ?></td>
                             <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($offer['special_offer_description']) ?></td>
                             <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($offer['special_offer_start_date']) ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <input type="radio" name="homepage" value="<?= htmlspecialchars($offer['product_variant_id']) ?>" <?= $offer['is_homepage'] ? 'checked' : '' ?> onchange="updateHomepage(this.value)">
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
-                                <button class="px-4 py-2 mr-2 text-white bg-blue-500 rounded hover:bg-blue-700">Edit</button>
                                 <button class="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-700">Delete</button>
                             </td>
                         </tr>
@@ -46,5 +48,20 @@ use Models\SpecialOfferModel;
         </div>
     </div>
 </main>
-
+<script>
+    function updateHomepage(productVariantId) {
+    fetch('special-offer/update-homepage', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'product_variant_id=' + productVariantId,
+    })
+    .then(response => response.text())
+    .then(data => console.log(data))
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+}
+</script>
 <?php include 'admin-footer.php' ?>

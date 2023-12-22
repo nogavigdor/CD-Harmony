@@ -309,12 +309,15 @@
     LEFT JOIN tags t ON t.tag_id = pt.tag_id
     GROUP BY
         p.product_id;
+
+        /* This view is used in for example in my product details where there, as well as the admin area */
     /* Second view : Creates a view that includes all the variations of the products */
     /* In my specific webshop scneario, it will create a view that includes all the new/used variations */
     /* It includes price, discount, quantaty */
     /* and any other detail which is joint from other tables that gives a better overview of the product */
     /* such as product title, product description, the condition title, artist title, release date, image name, image path, and tag titles */
     /* It's important to note that I've concatenated the tag titles to one string for better access in the front end */
+
 CREATE VIEW product_variants_details AS
 SELECT
     pv.product_variant_id,
@@ -390,8 +393,38 @@ GROUP BY
             a.title, con.title, pv.quantity_in_stock, ip.image_name, c.release_date;
 
         -- ...
+-- ...
 
-/* Third View - customer details overview - will be used for the admin panel */
+-- Creates a view for order summary
+--summs up the totals of the order and is being used in the admin area
+CREATE OR REPLACE VIEW order_summary AS
+SELECT
+    o.order_id,
+    u.user_id,
+    CONCAT(u.first_name, ' ', u.last_name) AS customer_name,
+    u.email AS customer_email,
+    u.creation_date AS registration_date,
+    o.creation_date AS order_date,
+    os.status_title AS order_status,
+    op.status_title AS order_payment,
+    COUNT(DISTINCT ol.product_variant_id) AS total_items, -- Count of distinct product variants
+    SUM(ol.quantity) AS total_quantity,
+    SUM(pv.price * ol.quantity) AS order_subtotal,
+    IFNULL(SUM(so.discount_sum), 0) AS order_discount,
+    SUM((pv.price * ol.quantity) - IFNULL(so.discount_sum, 0)) AS order_grand_total
+FROM
+    orders o
+JOIN users u ON o.user_id = u.user_id
+JOIN orders_lines ol ON o.order_id = ol.order_id
+JOIN product_variants pv ON ol.product_variant_id = pv.product_variant_id
+LEFT JOIN special_offers so ON pv.product_variant_id = so.product_variant_id
+JOIN orders_status os ON o.order_status_id = os.order_status_id
+JOIN orders_payment op ON o.order_payment_id = op.order_payment_id
+GROUP BY
+    o.order_id, u.user_id, customer_name, customer_email, registration_date,
+    order_date, order_status, order_payment;
+
+/*  customer details overview - will be used for the admin panel */
 /* includes the user id, first name, last name, email, registration date, total orders, total items purchased, and total amount spent */
 CREATE OR REPLACE VIEW customer_details AS
 SELECT
@@ -399,21 +432,22 @@ SELECT
     u.first_name,
     u.last_name,
     u.email,
-    u.creation_date AS registration_date,
-    COUNT(DISTINCT o.order_id) AS total_orders,
-    COUNT(ol.quantity) AS total_items_purchased,
-    IFNULL(SUM(pv.price * ol.quantity), 0) AS total_amount_spent,
-    COUNT(DISTINCT o.order_id) AS total_orders_done_so_far
+    COUNT(DISTINCT o.order_id) AS total_orders_done_so_far,
+    SUM(ol.quantity) AS total_items_purchased,
+    SUM(pv.price * ol.quantity) AS total_amount_spent,
+    SUM(IFNULL(so.discount_sum, 0)) AS total_discount,
+    SUM(pv.price * ol.quantity - IFNULL(so.discount_sum, 0)) AS total_grand_total
 FROM
     users u
 JOIN roles r ON u.role_id = r.role_id
 LEFT JOIN orders o ON u.user_id = o.user_id
 LEFT JOIN orders_lines ol ON o.order_id = ol.order_id
 LEFT JOIN product_variants pv ON ol.product_variant_id = pv.product_variant_id
+LEFT JOIN special_offers so ON pv.product_variant_id = so.product_variant_id
 WHERE
     r.role_name = 'customer'
 GROUP BY
-    u.user_id, u.first_name, u.last_name, u.email, u.creation_date;
+    u.user_id, u.first_name, u.last_name, u.email;
 
 
 

@@ -119,14 +119,54 @@ class OrderController {
     }
 
     public function getAllOrders()
-    {
-        try {
-            $orders = $this->orderModel->getAllOrders();
-            include 'Views/admin-orders.php';
-        } catch (\PDOException $ex) {
-            error_log('PDO Exception: ' . $ex->getMessage());
+{
+    try {
+        // Retrieve all orders from the database
+        return $this->orderModel->getAllOrders();
+    } catch (\PDOException $ex) {
+        error_log('PDO Exception: ' . $ex->getMessage());
+    }
+}
+
+public function showOrders()
+{
+    try {
+        // Checks if the user is logged in as an admin before showing the orders
+        if (!SessionManager::isAdmin()) {
+            // User is not logged in as an admin, redirect to the home page
+            SessionManager::setSessionVariable('error_message', 'You are not authorized to view this page.');
+            header('Location:'. BASE_URL.   '/login');
+            exit;
         }
 
-    
+        // Retrieve all orders from the database
+        $orders = $this->getAllOrders();
+
+        include 'Views/admin/orders.php';
+    } catch (\PDOException $ex) {
+        error_log('PDO Exception: ' . $ex->getMessage());
     }
+}
+
+
+public function showInvoice($orderId)
+{
+    try {
+        // Checks if the user is logged in as an admin before showing the invoice
+        if (!SessionManager::isAdmin()) {
+            // User is not logged in as an admin, redirect to the home page
+            SessionManager::setSessionVariable('error_message', 'You are not authorized to view this page.');
+            header('Location:'. BASE_URL.   '/login');
+            exit;
+        }
+
+        // Retrieve the order details from the database
+        $invoiceDetails = $this->orderModel->getOrderLines($orderId);
+
+        include 'Views/admin/invoice.php';
+    } catch (\PDOException $ex) {
+        error_log('PDO Exception: ' . $ex->getMessage());
+    }
+  
+}
 }

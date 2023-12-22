@@ -7,13 +7,15 @@ use Exception;
 
     class OrderModel {
         private $db; 
-
+       
         public function __construct()
         {
             $this->db = DBConnector::getInstance()->connectToDB();
+           
         }
 
-        // Get cart items by user id
+        // Insert the order details into the database after 
+        // an ordder has been placed
         public function createOrder($userId, $items) {
             
             try {
@@ -67,32 +69,19 @@ use Exception;
         }
 
 
-        public function getAllOrders() {
-            $stmt = $this->db->prepare("
-                SELECT o.id, o.creation_date, o.order_status_id, o.order_payment_id, o.user_id, os.name AS order_status_name, op.name AS order_payment_name, u.email AS user_email
-                FROM orders o
-                INNER JOIN order_status os ON os.id = o.order_status_id
-                INNER JOIN order_payment op ON op.id = o.order_payment_id
-                INNER JOIN users u ON u.id = o.user_id
-            ");
-            $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        public function getInvoiceDetails   () {
+            try {
+                $sql = 'SELECT * FROM order_summary';
+               
+                $query = $this->db->prepare($sql);
+                $query->execute();
+                return $query->fetchAll(\PDO::FETCH_ASSOC);
+               
+            } catch (\PDOException $e) {
+                die("Connection failed: " . $e->getMessage());
+            }
         }
-
-        public function getOrder($orderId) {
-            $stmt = $this->db->prepare("
-                SELECT o.id, o.creation_date, o.order_status_id, o.order_payment_id, o.user_id, os.name AS order_status_name, op.name AS order_payment_name, u.email AS user_email
-                FROM orders o
-                INNER JOIN order_status os ON os.id = o.order_status_id
-                INNER JOIN order_payment op ON op.id = o.order_payment_id
-                INNER JOIN users u ON u.id = o.user_id
-                WHERE o.id = :order_id
-            ");
-            $stmt->execute([
-                'order_id' => $orderId
-            ]);
-            return $stmt->fetch(PDO::FETCH_ASSOC);
-        }
+        
 
 
 
@@ -109,5 +98,18 @@ use Exception;
                 'order_id' => $orderId
             ]);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        public function getAllOrders(){
+            try {
+                $sql = 'SELECT * FROM order_summary';
+               
+                $query = $this->db->prepare($sql);
+                $query->execute();
+                return $query->fetchAll(\PDO::FETCH_ASSOC);
+               
+            } catch (\PDOException $e) {
+                die("Connection failed: " . $e->getMessage());
+            }
         }
     }

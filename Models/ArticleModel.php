@@ -79,7 +79,20 @@ class ArticleModel
 }
 
 
-
+ public function getInvoiceDetails($orderId){
+        try {
+            $sql = '
+            SELECT * FROM invoice_details
+            WHERE order_id = :order_id
+            ';
+            $query = $this->db->prepare($sql);
+            $query->bindParam(':order_id', $orderId, \PDO::PARAM_INT);
+            $query->execute();
+            return $query->fetchAll(PDO::FETCH_OBJ);
+        } catch (\PDOException $ex) {
+            die("Connection failed: " . $e->getMessage());
+        }
+ }
 
 
 }
