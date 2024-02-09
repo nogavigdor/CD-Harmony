@@ -27,7 +27,9 @@ namespace Models;
                 t.title AS tag_title,
                 ip.image_name,
                 con.title AS condition_title,        
-                pv.quantity_in_stock 
+                pv.quantity_in_stock,
+                pv.creation_date,
+                pv.price
                 FROM
                 product_variants pv
                 INNER JOIN products p ON p.product_id = pv.product_id
@@ -155,6 +157,7 @@ namespace Models;
 
     //Get product variants details by product id (using product_variants_details view)
     //Currently it will give 2 variants since there are 2 conditions (new and used) for each product
+    //The parameted is a product id (NOT a product variant id)
      public function getProductVariantsDetails($id)
         {   //implementing product_details view
         try {
@@ -175,35 +178,17 @@ namespace Models;
     }
 
     //Get product variant details by product variant id
+    //using the product_variants_details view
+    //the parameter is a product variant id (NOT a product id)
 
     public function getProductVariantDetails($VariantId) {
 
         try {
             $sql = '
             SELECT
-            pv.product_variant_id,
-            pv.price,
-            pv.quantity_in_stock,
-            so.discount_sum AS discount,
-            p.product_id,
-            pv.condition_id,
-            p.title AS product_title,
-            p.product_description AS description,
-            a.title AS artist_title,
-            t.title AS tag_title,
-            ip.image_name,
-            con.title AS condition_title,        
-            pv.quantity_in_stock 
+            *
         FROM
-            products p
-            INNER JOIN product_variants pv ON p.product_id = pv.product_id
-            INNER JOIN products_tags pt ON p.product_id = pt.product_id
-            INNER JOIN tags t ON pt.tag_id = t.tag_id
-            LEFT JOIN cds c ON p.product_id = c.product_id
-            LEFT JOIN artists a ON c.artist_id = a.artist_id
-            LEFT JOIN images_for_products ip ON p.product_id = ip.product_id
-            LEFT JOIN special_offers so ON pv.product_variant_id = so.product_variant_id
-            INNER JOIN conditions con ON pv.condition_id = con.condition_id
+            product_variants_details pv
             WHERE pv.product_variant_id = :VariantId
             GROUP BY pv.product_variant_id
              ';
@@ -310,18 +295,24 @@ namespace Models;
         return $products;
     }
 
-    public function getAllVariants(){
+    //Gets all the products variants
+    public function getAllVariants($sortBy = null, $orderBy = null){
         try{
-            $sql='     
-            SELECT * FROM product_variants_details
-            ';
+            $sql = 'SELECT * FROM product_variants_details';
+
+            if ($sortBy&&$orderBy) {
+                // Adjust the query for sorting
+                $sql .= " ORDER BY $sortBy $orderBy";
+            }
+    
             $query = $this->db->prepare($sql);
             $query->execute();
             return $query->fetchAll(PDO::FETCH_OBJ);
         } catch (\PDOException $e) {
-            die("Connection failed: " . $e->getMessage());
+            die("Connection failed: " . $e->getMessage());  
         }
     }
+
 
     public function addProduct($productTitle, $description, $creationDate){
         try{
@@ -383,7 +374,7 @@ namespace Models;
         }
     }
 
-    public function addProductTag($productId, $tagId){
+    public function addProductTag($tagId,$productId){
         try{
             $sql='     
             INSERT INTO products_tags (product_id, tag_id)
@@ -391,8 +382,8 @@ namespace Models;
             ';
             $query = $this->db->prepare($sql);
             
-            $query->bindParam(':productId', $productId);
             $query->bindParam(':tagId', $tagId);
+            $query->bindParam(':productId', $productId);
             $query->execute();
             return true;
         } catch (\PDOException $e) {
@@ -437,7 +428,8 @@ namespace Models;
 
     }
 
-    public function insertProductVariant($newProductId, $price, $quantityInStock){
+    //inserts a new product variant into the product_variants table
+    public function insertProductVariant($newProductId, $condition, $price, $quantityInStock){
         try{
             $sql='     
             INSERT INTO product_variants (product_id, price, quantity_in_stock)
@@ -446,6 +438,7 @@ namespace Models;
             $query = $this->db->prepare($sql);
             
             $query->bindParam(':newProductId', $newProductId);
+            $query->bindParam(':condition', $condition);
             $query->bindParam(':price', $price);
             $query->bindParam(':quantityInStock', $quantityInStock);
             $query->execute();
@@ -456,6 +449,7 @@ namespace Models;
 
     }
 
+    //checks if an artist already exists in the table and returns its artist id 
     public function checkArtist($newProductId, $artistTitle){
         try{
             $sql='     
@@ -472,7 +466,7 @@ namespace Models;
                 return $artistId;
             } else {
                 // no artist was found
-                return null;
+                return false;
             }
             return $artistTitle;
         } catch (\PDOException $e) {
@@ -536,4 +530,84 @@ namespace Models;
         }
 
     }
+
+    //Inserts a new cd into the cds table
+    public function cdInsert($newProductId, $releaseDate, $artistId ){
+        try{
+            $sql='     
+            INSERT INTO cds (product_id, release_date, artist_id)
+            VALUES (:newProductId, :releaseDate, :artistId)
+            ';
+            $query = $this->db->prepare($sql);
+            
+            $query->bindParam(':newProductId', $newProductId);
+            $query->bindParam(':releaseDate', $releaseDate);
+            $query->bindParam(':artistId', $artistId);
+            $query->execute();
+            return true;
+        } catch (\PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
+        }
+    }
+
+    //search function
+    public function search($searchTerm){
+        try{
+            $sql='     
+            SELECT
+            * FROM product_variants_details
+            WHERE product_title LIKE :searchTerm OR artist_title LIKE :searchTerm
+            OR tag_titles LIKE :searchTerm OR product_description LIKE :searchTerm
+            OR condition_title LIKE :searchTerm
+            ';
+            $query = $this->db->prepare($sql);
+
+        // $searchTerm is a variable containing the search term
+        $searchTerm = '%' . $searchTerm . '%';
+
+        $query->bindParam(':searchTerm', $searchTerm, PDO::PARAM_STR);
+        $query->execute();
+
+        return $query->fetchAll(PDO::FETCH_OBJ);
+        } catch (\PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
+     
+     
+     
+        }
+    }
+    public function addTagToProduct($productId, $tagId){
+        try {
+            // Check if the product_id exists in the products table
+            if (!$this->productExists($productId)) {
+                throw new \Exception("Product with ID $productId does not exist.");
+            }
+    
+            $sql = 'INSERT INTO products_tags (product_id, tag_id) VALUES (:productId, :tagId)';
+            $query = $this->db->prepare($sql);
+    
+            $query->bindParam(':productId', $productId);
+            $query->bindParam(':tagId', $tagId);
+            $query->execute();
+    
+            return true;
+        } catch (\PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
+        } catch (\Exception $e) {
+            die($e->getMessage());
+        }
+    }
+    
+    // Helper method to check if a product exists
+    private function productExists($productId) {
+        $sql = 'SELECT COUNT(*) FROM products WHERE product_id = :productId';
+        $query = $this->db->prepare($sql);
+        $query->bindParam(':productId', $productId);
+        $query->execute();
+    
+        return $query->fetchColumn() > 0;
+    }
+    
+
+
    }

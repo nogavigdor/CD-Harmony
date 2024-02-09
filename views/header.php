@@ -1,6 +1,5 @@
 <?php
 use Services\SessionManager; 
-include './utilities/functions.php';
 $session = new SessionManager();
 $session->startSession();
 $csrfToken=SessionManager::generateCSRFToken();

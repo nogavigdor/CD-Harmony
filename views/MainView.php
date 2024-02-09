@@ -13,8 +13,8 @@ include 'header.php';
              <Section class="col-span-3 sm:col-span-2 pt-4">
                 <?php $specialOfferController= new SpecialOfferController(); 
                     $specialOffer=$specialOfferController->showSpecialOffer();
-                    $offerEndDate = new DateTime($specialOffer['special_offer_end_date']);
-                    $formattedOfferEndDate = $offerEndDate->format('d F Y');
+                    $offerEndDate = $specialOffer['special_offer_end_date'];
+                    $offerEndDate = timeStampTodDate($offerEndDate);
                     
                 ?>
 
@@ -27,7 +27,7 @@ include 'header.php';
                         <p class="text-xl text-secondary font-bold mb-2">
                         <?= $specialOffer['title'];?>
                         </p>
-                        <p class="countdown text-xl text-secondary  font-bold mb-2">Offer ends: <?= $formattedOfferEndDate ?></p>
+                        <p class="countdown text-xl text-secondary  font-bold mb-2">Offer ends: <?= $offerEndDate ?></p>
                     </div>
                     <div class="mask mask-star  bg-base-100 w-[500px] border-4 border-secondary h-[500px] shadow-lg absolute top-[-100px] right-[50px] text-white p-4 flex flex-col justify-center items-center">
 

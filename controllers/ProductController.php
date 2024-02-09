@@ -9,6 +9,10 @@ use Services\ImageHandler;
 
 use Services\SessionManager;
 
+use DataAccess\DBConnector;
+
+use PDO;
+
 class ProductController 
 {
     private $productModel;
@@ -19,6 +23,8 @@ class ProductController
         $this->imageHandler = new ImageHandler();
         $session = new SessionManager();
         $session->startSession();
+
+        $this->db = DBConnector::getInstance()->connectToDB();
     }
     
 
@@ -55,10 +61,11 @@ class ProductController
 	public function showProductDetails($id, $role = 'none')
     {
         try {
+             //getting an array of variants (new and old) and the product details
+            $product = $this->productModel->getProductDetails($id);
             //route for admin
             if ($role == 'admin') {
                 if (AdminController::authorizeAdmin()) {
-                    $product = $this->productModel->getProductDetails($id);
                     // Load the view to display the product details if the user is an admin
                     include 'views/admin/product_details.php';
                 } else {
@@ -68,8 +75,6 @@ class ProductController
                 }
             //route for customer
             } else {
-                //getting an array of variants (new and old) and the product details
-                $product = $this->productModel->getProductDetails($id);
                 // Load the view to display the product details
                 include 'views/product_details.php';
             }
@@ -80,6 +85,7 @@ class ProductController
         }
     }
 
+    //THE PARAMETER IS THE PRODUCT ID   
     //Getting the product variantd details (in this case, the new and old variant of a cd product)
     public function getProductVariantDetails($id)
     {
@@ -91,6 +97,20 @@ class ProductController
         }
     }
 
+    //presentation for the admin products page which can be sorted
+    public function getAllVariants($sortBy = null, $orderBy = null)
+    {
+        try {
+            if(SessionManager::isAdmin()) {
+                return $this->productModel->getAllVariants($sortBy='variant_creation_date', $orderBy); // Call the method on the instance
+            }
+        } catch (\PDOException $ex) {
+            error_log('PDO Exception: ' . $ex->getMessage());
+        }
+    }
+
+    //THE PARAMETER IS THE PRODUCT VARIANT ID
+    //Getting the product variants details 
     public function getProductVariantsDetails($id)
     {
         try {
@@ -101,25 +121,27 @@ class ProductController
         }
     }
 
-    public function getProductsList()
-    {
-        try {
-            if(AdminController::authorizeAdmin()) {
-                return $this->productModel->getAllProducts(); // Call the method on the instance
 
-           
-            
-                
-            }
-            else{
-                // Redirect to the login page in case the user is not logged as admin
-                header('Location:'. BASE_URL. '/admin-login');
-                exit();
-            }
-        } catch (\PDOException $ex) {
-            error_log('PDO Exception: ' . $ex->getMessage());
+
+
+    public function showAdminProducts($sortBy=null, $orderedBy=null){
+        try {
+        if (!(SessionManager::isAdmin())) {
+            // Redirect to the homepage in case the user is not logged as admin
+            header('Location:'. BASE_URL);
+            exit();
         }
+        //in case of loading the admin products the first time, both parameters will be null
+        $productsList = $this->productModel->getAllVariants($sortBy, $orderedBy); 
+    
+        include 'views/admin/products.php'; // Include the view file
+    } catch (\PDOException $ex) {
+        error_log('PDO Exception: ' . $ex->getMessage());
     }
+
+    }
+    
+
 
     public function showProductForm()
     {
@@ -156,28 +178,8 @@ class ProductController
         return $tagId;
     }
     
-    private function getTagIdByTitle($tag) {
-        // Query the tags table to get the tag_id by title
-        $sql = 'SELECT tag_id FROM tags WHERE title = :tag';
-        $query = $this->db->prepare($sql);
-        $query->bindParam(':tag', $tag);
-        $query->execute();
-    
-        $result = $query->fetch(PDO::FETCH_ASSOC);
-    
-        return $result ? $result['tag_id'] : null;
-    }
-    
-    // Insert a new tag and return the last inserted tag_id
-    private function insertTag($tag) {
-        // Insert a new tag and retrieve the last inserted tag_id
-        $sql = 'INSERT INTO tags (title) VALUES (:tag)';
-        $query = $this->db->prepare($sql);
-        $query->bindParam(':tag', $tag);
-        $query->execute();
-    
-        return $this->db->lastInsertId();
-    }
+
+ 
     
     private function addProductTag($productId, $tagId) {
         // Insert into the junction table (e.g., product_tags)
@@ -188,25 +190,43 @@ class ProductController
         $query->execute();
     }
     
-
+//Adds a new product (cd) to the database
     public function addProduct()
     {
         try {
+            $this->db->beginTransaction();
             //verifying if the user is logged as admin
-            if(AdminController::authorizeAdmin()) {
+           if(!(SessionManager::isAdmin())){
+                // Redirect to the homepage in case the user is not logged as admin {
+                header('Location:'. BASE_URL. '/admin-login');
+                exit();
+            }
+
                 // Validate the CSRF token on form submission - to ensure that only by authorized admin users
                 if (SessionManager::validateCSRFToken($_POST['csrf_token'])) {
                       
                     // CSRF token is valid
                     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                        //initializing an array to store the errors
                         $errType=[];
-                        // Retrieve values from the form
+
+
+                        /*****Retrieve values from the form *****/
+
                         $productTitle = htmlspecialchars(trim($_POST['productTitle']));
+                        $artisTitle = htmlspecialchars(trim($_POST['artistTitle']));
                         $description = htmlspecialchars(trim($_POST['productDescription']));
+                        $condition = htmlspecialchars(trim($_POST['productCondition']));
                         //converting the number to decimal
                         $price = floatval(htmlspecialchars(trim($_POST['price'])));
                         $quantityInStock = htmlspecialchars(trim($_POST['quantityInStock']));
-                        $creationDate = date("Y-m-d h:i:s");  
+                        $creationDate = date("Y-m-d h:i:s"); 
+                        $tags = htmlspecialchars(trim($_POST['tags']));
+                        $releaseDate = trim($_POST['releaseDate']);
+                        $file = $_FILES['image'];
+
+                      
+                        /********  Validating form values **********/
 
                         // Validate quantityInStock
                         if (!is_numeric($quantityInStock) || $quantityInStock < 0) {
@@ -216,17 +236,7 @@ class ProductController
                             
                         }
 
-                        $file = $_FILES['image'];
-        
-                        $tags = htmlspecialchars(trim($_POST['tags']));
-                        $releaseDate = trim($_POST['releaseDate']);
-                        $artistTitle = htmlspecialchars(trim($_POST['artistTitle']));
-
-                   
-
-                       // print_r($file);
-
-                        
+                        //if there are errors, redirect to the add product form and show error message
                         SessionManager::setSessionVariable('errors_output', $errType);
                         if(count($errType)>0){
                             header('Location:'. BASE_URL. '/admin/product/add');
@@ -238,38 +248,78 @@ class ProductController
 
 
                         $productModel = new ProductModel();
+
+                        //creating the product prototype and getting the new product id
                         $newProductId = $productModel->addProduct($productTitle, $description, $creationDate);
                         
+                        //if a new product prototype was created successfully, continue
                         if ($newProductId) {
 
-                           
+                            //creating a tags array from the tags string
                             $arr_tags=[];
                             //creating an array of tags
                             $arr_tags=explode(",",$tags);
 
+                            
+                            //creates the products id tags
+                            //checks if the tags (as strings) exists in the tags table
+                            //and inserts those who don't exist
+                            //returns an array of tag ids that will be associated with the product
+
+                            $id_tags=[];
                             foreach($arr_tags as $tag){
+                                //gets the tag id
+                               $tagId =  $this->productModel->getTagIdByTitle($tag);
+                                //if the tag doesn't exist, insert it
+                               if(!$tagId){
+                                   //inserts the tag and returns the tag id
+                                   $tagId = $this->productModel->insertTag($tag);
+                               }
+                             //pushes the tag id to the array  
+                             array_push($id_tags, $tagId);
+
+                            }
+                           
+                        
+                            //updating the the tags for tags and products table (many to many)
+                            foreach($id_tags as $tagId){
+                                echo $newProductId."---".$tagId;
+                                
+                            echo $newProductId;
+                            var_dump($id_tags);
+                            var_dump($arr_tags);
+                            exit;
                                 //calling a class method to add a tag to a product
-                               $success =  $this->addTagtoProduct($tag, $newProductId);
+                               $success =  $this->addTagToProduct($newProductId, $tagId);
                              
                             }
+
+                           
+                         
                             //product and tag were added successfully
                             if ($success) {
-                               //now insert product id into cds table
+
+                               //checks if the artist already exists in the database
                                  $artistId = $productModel->checkArtist($newProductId, $artistTitle);
+                                    //if the artist doesn't exist, insert it
                                     if(!$artistId){
-                                        $artistId=$productModel->insertArtist($artistTitle);
+                                        //inserts the artist and returns the artist id
+                                        $artistId=$productModel->insertArtist($artistTitle);     
                                     }
                                     
 
-
+                                //inserts the cd product - no need for the cd is so just getting a success message
+                                /* parameter returned: bolean */
                                 $cdInserted = $productModel->insertCD($newProductId, $releaseDate, $artistId);
-
-
+                              
+                                //if the cd was inserted successfully, continue
                                 if($cdInserted){
-                                   $new_products_var_added = $this->productModel->insertProductVariant($newProductId, $price, $quantityInStock);
+                                    //inserts the product variant and returns the product variant id
+                                    /* parameter returned: int */
+                                   $new_products_var_added = $this->productModel->insertProductVariant($newProductId, $condition, $price, $quantityInStock);
                                 }
 
-
+                                //if the product variant was inserted successfully, continue
                                 if ($new_products_var_added) {
 
                                         //image upload code
@@ -307,8 +357,9 @@ class ProductController
                         }
                     }
                 }
-            }
+                $this->db->commit();
         } catch (\PDOException $ex) {
+            $this->db->rollBack();
             error_log('PDO Exception: ' . $ex->getMessage());
         }
     }
@@ -393,16 +444,6 @@ class ProductController
         }
     }
 
-    public function getAllVariants()
-    {
-        try {
-            if(SessionManager::isAdmin()) {
-                return $this->productModel->getAllVariants(); // Call the method on the instance
-            }
-        } catch (\PDOException $ex) {
-            error_log('PDO Exception: ' . $ex->getMessage());
-        }
-    }
 
     public function showAddProductForm()    
     {
@@ -417,6 +458,24 @@ class ProductController
                 header('Location:'. BASE_URL. '/admin-login');
                 exit();
             }
+        } catch (\PDOException $ex) {
+            error_log('PDO Exception: ' . $ex->getMessage());
+        }
+    }
+
+    public function search($searchTerm)
+    {
+        try {
+            $productsList = $this->productModel->search($searchTerm);
+              // Check if the products list is empty
+            if (empty($productsList)) {
+                // Load a view that displays a 'no search results' message
+                $productsList = $this->productModel->getAllVariants();
+                SessionManager::setSessionVariable('error_message', 'No results found');
+            }
+            // Load the view to display the products
+            include 'views/admin/products.php';
+
         } catch (\PDOException $ex) {
             error_log('PDO Exception: ' . $ex->getMessage());
         }

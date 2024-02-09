@@ -130,7 +130,7 @@
     
         </main>
         <script>
-            const baseURL = window.location.origin; // Gets the origin (e.g., http://localhost)
+            const baseURL = window.location.origin; 
            
             function updateProductQty(id){
                 //alert(id);

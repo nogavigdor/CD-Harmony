@@ -1,13 +1,7 @@
 <?php
 namespace Controllers;
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
 
-require './PHPMailer-master/src/Exception.php';
-require './PHPMailer-master/src/PHPMailer.php';
-require './PHPMailer-master/src/SMTP.php';
 
 class TestController 
 {
@@ -51,8 +45,8 @@ class TestController
                              $mail->Password = SMTP_PASSWORD;   
                             //$mail->setFrom($email, $first_name);
                             $mail->isHTML();
-                            $mail->From = "contact@cdharmony.dk";
-                             $mail->addAddress("contact@cdharmony.dk", "Noga");
+                            $mail->From = "contact@cdhrmny.dk";
+                             $mail->addAddress("contact@cdhrmny.dk", "Noga");
 
                              $mail->Subject = $title;
                              $mail->Body = "<h2 style='color:red;'>Email From:</h2> ".$email."<br />".$message;

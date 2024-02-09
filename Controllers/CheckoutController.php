@@ -23,10 +23,11 @@ class CheckoutController {
 
     }
     public function checkout() {
-
+ 
         // Check if the user is logged and  a customer before checkout
-        if (!SessionManager::isVar('user_id')&& SessionManager::isCustomer()) {
-            // User is not logged in, redirect to the login page
+        if (!SessionManager::isCustomer()) {
+            // User is not logged in as a customer, redirect to the login page
+;
             SessionManager::setSessionVariable('error_message', 'Please login in order to checkout.');
             header('Location: /login');
             exit;
@@ -35,9 +36,12 @@ class CheckoutController {
         // Check if the cart is not empty and if there is at least one product variant in the cart
             if (SessionManager::isVar('cart') && count(SessionManager::getSessionVariable('cart')) > 0) {
                 $cart = SessionManager::getSessionVariable('cart');
-                $userId = SessionManager::getSessionVariable('user_id');
-        
-              
+
+                $userId = isset($user_details['id']) ? $user_details['id'] : null;  // Adjust the key based on your user data structure
+         
+
+
+                    //after the order is created a trigger define in MySQL updates the stock quantaties.
                     $orderPlaced = $this->orderModel->createOrder($userId, $cart);
         
                     if ($orderPlaced) {

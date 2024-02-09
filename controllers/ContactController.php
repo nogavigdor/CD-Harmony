@@ -111,36 +111,19 @@ class ContactController
                     */
                     if ($response->success && $response->score >= 0.5 && $response->action == 'contact') {
                         //upon a successful validation of the recaptcha, the email will be sent to the admin
-                        
-                                        $mail = new PHPMailer(true);
-                                
-                                        $mail->SMTPDebug = SMTP::DEBUG_SERVER;
-                                        $mail->isSMTP();
-                                        $mail->SMTPAuth = true;
-                                    
-                                        $mail->Host = "send.one.com";
-                                        $mail->SMTPSecure = "ssl";
-                                        $mail->SMTPDebug = 0; 
-                                        $mail->Port = 465;
+
+                    $to = ADMIN_EMAIL;
+                    $from = ADMIN_EMAIL;
+                    $headers = "From: " . ADMIN_EMAIL . "\r\n";
+                    $subject = $title;
+                    $message = "<p>Email From:</p> ".$email."<br />
+                    <p>Content of message:</p>".$message;
     
-                                        $mail->Username = SMTP_USERNAME;
-                                        $mail->Password = SMTP_PASSWORD;   
-                                        //$mail->setFrom($email, $first_name);
-                                        $mail->isHTML();
-                                        $mail->From = "contact@cdharmony.dk";
-                                        $mail->addAddress("contact@cdharmony.dk", "Noga");
-    
-                                        $mail->Subject = $title;
-                                        $mail->Body = "<h2 style='color:red;'>Email From:</h2> ".$email."<br />".$message;
-                                        
-                                        
-                                        
-                                        $mail->send();
-                            
-                                        SessionManager::setSessionVariable('success_message', 'Your message has been sent successfully. We\'ll get back to you within 48 hours.');
+                    sendMail($to, $subject, $message, $from, $headers='');
+                    SessionManager::setSessionVariable('success_message', 'Your message has been sent successfully. We\'ll get back to you within 48 hours.');
                                         
                       
-                                        echo json_encode(array('success' => true, "msg"=>"Your message has been sent successfully. We'll get back to you within 48 hours.", "response"=>$response));
+                    echo json_encode(array('success' => true, "msg"=>"Your message has been sent successfully. We'll get back to you within 48 hours.", "response"=>$response));
                                         
                     } else {
             

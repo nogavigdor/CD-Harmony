@@ -2,6 +2,7 @@
 namespace Models;
 use Exception;
 
+
     use \DataAccess\DBConnector;
     use PDO;
 
@@ -69,11 +70,13 @@ use Exception;
         }
 
 
-        public function getInvoiceDetails   () {
+        public function getInvoiceDetails   ($orderId) {
             try {
-                $sql = 'SELECT * FROM order_summary';
+                $sql = 'SELECT * FROM invoice_details
+                        WHERE order_id = :order_id';
                
                 $query = $this->db->prepare($sql);
+                $query->bindparam(':order_id', $orderId);
                 $query->execute();
                 return $query->fetchAll(\PDO::FETCH_ASSOC);
                
@@ -86,18 +89,17 @@ use Exception;
 
 
   
-            public function getOrderLines($orderId) {
-                // Function code here
-            
+        public function getOrderLines($orderId) {
+            // Function code here
         
-            $stmt = $this->db->prepare("
+            $sql = "
                 SELECT * from invoice_details
                 WHERE order_id = :order_id
-            ");
-            $stmt->execute([
-                'order_id' => $orderId
-            ]);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            ";
+            $query = $this->db->prepare($sql);
+            $query->bindparam(':order_id', $orderId);
+            $query->execute();
+            return $query->fetchAll(PDO::FETCH_ASSOC);
         }
 
         public function getAllOrders(){
@@ -107,6 +109,20 @@ use Exception;
                 $query = $this->db->prepare($sql);
                 $query->execute();
                 return $query->fetchAll(\PDO::FETCH_ASSOC);
+               
+            } catch (\PDOException $e) {
+                die("Connection failed: " . $e->getMessage());
+            }
+        }
+
+        public function getOrderSummary($orderId){
+            try {
+                $sql = 'SELECT * FROM order_summary WHERE order_id = :order_id';
+               
+                $query = $this->db->prepare($sql);
+                $query->bindparam(':order_id', $orderId);
+                $query->execute();
+                return $query->fetch(\PDO::FETCH_ASSOC);
                
             } catch (\PDOException $e) {
                 die("Connection failed: " . $e->getMessage());

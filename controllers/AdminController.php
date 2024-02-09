@@ -88,22 +88,7 @@ class AdminController
     }
 
     
-    public function showProducts()
-    { 
-        // Check if the user is logged in and if it has an admin role
-        if(self::authorizeAdmin()) {
-            // User is an admin, show the products page
-            include 'views/admin/products.php';
-            } else {
-            // Redirect to the login page
-            header('Location:'. BASE_URL. '/admin-login');
-            exit();
-            }
-
-
-
-
-    }
+   
 
     public function getProductDetails()
     {

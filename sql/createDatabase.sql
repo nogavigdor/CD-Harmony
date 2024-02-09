@@ -1,10 +1,10 @@
 
 
-            DROP DATABASE IF EXISTS CDHarmonyDB;
+            DROP DATABASE IF EXISTS cdhrmnyDB;
 
-            CREATE DATABASE CDHarmonyDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+            CREATE DATABASE cdhrmnyDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
-            USE CDHarmonyDB;
+            USE cdhrmnyDB;
 
             CREATE TABLE roles
             (
@@ -290,7 +290,7 @@
     /* Even though I have just one image for each product, I've used the main image column as a condition, to insure I get one image */
     /* and to make sure that for this scenario, I will not retrieve more than one image for each product */
     /* if in the future I will want to add more images for each product, I will concatenate them to one string as well */
-    CREATE VIEW product_details AS
+    CREATE  OR REPLACE VIEW product_details AS
     SELECT
         p.product_id,
         p.title AS product_title,
@@ -308,7 +308,8 @@
     LEFT JOIN products_tags pt ON pt.product_id = p.product_id
     LEFT JOIN tags t ON t.tag_id = pt.tag_id
     GROUP BY
-        p.product_id;
+        p.product_id
+ 
 
         /* This view is used in for example in my product details where there, as well as the admin area */
     /* Second view : Creates a view that includes all the variations of the products */
@@ -318,7 +319,7 @@
     /* such as product title, product description, the condition title, artist title, release date, image name, image path, and tag titles */
     /* It's important to note that I've concatenated the tag titles to one string for better access in the front end */
 
-CREATE VIEW product_variants_details AS
+CREATE  OR REPLACE VIEW product_variants_details AS
 SELECT
     pv.product_variant_id,
     p.product_id,
@@ -344,53 +345,54 @@ LEFT JOIN images_for_products ip ON ip.product_id = p.product_id AND ip.main_ima
 LEFT JOIN products_tags pt ON pt.product_id = p.product_id
 LEFT JOIN tags t ON t.tag_id = pt.tag_id
 GROUP BY
-    pv.product_variant_id, p.product_id, pv.creation_date, pv.price, pv.quantity_in_stock, con.title, a.title, c.release_date, ip.image_name;
+    pv.product_variant_id, p.product_id, pv.creation_date, pv.price, pv.quantity_in_stock, con.title, a.title, c.release_date, ip.image_name
+
 
 -- ...
 
-        /* Forth view - Order details - summary of customer's orders */
-        CREATE OR REPLACE VIEW order_details AS
-        SELECT
-            u.user_id,
-            u.first_name,
-            u.last_name,
-            u.email,
-            o.order_id,
-            pv.product_variant_id,
-            p.title AS product_title,
-            pv.price AS item_price,
-            ol.quantity,
-            (pv.price * ol.quantity) AS total_price,
-            IFNULL(so.discount_sum, 0) AS discount,
-            os.status_title AS order_status,
-            op.status_title AS order_payment,
-            a.title AS artist_name,
-            con.title AS condition,
-            pv.quantity_in_stock AS quantity_in_stock_after_order,
-            ip.image_name,
-            c.release_date,
-            GROUP_CONCAT(DISTINCT t.title) AS tag_titles
-        FROM
-            orders o
-        JOIN users u ON o.user_id = u.user_id
-        JOIN orders_lines ol ON o.order_id = ol.order_id
-        JOIN product_variants pv ON ol.product_variant_id = pv.product_variant_id
-        JOIN products p ON pv.product_id = p.product_id
-        LEFT JOIN special_offers so ON pv.product_variant_id = so.product_variant_id
-        JOIN orders_status os ON o.order_status_id = os.order_status_id
-        JOIN orders_payment op ON o.order_payment_id = op.order_payment_id
-        JOIN cds c ON c.product_id = p.product_id
-        JOIN artists a ON a.artist_id = c.artist_id
-        LEFT JOIN conditions con ON pv.condition_id = con.condition_id
-        LEFT JOIN images_for_products ip ON ip.product_id = p.product_id AND ip.main_image = 1
-        LEFT JOIN products_tags pt ON pt.product_id = p.product_id
-        LEFT JOIN tags t ON t.tag_id = pt.tag_id
-        WHERE
-            o.order_id = NEW.order_id
-        GROUP BY
-            u.user_id, u.first_name, u.last_name, u.email, o.order_id, pv.product_variant_id,
-            p.title, pv.price, ol.quantity, total_price, discount, order_status, order_payment,
-            a.title, con.title, pv.quantity_in_stock, ip.image_name, c.release_date;
+        /* Forth view - Orders details - summary of customer's orders */
+CREATE OR REPLACE VIEW order_details AS
+SELECT
+    u.user_id,
+    u.first_name,
+    u.last_name,
+    u.email,
+    o.order_id,
+    pv.product_variant_id,
+    p.title AS product_title,
+    pv.price AS item_price,
+    ol.quantity,
+    (pv.price * ol.quantity) AS total_price,
+    IFNULL(so.discount_sum, 0) AS discount,
+    os.status_title AS order_status,
+    op.status_title AS order_payment,
+    a.title AS artist_name,
+    con.title AS condition_title, 
+    pv.quantity_in_stock AS quantity_in_stock_after_order,
+    ip.image_name,
+    c.release_date,
+    GROUP_CONCAT(DISTINCT t.title) AS tag_titles
+FROM
+    orders o
+JOIN users u ON o.user_id = u.user_id
+JOIN orders_lines ol ON o.order_id = ol.order_id
+JOIN product_variants pv ON ol.product_variant_id = pv.product_variant_id
+JOIN products p ON pv.product_id = p.product_id
+LEFT JOIN special_offers so ON pv.product_variant_id = so.product_variant_id
+JOIN orders_status os ON o.order_status_id = os.order_status_id
+JOIN orders_payment op ON o.order_payment_id = op.order_payment_id
+JOIN cds c ON c.product_id = p.product_id
+JOIN artists a ON a.artist_id = c.artist_id
+LEFT JOIN conditions con ON pv.condition_id = con.condition_id
+LEFT JOIN images_for_products ip ON ip.product_id = p.product_id AND ip.main_image = 1
+LEFT JOIN products_tags pt ON pt.product_id = p.product_id
+LEFT JOIN tags t ON t.tag_id = pt.tag_id
+
+GROUP BY
+    u.user_id, u.first_name, u.last_name, u.email, o.order_id, pv.product_variant_id,
+    p.title, pv.price, ol.quantity, total_price, discount, order_status, order_payment,
+    a.title, condition_title, pv.quantity_in_stock, ip.image_name, c.release_date;
+
 
         -- ...
 -- ...
@@ -422,7 +424,8 @@ JOIN orders_status os ON o.order_status_id = os.order_status_id
 JOIN orders_payment op ON o.order_payment_id = op.order_payment_id
 GROUP BY
     o.order_id, u.user_id, customer_name, customer_email, registration_date,
-    order_date, order_status, order_payment;
+    order_date, order_status, order_payment
+
 
 /*  customer details overview - will be used for the admin panel */
 /* includes the user id, first name, last name, email, registration date, total orders, total items purchased, and total amount spent */
@@ -447,45 +450,8 @@ LEFT JOIN special_offers so ON pv.product_variant_id = so.product_variant_id
 WHERE
     r.role_name = 'customer'
 GROUP BY
-    u.user_id, u.first_name, u.last_name, u.email;
+    u.user_id, u.first_name, u.last_name, u.email
 
-
-
-/* After each insertion, update, or deletion in the product_variants table */
-CREATE OR REPLACE TRIGGER after_product_variant_change
-AFTER INSERT, UPDATE, DELETE ON product_variants
-FOR EACH ROW
-BEGIN
-    REPLACE INTO product_variants_details
-    SELECT
-        pv.product_variant_id,
-        p.product_id,
-        p.title AS product_title,
-        p.product_description,
-        pv.creation_date AS variant_creation_date,
-        pv.price,
-        COALESCE(s.discount_sum, 0) AS discount,
-        pv.quantity_in_stock,
-        con.title AS condition_title,
-        a.title AS artist_title,
-        c.release_date,
-        ip.image_name,
-        GROUP_CONCAT(DISTINCT t.title) AS tag_titles
-    FROM
-        product_variants pv
-    LEFT JOIN products p ON pv.product_id = p.product_id
-    LEFT JOIN special_offers s ON pv.product_variant_id = s.product_variant_id
-    LEFT JOIN conditions con ON pv.condition_id = con.condition_id
-    LEFT JOIN cds c ON c.product_id = p.product_id
-    LEFT JOIN artists a ON a.artist_id = c.artist_id
-    LEFT JOIN images_for_products ip ON ip.product_id = p.product_id AND ip.main_image = 1
-    LEFT JOIN products_tags pt ON pt.product_id = p.product_id
-    LEFT JOIN tags t ON t.tag_id = pt.tag_id
-    WHERE pv.product_variant_id = NEW.product_variant_id
-    GROUP BY pv.product_variant_id, p.product_id, pv.creation_date, pv.price,
-    pv.quantity_in_stock, con.title, a.title, c.release_date, ip.image_name;
-END;
-//
 
 
 -- Details invoice which summmerize order details according to variants
@@ -530,6 +496,9 @@ GROUP BY
     o.order_id, u.user_id, customer_name, customer_email, registration_date,
     order_date, order_status, order_payment, artist_name, release_date,
     product_name, quantity_per_variant, unit_price, condition_title, image_name;
+
+
+
 
 -- ...
 

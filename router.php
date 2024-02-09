@@ -32,10 +32,12 @@ function dispatch($path, $method)
     global $routes;
     $path = trim($path, '/');
     
-    foreach ($routes as $route => $callbacks) {
+    foreach ($routes as $route => $callbacks) { // Loop through the routes
+        //
         if (preg_match($route, $path, $matches) && isset($callbacks[$method])) {
             array_shift($matches); // Remove the full match from the array
             //passes the matched value into the callback
+
             echo call_user_func_array($callbacks[$method], $matches);
             return;
         }

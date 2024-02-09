@@ -10,7 +10,7 @@ use Controllers\ProductController;
     <h1 class="text-2xl headline text-secondary font-bold mb-4">Your Cart</h1>
     <div class="flex mb-4">
     <a href="<?= BASE_URL.'/cart'; ?>" class="btn flex-1 text-center py-2 m-2">Back to cart</a>  
-        <a href="<?= BASE_URL.'/order-confirmation      ' ?>"class="btn  flex-1 text-center py-2 m-2 ">Place your order</a>
+        <a href="<?= BASE_URL.'/order-confirmation' ?>"class="btn  flex-1 text-center py-2 m-2 ">Place your order</a>
     </div>
     <?php
     // Iterate through cart items and display each one

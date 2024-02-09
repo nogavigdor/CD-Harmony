@@ -18,8 +18,8 @@ class CartController {
         $quantity=1;
         
         // Check if the product variant ID and quantity are provided
-        if (!isset($product_variant_id) || !isset($quantity)) {
-            // Product variant ID or quantity are not provided, redirect to the home page
+        if (!isset($product_variant_id)) {
+            // Product variant ID is not provided, redirect to the home page
 
             echo "id_missing";
             exit;

@@ -1273,7 +1273,7 @@ $stmt = $db->prepare($sql);
 // Bind parameters
 $companyName = 'CD Harmony';
 $street = 'Melody 1';
-$email = 'info@cdharmony.dk';
+$email = 'info@cdhrmny.dk';
 $phoneNumber = '52333333';
 $logo = '\\src\\assets\\logo_no_background.png';
 $openingHours = 'Monday - Friday 8:00 - 17:00';
@@ -1311,7 +1311,7 @@ $stmtAdmin->bindParam(':role_id', $role_idAdmin, PDO::PARAM_INT);
 // Set parameter values
 $first_nameAdmin = 'Noga';
 $last_nameAdmin = 'Vigdor';
-$emailAdmin = 'admin@cdharmony.dk';
+$emailAdmin = 'admin@cdhrmny.dk';
 $creation_dateAdmin = date('Y-m-d H:i:s');
 $role_idAdmin = 1; 
 
