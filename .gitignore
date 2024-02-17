@@ -1,1 +1,9 @@
-node_modules
+HistoryFiles/*
+node_modules/*
+sql/history/*
+package-lock.json
+package.json
+tailwind.config.default.js
+tailwind.config.js
+views/history/*
+cdhrmny/*
