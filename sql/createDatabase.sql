@@ -1,10 +1,10 @@
 
 
-            DROP DATABASE IF EXISTS cdhrmnyDB;
+            DROP DATABASE IF EXISTS cdharmonyDB;
 
-            CREATE DATABASE cdhrmnyDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+            CREATE DATABASE cdharmonyDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
-            USE cdhrmnyDB;
+            USE cdharmonyDB;
 
             CREATE TABLE roles
             (

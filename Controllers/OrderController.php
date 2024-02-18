@@ -84,8 +84,8 @@ class OrderController {
             ";
             }
             $message .= "
-            <p>Thank you again for your purchase. We hope to see you again soon at <a href='https://www.cdharmony.dk'>www.cdhrmny.dk</a>.</p>
-            <p>If you have any questions about your order, please contact us at <a href='mailto:contact@cdhrmny.dk'>contact@cdhrmny.dk</a>.</p>
+            <p>Thank you again for your purchase. We hope to see you again soon at <a href='https://www.cdharmony.dk'>www.cdharmony.dk</a>.</p>
+            <p>If you have any questions about your order, please contact us at <a href='mailto:contact@cdharmony.dk'>contact@cdharmony.dk</a>.</p>
             <p>Best regards,</p>
             <p>The CD Harmony Team</p>
             ";
