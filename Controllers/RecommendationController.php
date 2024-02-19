@@ -38,10 +38,8 @@ class RecommendationController {
      * @return array
      */
     public function getRecommendationsOnProductPage($productId) {
-        $productTags = $this->productModel->getProductTags($productId);
-        $productTags = array_column($productTags, 'title');
         $recommendedProductsByTags = [];
-        $recommendedProductsByTags = $this->productModel->getProductsByTags($productId, $productTags);
+        $recommendedProductsByTags = $this->recommendationModel->getRecommendationBasedOnSharedTags($productId);
         return $recommendedProductsByTags;
     }
 

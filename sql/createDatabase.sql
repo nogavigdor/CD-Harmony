@@ -290,6 +290,7 @@
     /* Even though I have just one image for each product, I've used the main image column as a condition, to insure I get one image */
     /* and to make sure that for this scenario, I will not retrieve more than one image for each product */
     /* if in the future I will want to add more images for each product, I will concatenate them to one string as well */
+    DROP VIEW product_details;
     CREATE  OR REPLACE VIEW product_details AS
     SELECT
         p.product_id,
@@ -319,6 +320,7 @@
     /* such as product title, product description, the condition title, artist title, release date, image name, image path, and tag titles */
     /* It's important to note that I've concatenated the tag titles to one string for better access in the front end */
 
+DROP VIEW product_variants_details;
 CREATE  OR REPLACE VIEW product_variants_details AS
 SELECT
     pv.product_variant_id,
@@ -350,7 +352,8 @@ GROUP BY
 
 -- ...
 
-        /* Forth view - Orders details - summary of customer's orders */
+/* Forth view - Orders details - summary of customer's orders */
+DROP VIEW order_details;
 CREATE OR REPLACE VIEW order_details AS
 SELECT
     u.user_id,
@@ -399,6 +402,7 @@ GROUP BY
 
 -- Creates a view for order summary
 --summs up the totals of the order and is being used in the admin area
+DROP VIEW order_summary;
 CREATE OR REPLACE VIEW order_summary AS
 SELECT
     o.order_id,
@@ -429,6 +433,7 @@ GROUP BY
 
 /*  customer details overview - will be used for the admin panel */
 /* includes the user id, first name, last name, email, registration date, total orders, total items purchased, and total amount spent */
+DROP VIEW customer_details;
 CREATE OR REPLACE VIEW customer_details AS
 SELECT
     u.user_id,
@@ -455,7 +460,7 @@ GROUP BY
 
 
 -- Details invoice which summmerize order details according to variants
--- Details invoice which summmerize order details according to variants
+DROP VIEW invoice_details;
 CREATE OR REPLACE VIEW invoice_details AS
 SELECT
     o.order_id,

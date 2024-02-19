@@ -20,7 +20,7 @@ if ($jsonData === false) {
 }
 
 $data = json_decode($jsonData, true);
-
+ 
 if (json_last_error() !== JSON_ERROR_NONE) {
     die("Error parsing JSON data: " . json_last_error_msg());
 }
@@ -28,7 +28,7 @@ if (json_last_error() !== JSON_ERROR_NONE) {
 try {
     // Start a transaction
     $db->beginTransaction();
-
+  
     // Iterate through the JSON data and insert records
     foreach ($data as $artistName => $albums) {
         // Insert the artist into the artists table
@@ -1289,6 +1289,7 @@ $stmt->bindParam(':postal_code_id', $postalCodeId);
 
 // Execute the statement
 $stmt->execute();
+
    
 
 // Insert an admin to users

@@ -260,40 +260,7 @@ namespace Models;
         return $tags;
     }
 
-    //Get products that have the same tags as the current product
-    //ordered by the biggest number of common tags
-    public function getProductsByTags($productId, $tags) {
-    // Gets the number of tags and creates a placeholder string for the query
-        $placeholders = str_repeat('?,', count($tags) - 1) . '?';
-        $limit = 3;
-        $query = "
-        SELECT p.product_id, p.title AS product_title, p.product_description, a.title as artist_title,
-        COUNT(pt.tag_id) as common_tag_count, GROUP_CONCAT(t.title) as common_tags, ip.image_name
-        FROM products p
-        INNER JOIN products_tags pt ON p.product_id = pt.product_id
-        INNER JOIN tags t ON t.tag_id = pt.tag_id
-        INNER JOIN images_for_products ip ON ip.product_id = p.product_id
-        INNER JOIN cds c ON c.product_id = p.product_id
-        INNER JOIN artists a ON a.artist_id = c.artist_id
-        WHERE pt.tag_id IN (
-            SELECT tag_id
-            FROM products_tags
-            WHERE product_id = :current_product_id
-        )
-        AND p.product_id != :current_product_id
-        GROUP BY p.product_id
-        ORDER BY common_tag_count DESC
-        LIMIT :limit
-    ";
-    
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':current_product_id', $productId, \PDO::PARAM_INT);
-        $stmt->bindParam(':limit', $limit, \PDO::PARAM_INT);
-        $stmt->execute();
-        $products = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-        return $products;
-    }
+  
 
     //Gets all the products variants
     public function getAllVariants($sortBy = null, $orderBy = null){
