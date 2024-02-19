@@ -15,6 +15,7 @@ use PDO;
 
 class ProductController 
 {
+    private $db;
     private $productModel;
     private $imageHandler;
 
