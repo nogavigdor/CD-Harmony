@@ -290,7 +290,7 @@
     /* Even though I have just one image for each product, I've used the main image column as a condition, to insure I get one image */
     /* and to make sure that for this scenario, I will not retrieve more than one image for each product */
     /* if in the future I will want to add more images for each product, I will concatenate them to one string as well */
-    DROP VIEW product_details;
+    DROP VIEW IF EXISTS product_details;
     CREATE  OR REPLACE VIEW product_details AS
     SELECT
         p.product_id,
@@ -309,7 +309,7 @@
     LEFT JOIN products_tags pt ON pt.product_id = p.product_id
     LEFT JOIN tags t ON t.tag_id = pt.tag_id
     GROUP BY
-        p.product_id
+        p.product_id;
  
 
         /* This view is used in for example in my product details where there, as well as the admin area */
@@ -320,7 +320,7 @@
     /* such as product title, product description, the condition title, artist title, release date, image name, image path, and tag titles */
     /* It's important to note that I've concatenated the tag titles to one string for better access in the front end */
 
-DROP VIEW product_variants_details;
+DROP VIEW IF EXISTS product_variants_details;
 CREATE  OR REPLACE VIEW product_variants_details AS
 SELECT
     pv.product_variant_id,
@@ -347,13 +347,13 @@ LEFT JOIN images_for_products ip ON ip.product_id = p.product_id AND ip.main_ima
 LEFT JOIN products_tags pt ON pt.product_id = p.product_id
 LEFT JOIN tags t ON t.tag_id = pt.tag_id
 GROUP BY
-    pv.product_variant_id, p.product_id, pv.creation_date, pv.price, pv.quantity_in_stock, con.title, a.title, c.release_date, ip.image_name
+    pv.product_variant_id, p.product_id, pv.creation_date, pv.price, pv.quantity_in_stock, con.title, a.title, c.release_date, ip.image_name;
 
 
 -- ...
 
 /* Forth view - Orders details - summary of customer's orders */
-DROP VIEW order_details;
+DROP VIEW IF EXISTS order_details;
 CREATE OR REPLACE VIEW order_details AS
 SELECT
     u.user_id,
@@ -401,8 +401,8 @@ GROUP BY
 -- ...
 
 -- Creates a view for order summary
---summs up the totals of the order and is being used in the admin area
-DROP VIEW order_summary;
+-- summs up the totals of the order and is being used in the admin area
+DROP VIEW IF EXISTS order_summary;
 CREATE OR REPLACE VIEW order_summary AS
 SELECT
     o.order_id,
@@ -428,12 +428,12 @@ JOIN orders_status os ON o.order_status_id = os.order_status_id
 JOIN orders_payment op ON o.order_payment_id = op.order_payment_id
 GROUP BY
     o.order_id, u.user_id, customer_name, customer_email, registration_date,
-    order_date, order_status, order_payment
+    order_date, order_status, order_payment;
 
 
 /*  customer details overview - will be used for the admin panel */
 /* includes the user id, first name, last name, email, registration date, total orders, total items purchased, and total amount spent */
-DROP VIEW customer_details;
+DROP VIEW IF EXISTS customer_details;
 CREATE OR REPLACE VIEW customer_details AS
 SELECT
     u.user_id,
@@ -455,12 +455,12 @@ LEFT JOIN special_offers so ON pv.product_variant_id = so.product_variant_id
 WHERE
     r.role_name = 'customer'
 GROUP BY
-    u.user_id, u.first_name, u.last_name, u.email
+    u.user_id, u.first_name, u.last_name, u.email;
 
 
 
 -- Details invoice which summmerize order details according to variants
-DROP VIEW invoice_details;
+DROP VIEW IF EXISTS invoice_details;
 CREATE OR REPLACE VIEW invoice_details AS
 SELECT
     o.order_id,
