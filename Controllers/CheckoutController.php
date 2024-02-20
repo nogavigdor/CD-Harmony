@@ -6,6 +6,8 @@ use Services\SessionManager;
 use Services\EmailService;
 
 class CheckoutController {
+    private $session;
+    private $orderModel;
     public function __construct() {
         $this->session = new SessionManager();
         $this->orderModel = new OrderModel();
