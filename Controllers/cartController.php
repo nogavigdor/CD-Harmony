@@ -5,6 +5,9 @@ use Models\OrderModel;
 use Services\SessionManager;
 
 class CartController {
+    private $productModel;
+    private $session;
+    private $orderModel;
     public function __construct() {
         $this->productModel = new ProductModel();
         $this->session = new SessionManager();
