@@ -102,7 +102,7 @@ class OrderController {
              $customerEmail = SessionManager::getSessionVariable('user')['email'];
              $customerName = SessionManager::getSessionVariable('user')['first_name'];
 
-             include 'Views/order-confirmation.php';}
+             include 'views/order-confirmation.php';}
              
         } catch (\PDOException $ex) {
             error_log('PDO Exception: ' . $ex->getMessage());
@@ -133,7 +133,7 @@ public function showOrders()
         // Retrieve all orders from the database
         $orders = $this->getAllOrders();
 
-        include 'Views/admin/orders.php';
+        include 'views/admin/orders.php';
     } catch (\PDOException $ex) {
         error_log('PDO Exception: ' . $ex->getMessage());
     }
@@ -161,7 +161,7 @@ public function showInvoice($orderId)
 
         
         
-        include 'Views/admin/invoice.php';
+        include 'views/admin/invoice.php';
 
     } catch (\PDOException $ex) {
         error_log('PDO Exception: ' . $ex->getMessage());

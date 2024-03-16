@@ -101,7 +101,7 @@ class CartController {
             }
         }
     
-        echo "success__##__".$total_qty;
+        echo "success|".$total_qty;
 
         
     }

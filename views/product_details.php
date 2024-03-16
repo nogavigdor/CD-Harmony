@@ -157,7 +157,10 @@ const baseURL = window.location.origin;
            // alert(this.responseText);
 
             arr_response=Array();
-            arr_response=this.responseText.split("__##__");
+            console.log("Request URL:", this.responseURL);
+            console.log(this.responseText);
+                arr_response=this.responseText.split("|");
+                console.log(arr_response);
 
             // Creates a new div for for alers/sucess message
             let messageDiv = document.createElement('div');

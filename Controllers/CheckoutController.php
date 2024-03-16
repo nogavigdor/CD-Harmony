@@ -18,7 +18,7 @@ class CheckoutController {
 
         try{
 
-            include 'Views/checkout.php';
+            include 'views/checkout.php';
         }catch (\PDOException $ex) {
             error_log('PDO Exception: ' . $ex->getMessage());
         }
