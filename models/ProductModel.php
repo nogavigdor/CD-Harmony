@@ -341,7 +341,7 @@ namespace Models;
         }
     }
 
-    public function addProductTag($tagId,$productId){
+    public function addProductTag($productId,$tagId){
         try{
             $sql='     
             INSERT INTO products_tags (product_id, tag_id)
@@ -361,7 +361,7 @@ namespace Models;
     public function addTag($tag,$newProductId) {
         try{
             $sql='     
-            INSERT INTO tags (title, product_id)
+            INSERT INTO tags (tag_id, product_id)
             VALUES (:tag, :newProductId)
             ';
             $query = $this->db->prepare($sql);

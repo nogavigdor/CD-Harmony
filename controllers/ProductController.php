@@ -155,19 +155,20 @@ class ProductController
         //Checks if the tag already exists
         $tagId = $this->productModel->getTagIdByTitle($tag);
 
+        echo "if its a new tag then the Tagid: $tagId<br> ";
+
         if (!$tagId) {
             // If the tag doesn't exist, insert it and get the new tag id
             $tagId = $this->productModel->insertTag($tag);
         }
-
+        echo "after the insertion of the new tag, the tagid is: $tagId<br>";
+        echo "the new product id is: $newProductId<br>";
         //Associate the tag id with the new product id
-        $tagId = $this->productModel->addProductTag($newProductId, $tagId);
-        echo $tagId;
-        exit();
-
-        return $tagId;
+        //returns a boolean
+        $success = $this->productModel->addProductTag($newProductId, $tagId);
+       return $success;
     }
-
+/*
     //adds a tag to a product
     private function addProductTag($productId, $tagId)
     {
@@ -178,13 +179,13 @@ class ProductController
         $query->bindParam(':tagId', $tagId);
         $query->execute();
     }
-
+*/
     //Adds a new product (cd) to the database
     public function addProduct()
     {
         
-        try {
-            $this->db->beginTransaction();
+       try {
+          //  $this->db->beginTransaction();
             //verifying if the user is logged as admin
             if (!SessionManager::isAdmin()) {
                 // Redirect to the homepage in case the user is not logged as admin {
@@ -261,18 +262,18 @@ class ProductController
                         //updating the the tags for tags and products table (many to many)
                         foreach ($id_tags as $tagId) {
                             echo $newProductId . '---' . $tagId;
-
-                            echo $newProductId;
                             var_dump($id_tags);
                             var_dump($arr_tags);
-                            exit();
+                         //   exit();
                             //calling a class method to add a tag to a product
+                            //returns a boolean
                             $success = $this->addTagToProduct($newProductId, $tagId);
                         }
 
                         //product and tag were added successfully
                         if ($success) {
                             //checks if the artist already exists in the database
+                            echo "the artist title is: $artistTitle<br>";
                             $artistId = $productModel->checkArtist($newProductId, $artistTitle);
                             //if the artist doesn't exist, insert it
                             if (!$artistId) {
@@ -319,9 +320,9 @@ class ProductController
                     }
                 }
             }
-            $this->db->commit();
+          //  $this->db->commit();
         } catch (\PDOException $ex) {
-            $this->db->rollBack();
+         //   $this->db->rollBack();
             error_log('PDO Exception: ' . $ex->getMessage());
         }
     }
