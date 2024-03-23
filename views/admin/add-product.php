@@ -51,8 +51,8 @@ SessionManager::generateCSRFToken();
                 <div class="mb-4">
                     <label for="productCondition" class="block text-sm font-medium text-gray-700">Product Condition:</label>
                     <select name="productCondition" id="productCondition" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                        <option value="new">New</option>
-                        <option value="used">Used</option>
+                        <option value="1">New</option>
+                        <option value="2">Used</option>
                     </select>
                 </div>
                 <!-- Stock  -->
@@ -91,4 +91,50 @@ SessionManager::generateCSRFToken();
     </div>
 </main>
 
+<script>
+    
+    document.getElementById('SubmitAddProductForm').addEventListener('click', function (e) {
+        e.preventDefault();
+        let csrfToken = document.querySelector('input[name="csrf_token"]').value;
+        let productTitle = document.getElementById('productTitle').value;
+        let artistTitle = document.getElementById('artistTitle').value;
+        let releaseDate = document.getElementById('releaseDate').value;
+        let productDescription = document.getElementById('productDescription').value;
+        let productCondition = document.getElementById('productCondition').value;
+        let quantityInStock = document.getElementById('quantityInStock').value;
+        let price = document.getElementById('price').value;
+        let tags = document.getElementById('tags').value;
+        let image = document.getElementById('image').files[0];
+        let formData = new FormData();
+        formData.append('csrf_token', csrfToken);
+        formData.append('productTitle', productTitle);
+        formData.append('artistTitle', artistTitle);
+        formData.append('releaseDate', releaseDate);
+        formData.append('productDescription', productDescription);
+        formData.append('productCondition', productCondition);
+        formData.append('quantityInStock', quantityInStock);
+        formData.append('price', price);
+        formData.append('tags', tags);
+        formData.append('image', image);
+        fetch('<?php echo BASE_URL.'/admin/product/add' ?>', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        }).then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert('Product added successfully');
+                    window.location.href = '<?php echo BASE_URL.'/admin/products' ?>';
+                } else {
+                    alert('Product could not be added');
+                }
+            });
+    });
+
+    
+    </script>
+
 <?php include 'admin-footer.php' ?>
+

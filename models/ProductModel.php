@@ -369,28 +369,26 @@ namespace Models;
             $query->bindParam(':tag', $tag);
             $query->bindParam(':newProductId', $newProductId);
             $query->execute();
-            $this->addProductTag($newProductId, $tagId);
             return true;
         } catch (\PDOException $e) {
             die("Connection failed: " . $e->getMessage());
         }
     }
     
-    public function insertCd($cdId, $releaseDate, $artistId){
+    public function insertCd($releaseDate, $artistId, $newProductId){
         try{
             $sql='     
-            INSERT INTO cds (product_id, artist_id, release_date)
-            VALUES (:productId, :artistId, :releaseDate)
+            INSERT INTO cds (release_date, artist_id, product_id)
+            VALUES (:releaseDate, :artistId, :productId)
             ';
             $query = $this->db->prepare($sql);
-            
-            $query->bindParam(':productId', $productId);
-            $query->bindParam(':artistId', $artistId);
-            $query->bindParam(':releaseDate', $releaseDate);
+                $query->bindParam(':releaseDate', $releaseDate);
+                $query->bindParam(':artistId', $artistId); 
+                $query->bindParam(':productId', $newProductId);
             $query->execute();
             return true;
         } catch (\PDOException $e) {
-            die("Connection failed: " . $e->getMessage());
+            die("Connection failed at insertCd: " . $e->getMessage() . $releaseDate . $artistId . $newProductId);
         }
 
     }
@@ -399,15 +397,16 @@ namespace Models;
     public function insertProductVariant($newProductId, $condition, $price, $quantityInStock){
         try{
             $sql='     
-            INSERT INTO product_variants (product_id, price, quantity_in_stock)
-            VALUES (:newProductId, :price, :quantityInStock)
+            INSERT INTO product_variants (product_id, price, quantity_in_stock, condition_id)
+            VALUES (:newProductId, :price, :quantityInStock, :condition)
             ';
             $query = $this->db->prepare($sql);
             
             $query->bindParam(':newProductId', $newProductId);
-            $query->bindParam(':condition', $condition);
+            // $query->bindParam(':condition', $condition);
             $query->bindParam(':price', $price);
             $query->bindParam(':quantityInStock', $quantityInStock);
+            $query->bindParam(':condition', $condition);
             $query->execute();
             return $this->db->lastInsertId();
         } catch (\PDOException $e) {
@@ -417,7 +416,7 @@ namespace Models;
     }
 
     //checks if an artist already exists in the table and returns its artist id 
-    public function checkArtist($newProductId, $artistTitle){
+    public function checkArtist($artistTitle){
         try{
             $sql='     
             SELECT artist_id FROM artists WHERE title = :artistTitle
@@ -427,15 +426,11 @@ namespace Models;
             $query->bindParam(':artistTitle', $artistTitle);
             $query->execute();
             $result = $query->fetch(PDO::FETCH_OBJ);
-            // Check if an artist was found
-            if ($result) {
-          
-                return $artistId;
-            } else {
-                // no artist was found
-                return false;
-            }
-            return $artistTitle;
+            if (!$result) 
+                return null;
+             return $result->artist_id;
+            
+                // n
         } catch (\PDOException $e) {
             die("Connection failed: " . $e->getMessage());
         }

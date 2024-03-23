@@ -148,7 +148,7 @@ class ProductController
             error_log('PDO Exception: ' . $ex->getMessage());
         }
     }
-
+/*
     //adds a tag to a product
     public function addTagToProduct($newProductId, $tag)
     {
@@ -168,6 +168,7 @@ class ProductController
         $success = $this->productModel->addProductTag($newProductId, $tagId);
        return $success;
     }
+    
 /*
     //adds a tag to a product
     private function addProductTag($productId, $tagId)
@@ -182,8 +183,7 @@ class ProductController
 */
     //Adds a new product (cd) to the database
     public function addProduct()
-    {
-        
+    {   
        try {
           //  $this->db->beginTransaction();
             //verifying if the user is logged as admin
@@ -194,15 +194,18 @@ class ProductController
             }
 
             // Validate the CSRF token on form submission - to ensure that only by authorized admin users
-            if (SessionManager::validateCSRFToken($_POST['csrf_token'])) {
-                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!(SessionManager::validateCSRFToken($_POST['csrf_token']))) 
+                exit('There was a problem updating the product table, plese try again');
+            
+            if (!($_SERVER['REQUEST_METHOD'] === 'POST')) 
+            exit("Please access the page from the form in the admin panel.");
                     //initializing an array to store the errors
                     $errType = [];
     
                     /*****Retrieve values from the form *****/
 
                     $productTitle = htmlspecialchars(trim($_POST['productTitle']));
-                    $artisTitle = htmlspecialchars(trim($_POST['artistTitle']));
+                    $artistTitle = htmlspecialchars(trim($_POST['artistTitle']));
                     $description = htmlspecialchars(trim($_POST['productDescription']));
                     $condition = htmlspecialchars(trim($_POST['productCondition']));
                     //converting the number to decimal
@@ -215,19 +218,20 @@ class ProductController
 
                     /********  Validating form values **********/
 
-                    // Validate quantityInStock
-                    if (!is_numeric($quantityInStock) || $quantityInStock < 0) {
-                        $quantityInStock = 'Quantity in Stock must be a non-negative integer.';
-                        $errType['quantityInStock'] = $quantityInStock;
-                    }
+                    // // Validate quantityInStock
+                    // if (!is_numeric($quantityInStock) || $quantityInStock < 0) {
+                    //     $quantityInStock = 'Quantity in Stock must be a non-negative integer.';
+                    //     $errType['quantityInStock'] = $quantityInStock;
+                    // }
 
                 
-                    //if there are errors, redirect to the add product form and show error message
-                    SessionManager::setSessionVariable('errors_output', $errType);
-                    if (count($errType) > 0) {
-                        header('Location:' . BASE_URL . '/admin/product/add');
-                        exit();
-                    }
+                    // //if there are errors, redirect to the add product form and show error message
+                    // SessionManager::setSessionVariable('errors_output', $errType);
+                    // if (count($errType) > 0) {
+                    //     header('Location:' . BASE_URL . '/admin/product/add');
+                    //     exit();
+                    // }
+
 
                     $productModel = new ProductModel();
 
@@ -261,20 +265,20 @@ class ProductController
 
                         //updating the the tags for tags and products table (many to many)
                         foreach ($id_tags as $tagId) {
-                            echo $newProductId . '---' . $tagId;
-                            var_dump($id_tags);
-                            var_dump($arr_tags);
+                           // echo $newProductId . '---' . $tagId;
+                         //   var_dump($id_tags);
+                         //   var_dump($arr_tags);
                          //   exit();
-                            //calling a class method to add a tag to a product
+                            //add a tag to a product
                             //returns a boolean
-                            $success = $this->addTagToProduct($newProductId, $tagId);
+                            $success = $this->productModel->addProductTag($newProductId, $tagId);
                         }
 
                         //product and tag were added successfully
                         if ($success) {
                             //checks if the artist already exists in the database
-                            echo "the artist title is: $artistTitle<br>";
-                            $artistId = $productModel->checkArtist($newProductId, $artistTitle);
+                           // echo "the artist title is: $artistTitle<br>";
+                            $artistId = $productModel->checkArtist($artistTitle);
                             //if the artist doesn't exist, insert it
                             if (!$artistId) {
                                 //inserts the artist and returns the artist id
@@ -283,17 +287,25 @@ class ProductController
 
                             //inserts the cd product - no need for the cd is so just getting a success message
                             /* parameter returned: bolean */
-                            $cdInserted = $productModel->insertCD($newProductId, $releaseDate, $artistId);
+                           // echo "$newProductId, $releaseDate, $artistId<br>";
+
+                            $cdInserted = $productModel->insertCd($releaseDate, $artistId, $newProductId);
 
                             //if the cd was inserted successfully, continue
                             if ($cdInserted) {
                                 //inserts the product variant and returns the product variant id
                                 /* parameter returned: int */
                                 $new_products_var_added = $this->productModel->insertProductVariant($newProductId, $condition, $price, $quantityInStock);
+                           //     echo('the new product variant id is: ' . $new_products_var_added . '<br>');
+                            }
+                            else
+                            {
+                                exit('There was a problem updating the cd table, please try again');
                             }
 
                             //if the product variant was inserted successfully, continue
                             if ($new_products_var_added) {
+                            //    echo('before adding image<br>');
                                 //image upload code
                                 $image = $this->imageHandler->handleImageUpload($file, './src/assets/images/albums/');
 
@@ -311,15 +323,30 @@ class ProductController
                                     $image_name = $image;
                                     $main_image = 1;
                                     $image_added = $productModel->insertImage($newProductId, $image_name, $main_image);
+                                //    echo('the new image id is: ' . $image_added . '<br>');
                                 }
 
                                 //sets the success message in the session variable
                                 SessionManager::setSessionVariable('success_message', 'Product added successfully');
+                                $response = ['status' => 'success', 'message' => 'Product added successfully'];
+                                echo json_encode($response);
                             }
+                            else {
+                                exit('There was a problem updating the product_variant table, please try again');
+                            }
+                        }else {
+                            exit('There was a problem updating the product_tags table, please try again');
                         }
+                      
                     }
-                }
-            }
+                    else {
+                        $error_message = 'There was a problem updating the product table, please try again';
+                        $response = ['status' => 'error', 'message' => $error_message];
+                        echo json_encode($response);
+                        exit();
+                    }
+                
+          
           //  $this->db->commit();
         } catch (\PDOException $ex) {
          //   $this->db->rollBack();
