@@ -78,6 +78,33 @@ class ArticleModel
     
 }
 
+//for admin panel
+public function getAllArticles() {
+    try {
+        $sql='
+        SELECT
+        a.article_id,
+        a.title,
+        a.content,
+        a.publish_date,
+        a.update_date,
+        u.first_name,
+        u.last_name
+        FROM
+            articles a
+        INNER JOIN users u ON u.user_id = a.user_id
+        ORDER BY a.publish_date DESC
+        ';
+        $query = $this->db->prepare($sql);
+ 
+        $query->execute();
+     //s   var_dump($query->queryString);
+    //var_dump($tag);
+        return $query->fetchAll(PDO::FETCH_OBJ);
+    } catch (\PDOException $ex) {
+        die("Connection failed: " . $e->getMessage());
+    }
+}
 
  public function getInvoiceDetails($orderId){
         try {

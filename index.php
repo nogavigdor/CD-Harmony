@@ -143,9 +143,9 @@ route('/cdharmony/article/(\d+)', 'GET', function ($id) {
     $controller->showArticleDetails($id);
 });
 
-route('/cdharmony/admin/articles/', 'GET', function ($id) {
+route('/cdharmony/admin/articles/', 'GET', function () {
     $controller = new ArticleController();
-    $controller->showAllArticles($id);
+    $controller->showAllArticles();
 });
 
 route('/cdharmony/admin/article/delete/(\d+)', 'POST', function ($id) {
@@ -246,10 +246,6 @@ route('/cdharmony/admin/company/', 'POST', function () {
     $controller->updateCompanyDetails();
 });
 
-route('/cdharmony/admin/articles/', 'GET', function () {
-    $controller = new ArticleController();
-    $controller->getArticles();
-});
 
 route('/cdharmony/admin/products/', 'GET', function () {
     $controller = new CompanyController();

@@ -34,6 +34,19 @@ class ArticleController
         }
     }
 
+    public function showAllArticles()
+    {
+        try {
+            $articleModel = new ArticleModel(); // Create an instance of ArticleModel
+            $articles = $articleModel->getAllArticles(); // Call the method on the instance
+
+            // Load the view to display all articles
+            include 'views/admin/articles.php';
+        } catch (\PDOException $ex) {
+            error_log('PDO Exception: ' . $ex->getMessage());
+        }
+    }
+
 	public function showArticleDetails($id)
     {
         try {
