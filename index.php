@@ -168,6 +168,13 @@ route('/cdharmony/admin/special-offers/', 'GET', function () {
     $controller->showSpecialOffers();
 });
 
+route('/cdharmony/admin/special-offers/update-homepage', 'POST', function () {
+     // Retrieve the product_variant_id from the POST data
+    $productVariantId = $_POST['product_variant_id'];
+    $controller = new SpecialOfferController();
+    $controller->updateHomepage($productVariantId);
+});
+
 
 route('/cdharmony/admin/article/(\d+)', 'GET', function ($id) {
     $controller = new ArticleController();

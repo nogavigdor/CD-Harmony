@@ -150,9 +150,10 @@ namespace Models;
         public function showSpecialOffer(){
             try {
                 $sql = '
-                SELECT so.*, pvd.*
+                SELECT so.*, pvd.* 
                 FROM special_offers AS so
                 INNER JOIN product_variants_details AS pvd ON so.product_variant_id = pvd.product_variant_id
+                WHERE so.is_homepage = 1
                 LIMIT 1
                 ';
 
@@ -163,6 +164,28 @@ namespace Models;
             } catch (\PDOException $e) {
                 
                 $e->getMessage();
+            }
+        }
+
+        //update the a special deal on a specific product to be on the homepage
+        //while removing the homepage status from other special deals
+        public function updateHomepage($productVariantId)
+        {
+            try {
+
+                $sql = "UPDATE special_offers SET is_homepage = 0 WHERE is_homepage = 1";
+               $query = $this->db->prepare($sql);
+                $query->execute();
+        
+                $sql = "UPDATE special_offers SET is_homepage = 1 WHERE product_variant_id = :product_variant_id";
+              $query = $this->db->prepare($sql);
+              $query->bindParam(':product_variant_id', $productVariantId); // Redefine parameter name
+                $query->execute();
+                return true;
+            } catch (\PDOException $e) {
+
+                error_log('PDOException: ' . $e->getMessage());
+                return $e->getMessage();
             }
         }
 

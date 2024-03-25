@@ -55,6 +55,28 @@ class SpecialOfferController
             error_log('PDO Exception: ' . $ex->getMessage());
         }
     }
+
+    public function updateHomepage($productVariantId)
+    {
+        try {
+            // Update the special offer product to be on the homepage
+            $success = $this->specialOfferModel->updateHomepage($productVariantId);
+
+            // Send JSON response indicating success or failure
+            if ($success) {
+                http_response_code(200); // Success status code
+                echo json_encode(array('status' => 'success'));
+            } else {
+                http_response_code(500); // Internal Server Error status code
+                echo json_encode(array('status' => 'error'));
+            }
+        } catch (\PDOException $ex) {
+            error_log('PDO Exception: ' . $ex->getMessage());
+            http_response_code(500); // Internal Server Error status code
+            echo json_encode(array('status' => 'error'));
+        }
+    }
+
     
 
 	public function showSpecialOffer()
