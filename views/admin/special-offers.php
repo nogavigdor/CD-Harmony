@@ -56,7 +56,7 @@ use Models\SpecialOfferModel;
 </main>
 <script>
     function updateHomepage(productVariantId) {
-        fetch('/cdharmony/admin/special-offers/update-homepage', {
+        fetch(BASE_URL+'/admin/special-offers/update-homepage', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',

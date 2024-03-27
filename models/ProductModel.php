@@ -49,45 +49,45 @@ namespace Models;
             }
         }
         //Get product cds by tag
-        public function getProductsByTag($tag) {
+        public function getProductsByTag($tag, $offset, $limit) {
             try {
-                $sql='
-                SELECT
-                p.product_id,
-                pv.product_variant_id,
-                p.title as product_title,
-                a.title AS artist_title,
-                t.title AS tag_title,
-                ip.image_name,
-                SUM(CASE WHEN pv.condition_id = 1 THEN pv.quantity_in_stock ELSE 0 END) AS new_quantity,
-                SUM(CASE WHEN pv.condition_id = 2 THEN pv.quantity_in_stock ELSE 0 END) AS used_quantity,
-                MAX(CASE WHEN pv.condition_id = 1 THEN pv.price END) AS new_price,
-                MAX(CASE WHEN pv.condition_id = 2 THEN pv.price END) AS used_price
-                FROM
-                    products p
-                INNER JOIN products_tags pt ON pt.product_id = p.product_id
-                INNER JOIN tags t ON t.tag_id = pt.tag_id
-                INNER JOIN cds c ON c.product_id = p.product_id
-                INNER JOIN artists a ON a.artist_id = c.artist_id
-                LEFT JOIN product_variants pv ON pv.product_id = p.product_id
-                INNER JOIN images_for_products ip ON ip.product_id = p.product_id
-                WHERE t.title LIKE :tag
-
-                GROUP BY p.product_id
-                LIMIT 10
+                $sql = '
+                    SELECT
+                        p.product_id,
+                        pv.product_variant_id,
+                        p.title as product_title,
+                        a.title AS artist_title,
+                        t.title AS tag_title,
+                        ip.image_name,
+                        SUM(CASE WHEN pv.condition_id = 1 THEN pv.quantity_in_stock ELSE 0 END) AS new_quantity,
+                        SUM(CASE WHEN pv.condition_id = 2 THEN pv.quantity_in_stock ELSE 0 END) AS used_quantity,
+                        MAX(CASE WHEN pv.condition_id = 1 THEN pv.price END) AS new_price,
+                        MAX(CASE WHEN pv.condition_id = 2 THEN pv.price END) AS used_price
+                    FROM
+                        products p
+                    INNER JOIN products_tags pt ON pt.product_id = p.product_id
+                    INNER JOIN tags t ON t.tag_id = pt.tag_id
+                    INNER JOIN cds c ON c.product_id = p.product_id
+                    INNER JOIN artists a ON a.artist_id = c.artist_id
+                    LEFT JOIN product_variants pv ON pv.product_id = p.product_id
+                    INNER JOIN images_for_products ip ON ip.product_id = p.product_id
+                    WHERE t.title LIKE :tag
+                    GROUP BY p.product_id
+                    LIMIT :offset, :limit
                 ';
+                
                 $query = $this->db->prepare($sql);
                 $query->bindParam(':tag', $tag, PDO::PARAM_STR);
+                $query->bindParam(':offset', $offset, PDO::PARAM_INT);
+                $query->bindParam(':limit', $limit, PDO::PARAM_INT);
                 $query->execute();
-            //var_dump($query->queryString);
-            //var_dump($tag);
+        
                 return $query->fetchAll(PDO::FETCH_OBJ);
             } catch (\PDOException $e) {
                 die("Connection failed: " . $e->getMessage());
             }  
-                
-            
         }
+        
 
 
         //get recent release of cds

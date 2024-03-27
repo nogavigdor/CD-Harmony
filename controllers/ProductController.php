@@ -29,10 +29,10 @@ class ProductController
         $this->db = DBConnector::getInstance()->connectToDB();
     }
 
-    public function showProductsByTag($tag)
+    public function showProductsByTag($tag, $offset = 0, $limit = 6)
     {
         try {
-            $products = $this->productModel->getProductsByTag($tag);
+            $products = $this->productModel->getProductsByTag($tag, $offset, $limit); // Call the method on the instance
 
             // var_dump($products);
             //    print_r($products);

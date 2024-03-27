@@ -51,42 +51,64 @@ include 'header.php';
             
                     </section>
             </div>
-            
-            <section>
-                <h2 class="text-base-100 text-2xl font-bold mb-4">Pop CDs</h2>
-        
-                    <?php
-                    // Include the "Pop CDs" section
-                    $controller = new \Controllers\ProductController();
-                $controller->showProductsByTag('pop');
-            
-                    ?>
-        
-            </section>
-            <!-- Rock CDs section -->
-            <section>
+             <!-- Pop CDs section -->
+             <section data-tag='pop' data-offset=0>
                 <h2 class="text-base-100 text-2xl font-bold mb-4">Rock CDs</h2>
         
-                    <?php
+                    <?php 
                     // Include the "Pop CDs" section
                     $controller = new \Controllers\ProductController();
-                    $controller->showProductsByTag('rock');
-        
                     ?>
+                    <div data-tag='pop'>
+                        <?php
+                          $controller->showProductsByTag('pop', 0, 4);
+                          ?>
+                    </div>
+                  
+
+                    
+         <button class="prev-button btn" data-tag="pop">Previous</button>
+        <button class="next-button btn" data-tag="pop">Next</button>
+            </section>
+          
+            <!-- Rock CDs section -->
+            <section data-tag='rock' data-offset=0>
+                <h2 class="text-base-100 text-2xl font-bold mb-4">Rock CDs</h2>
         
+                    <?php 
+                    // Include the "Pop CDs" section
+                    $controller = new \Controllers\ProductController();
+                    ?>
+                    <div data-tag='rock'>
+                        <?php
+                          $controller->showProductsByTag('rock', 0, 4);
+                          ?>
+                    </div>
+                  
+
+                    
+         <button class="prev-button btn" data-tag="rock">Previous</button>
+        <button class="next-button btn" data-tag="rock">Next</button>
             </section>
             <!-- Country CDs section -->
-            <section>
+            <section data-tag='country' data-offset=0>
                 <h2 class="text-base-100 text-2xl font-bold mb-4">Country CDs</h2>
         
-                    <?php
-                        // Include the "CountryCDs" section
-                        $controller = new \Controllers\ProductController();
-                        $controller->showProductsByTag('country');   
+                    <?php 
+                    // Include the "Country CDs" section
+                    $controller = new \Controllers\ProductController();
                     ?>
-        
-            </section>
+                    <div data-tag='country'>
+                        <?php
+                          $controller->showProductsByTag('country', 0, 4);
+                          ?>
+                    </div>
+                  
 
+                    
+         <button class="prev-button btn" data-tag="country">Previous</button>
+        <button class="next-button btn" data-tag="country">Next</button>
+            </section>
 
             <!-- New Releases section -->
             <section>
@@ -103,6 +125,72 @@ include 'header.php';
             <!-- Other content of your homepage -->
             <!-- ... -->
         </main>
+        <script>
+    document.addEventListener('DOMContentLoaded', function(){
+        const prevButtons = document.querySelectorAll('.prev-button');
+        const nextButtons = document.querySelectorAll('.next-button');
+
+        prevButtons.forEach(button => {
+            button.addEventListener('click', function(){
+                const tag = button.dataset.tag;
+                const section = document.querySelector(`section[data-tag="${tag}"]`);
+                const div= document.querySelector(`div[data-tag="${tag}"]`);
+                let offset = parseInt(div.dataset.offset) || 0; // Parse offset as integer or default to 0
+                let limit = 4;
+                if(window.innerWidth < 768){
+                    limit = 2;
+                }
+                section.dataset.offset = Math.max(0, offset - limit); // Ensure offset is not negative
+
+                // Call the API to get the products
+                fetchProducts(tag, section.dataset.offset, limit)
+                    .then(data => {
+                        // Update the section with the new products
+                        div.innerHTML = data;
+                    });
+            });
+        });
+
+        nextButtons.forEach(button => {
+            button.addEventListener('click', function(){
+                const tag = button.dataset.tag;
+                const section = document.querySelector(`section[data-tag="${tag}"]`);
+                const div = document.querySelector(`div[data-tag="${tag}"]`);
+                let offset = parseInt(section.dataset.offset) || 0; // Parse offset as integer or default to 0
+                let limit = 4;
+                if(window.innerWidth < 768){
+                    limit = 2;
+                }
+                section.dataset.offset = offset + limit;
+
+                // Call the API to get the products
+                fetchProducts(tag, section.dataset.offset, limit)
+                    .then(data => {
+                        // Update the section with the new products
+                        div.innerHTML = data;
+                    });
+            });
+        });
+
+        function fetchProducts(tag, offset, limit) {
+            const data = new URLSearchParams();
+            data.append('tag', tag);
+            data.append('offset', offset);
+            data.append('limit', limit);
+         return fetch(`${BASE_URL}/products/section`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: data
+    })
+    .then(response => response.text())
+    .catch(error => console.error('Error:', error));
+}
+
+    });
+
+</script>
 
         <!-- Footer section -->
         <?php

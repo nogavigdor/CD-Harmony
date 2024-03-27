@@ -41,7 +41,14 @@ route('/cdharmony/test', 'GET', function () {
     $controller->insertData();
 });
 
-
+route('/cdharmony/products/section', 'POST', function(){
+    // Retrieve the tag, offset, and limit parameters from the request
+    $tag = $_POST['tag'];
+    $offset = $_POST['offset'];
+    $limit = $_POST['limit'];
+    $controller = new ProductController();
+    $controller->showProductsByTag($tag, $offset, $limit);
+});
 
 route('/cdharmony/cart/id/(\d+)', 'GET', function ($product_variant_id) {
     
