@@ -401,7 +401,7 @@ GROUP BY
 -- ...
 
 -- Creates a view for order summary
--- summs up the totals of the order and is being used in the admin area
+-- sums up the totals of the order and is being used in the admin area
 DROP VIEW IF EXISTS order_summary;
 CREATE OR REPLACE VIEW order_summary AS
 SELECT

@@ -21,7 +21,7 @@ include 'header.php';
                 <h2 class="text-base-100 text-2xl font-bold mb-4 headline   ">Special Offer</h2>
        
                 <div class="bg-white relative w-full rounded">
-                    <div class="p-4">
+                    <div class="bg-gradient-to-tr from-red-300 to-orange-100  p-4">
                         <p class="text-xl text-secondary font-bold mb-2"><?= $specialOffer['product_title']; ?></p>
                         <p class="text-xl text-secondary font-bold mb-2"></p>
                         <p class="text-xl text-secondary font-bold mb-2">
@@ -29,7 +29,7 @@ include 'header.php';
                         </p>
                         <p class="countdown text-xl text-secondary  font-bold mb-2">Offer ends: <?= $offerEndDate ?></p>
                     </div>
-                    <div class="mask mask-star  bg-base-100 w-[500px] border-4 border-secondary h-[500px] shadow-lg absolute top-[-100px] right-[50px] text-white p-4 flex flex-col justify-center items-center">
+                    <div class="mask mask-star bg-base-100 w-[500px] border-4 border-secondary h-[500px] shadow-lg absolute top-[-100px] right-[50px] text-white p-4 flex flex-col justify-center items-center">
 
                         <p class="text-xl text-secondary font-bold mb-2">Only <?=  $specialOffer['price']-$specialOffer['discount'] ?> DKK</p>
                         <p class="text-xl text-secondary text-line font-bold mb-2">Was <?= $specialOffer['price'] ?> DKK</p>
@@ -53,16 +53,18 @@ include 'header.php';
             </div>
              <!-- Pop CDs section -->
              <section data-tag='pop' data-offset=0>
-                <h2 class="text-base-100 text-2xl font-bold mb-4">Rock CDs</h2>
+                <h2 class="text-base-100 text-2xl font-bold mb-4">Pop CDs</h2>
         
                     <?php 
                     // Include the "Pop CDs" section
                     $controller = new \Controllers\ProductController();
                     ?>
-                    <div data-tag='pop'>
+                    <div data-tag='pop' class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4">
+    
                         <?php
                           $controller->showProductsByTag('pop', 0, 4);
                           ?>
+                     
                     </div>
                   
 
@@ -79,10 +81,12 @@ include 'header.php';
                     // Include the "Pop CDs" section
                     $controller = new \Controllers\ProductController();
                     ?>
-                    <div data-tag='rock'>
+                    <div data-tag='rock' class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4">
+                 
                         <?php
                           $controller->showProductsByTag('rock', 0, 4);
                           ?>
+                    
                     </div>
                   
 
@@ -98,7 +102,8 @@ include 'header.php';
                     // Include the "Country CDs" section
                     $controller = new \Controllers\ProductController();
                     ?>
-                    <div data-tag='country'>
+                    <div data-tag='country' class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4">
+
                         <?php
                           $controller->showProductsByTag('country', 0, 4);
                           ?>
@@ -112,14 +117,14 @@ include 'header.php';
 
             <!-- New Releases section -->
             <section>
-                <h2 class="text-base-100 text-2xl font-bold mt-8 mb-4">New Releases</h2>
-            
+                <h2 class="text-base-100 text-2xl font-bold mt-8 mb-4 ">New Releases</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4">
                     <?php
                     // Include the "New Releases" section
                     $controller = new \Controllers\ProductController();
                     $controller->showRecentReleases();
                     ?>
-            
+            </div>
             </section>
 
             <!-- Other content of your homepage -->
@@ -165,12 +170,22 @@ include 'header.php';
 
                 // Call the API to get the products
                 fetchProducts(tag, section.dataset.offset, limit)
-                    .then(data => {
-                        // Update the section with the new products
-                        div.innerHTML = data;
-                    });
-            });
-        });
+            .then(data => {
+                if (data === 'no products') {
+                    // No more products to show, so reset the offset to 0 and show products from the start
+                    return fetchProducts(tag, 0, limit); // Fetch products from the beginning
+                } else {
+                    return data;
+                }
+            })
+            .then(data => {
+                // Update the section with the new products
+                div.innerHTML = data;
+            })
+            .catch(error => console.error('Error:', error));
+    });
+});
+        
 
         function fetchProducts(tag, offset, limit) {
             const data = new URLSearchParams();
@@ -189,6 +204,7 @@ include 'header.php';
 }
 
     });
+
 
 </script>
 

@@ -1,5 +1,6 @@
-<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4">
-    <?php foreach ($products as $product) : ?>
+<?php  if (isset($products) && !empty($products)) : ?>
+    <?php
+    foreach ($products as $product) : ?>
         <div class="bg-white rounded-lg shadow-lg transform hover:-translate-y-1 transition duration-300 ease-in-out relative">
             <img src="<?= BASE_URL ?>/src/assets/images/albums/<?= htmlspecialchars($product->image_name) ?>" alt="<?= $product->product_title ?>" class="w-full h-40 object-cover rounded-md">
             <!-- Ribbon for Release Date - if exists-->
@@ -31,4 +32,7 @@
             </div>
         </div>
     <?php endforeach; ?>
-</div>
+<?php endif; ?>
+
+                    
+

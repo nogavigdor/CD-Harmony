@@ -29,15 +29,20 @@ class ProductController
         $this->db = DBConnector::getInstance()->connectToDB();
     }
 
-    public function showProductsByTag($tag, $offset = 0, $limit = 6)
+    public function showProductsByTag($tag, $offset = 0, $limit = 4)
     {
         try {
             $products = $this->productModel->getProductsByTag($tag, $offset, $limit); // Call the method on the instance
-
+           
             // var_dump($products);
             //    print_r($products);
-            // Load the view to display the products
-            include 'views/products_section.php';
+            if (isset($products) && !empty($products)) {
+                // Load the view to display the products
+                include 'views/products_section.php';
+            }
+            else {
+                echo 'no products';
+            }
         } catch (\PDOException $ex) {
             error_log('PDO Exception: ' . $ex->getMessage());
         }
@@ -55,7 +60,7 @@ class ProductController
         }
     }
 
-    //includes the produt details page for admin or customer - depending on the role
+    //includes the product details page for admin or customer - depending on the role
     public function showProductDetails($id, $role = 'none')
     {
         try {
@@ -81,7 +86,7 @@ class ProductController
         }
     }
 
-    //Getting the product variantd details (in this case, the new or used variant of a cd product)
+    //Getting the product variant details (in this case, the new or used variant of a cd product)
     public function getProductVariantDetails($id)
     {
         try {
