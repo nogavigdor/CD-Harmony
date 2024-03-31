@@ -75,9 +75,9 @@ use Services\SessionManager;
             <table class="table-auto">
             <thead>
               <tr>
-                <th>Product ID</th>
-                <th>Product Variant ID</th>
-              
+                <th>ID</th>
+                <th>Variant ID</th>
+                <th>Condition</th>
                 <th>Album Title</th>
                 <th>Artist</th>
                 <th>Date Added</th>
@@ -90,6 +90,7 @@ use Services\SessionManager;
               <tr>
                 <td><?= $product->product_id ?></td>
                 <td><?= $product->product_variant_id ?></td>
+                <td><?= $product->condition_title ?></td>
                 <td><?= $product->product_title ?></td>
                 <td><?= $product->artist_title ?></td>
                 <td><?= $product->variant_creation_date ?></td>
@@ -121,6 +122,6 @@ document.getElementById('searchButton').addEventListener('click', function() {
     window.location.href = url;
 });
 </script>
-</script
+
 
 <?php include 'admin-footer.php' ?>

@@ -193,17 +193,15 @@ class ProductController
           //  $this->db->beginTransaction();
             //verifying if the user is logged as admin
             if (!SessionManager::isAdmin()) {
-                // Redirect to the homepage in case the user is not logged as admin {
-                header('Location:' . BASE_URL . '/admin-login');
-                exit();
+                throw new \Exception('Unauthorized access');
             }
 
             // Validate the CSRF token on form submission - to ensure that only by authorized admin users
             if (!(SessionManager::validateCSRFToken($_POST['csrf_token']))) 
-                exit('There was a problem updating the product table, plese try again');
+                throw new \Exception('CSRF token validation failed');
             
             if (!($_SERVER['REQUEST_METHOD'] === 'POST')) 
-            exit("Please access the page from the form in the admin panel.");
+                throw new \Exception('Invalid request method');
                     //initializing an array to store the errors
                     $errType = [];
     
@@ -243,44 +241,49 @@ class ProductController
                     //creating the product prototype and getting the new product id
                     $newProductId = $productModel->addProduct($productTitle, $description, $creationDate);
 
+                    if (!($newProductId)) 
+                        throw new \Exception('There was a problem updating the product table, please try again');
+
                     //if a new product prototype was created successfully, continue
-                    if ($newProductId) {
-                        //creating a tags array from the tags string
-                        $arr_tags = [];
-                        //creating an array of tags
-                        $arr_tags = explode(',', $tags);
+                    
+                    //creating a tags array from the tags string
+                    $arr_tags = [];
+                    //creating an array of tags
+                    $arr_tags = explode(',', $tags);
 
-                        //creates the products id tags
-                        //checks if the tags (as strings) exists in the tags table
-                        //and inserts those who don't exist
-                        //returns an array of tag ids that will be associated with the product
+                    //creates the products id tags
+                    //checks if the tags (as strings) exists in the tags table
+                    //and inserts those who don't exist
+                    //returns an array of tag ids that will be associated with the product
 
-                        $id_tags = [];
-                        foreach ($arr_tags as $tag) {
-                            //gets the tag id
-                            $tagId = $this->productModel->getTagIdByTitle($tag);
-                            //if the tag doesn't exist, insert it
-                            if (!$tagId) {
-                                //inserts the tag and returns the tag id
-                                $tagId = $this->productModel->insertTag($tag);
-                            }
-                            //pushes the tag id to the array
-                            array_push($id_tags, $tagId);
+                    $id_tags = [];
+                    foreach ($arr_tags as $tag) {
+                        //gets the tag id
+                        $tagId = $this->productModel->getTagIdByTitle($tag);
+                        //if the tag doesn't exist, insert it
+                        if (!$tagId) {
+                            //inserts the tag and returns the tag id
+                            $tagId = $this->productModel->insertTag($tag);
+                        }
+                        //pushes the tag id to the array
+                        array_push($id_tags, $tagId);
                         }
 
-                        //updating the the tags for tags and products table (many to many)
-                        foreach ($id_tags as $tagId) {
-                           // echo $newProductId . '---' . $tagId;
-                         //   var_dump($id_tags);
-                         //   var_dump($arr_tags);
-                         //   exit();
-                            //add a tag to a product
-                            //returns a boolean
-                            $success = $this->productModel->addProductTag($newProductId, $tagId);
+                    //updating the the tags for tags and products table (many to many)
+                    foreach ($id_tags as $tagId) {
+                    // echo $newProductId . '---' . $tagId;
+                    //   var_dump($id_tags);
+                    //   var_dump($arr_tags);
+                    //   exit();
+                    //add a tag to a product
+                    //returns a boolean
+                        $tagsSuccess = $this->productModel->addProductTag($newProductId, $tagId);
                         }
 
                         //product and tag were added successfully
-                        if ($success) {
+                        if (!($tagsSuccess))
+                         throw new \Exception('There was a problem updating the product_tags table, please try again');
+
                             //checks if the artist already exists in the database
                            // echo "the artist title is: $artistTitle<br>";
                             $artistId = $productModel->checkArtist($artistTitle);
@@ -289,27 +292,23 @@ class ProductController
                                 //inserts the artist and returns the artist id
                                 $artistId = $productModel->insertArtist($artistTitle);
                             }
+                            else
+                            {
+                                //get the artist id
+                                $artistId = $productModel->getArtistId($artistTitle);
+                            }
 
                             //inserts the cd product - no need for the cd is so just getting a success message
                             /* parameter returned: bolean */
                            // echo "$newProductId, $releaseDate, $artistId<br>";
 
                             $cdInserted = $productModel->insertCd($releaseDate, $artistId, $newProductId);
-
-                            //if the cd was inserted successfully, continue
-                            if ($cdInserted) {
-                                //inserts the product variant and returns the product variant id
-                                /* parameter returned: int */
-                                $new_products_var_added = $this->productModel->insertProductVariant($newProductId, $condition, $price, $quantityInStock);
-                           //     echo('the new product variant id is: ' . $new_products_var_added . '<br>');
-                            }
-                            else
-                            {
-                                exit('There was a problem updating the cd table, please try again');
+                            if (!$cdInserted) {
+                                throw new \Exception('There was a problem updating the cd table, please try again');
                             }
 
-                            //if the product variant was inserted successfully, continue
-                            if ($new_products_var_added) {
+                            //if the cd was inserted successfully, continue adding the product image
+
                             //    echo('before adding image<br>');
                                 //image upload code
                                 $image = $this->imageHandler->handleImageUpload($file, './src/assets/images/albums/');
@@ -320,44 +319,55 @@ class ProductController
 
                                 //exit;
                                 if (count($msg) > 0) {
-                                    $errType['image'] = $msg;
-                                    SessionManager::setSessionVariable('errors_output', $errType);
-                                    header('Location:' . BASE_URL . '/admin/product/edit/' . $new_products_var_added);
-                                    exit();
-                                } else {
-                                    $image_name = $image;
-                                    $main_image = 1;
-                                    $image_added = $productModel->insertImage($newProductId, $image_name, $main_image);
-                                //    echo('the new image id is: ' . $image_added . '<br>');
+                                    throw new \Exception("Error with the image: " . implode(", ", $msg));
                                 }
+                            
+                                
+                                $image_name = $image;
+                                $main_image = 1;
+                                $image_added = $productModel->insertImage($newProductId, $image_name, $main_image);
+                                //   echo('the new image id is: ' . $image_added . '<br>');
+                                
 
+                        
+                                //inserts the product variant and returns the product variant id
+                                /* parameter returned: int */
+                                $new_products_var_added1 = $this->productModel->insertProductVariant($newProductId, $condition, $price, $quantityInStock);
+
+                                if(!$new_products_var_added1) {
+                                    throw new \Exception('There was a problem updating the product_variant table, please try again');
+                                }
+                           //     echo('the new product variant id is: ' . $new_products_var_added . '<br>');
+                               //the next step will be to add a default product variant with the opposite condition
+                            $condition_id = 2;
+                              if ($condition==2) {
+                                    $condition_id = 1;
+                             
+                            }
+                            //if the product variant was inserted successfully, an automatic new/used variant will be added
+                            //with the same product id and with the opposite condition - with a default value of 0 for price and quantity in stock
+                            $new_products_var_added2 = $this->productModel->insertProductVariant($newProductId, $condition_id, 0, 0);
+                            if(!$new_products_var_added2) {
+                                throw new \Exception('There was a problem updating the product_variant table, please try again');
+                            }
+                            //if the product variant was inserted successfully, continue to confirm the product was added successfully
+                    
+                            
                                 //sets the success message in the session variable
                                 SessionManager::setSessionVariable('success_message', 'Product added successfully');
                                 $response = ['status' => 'success', 'message' => 'Product added successfully'];
                                 echo json_encode($response);
-                            }
-                            else {
-                                exit('There was a problem updating the product_variant table, please try again');
-                            }
-                        }else {
-                            exit('There was a problem updating the product_tags table, please try again');
-                        }
-                      
-                    }
-                    else {
-                        $error_message = 'There was a problem updating the product table, please try again';
-                        $response = ['status' => 'error', 'message' => $error_message];
-                        echo json_encode($response);
-                        exit();
-                    }
-                
-          
+
           //  $this->db->commit();
         } catch (\PDOException $ex) {
          //   $this->db->rollBack();
-            error_log('PDO Exception: ' . $ex->getMessage());
+             // Handle exceptions
+        $error_message = $ex->getMessage();
+        $response = ['status' => 'error', 'message' => $error_message];
+        echo json_encode($response);
+       
         }
-    }
+}
 
     //shows the product form with the product details for editing
     public function showEditProductForm($id)

@@ -454,6 +454,27 @@ namespace Models;
         }
     }
 
+    public function getArtistId($artistTitle){
+        try{
+            $sql='     
+            SELECT artist_id FROM artists WHERE title = :artistTitle
+            LIMIT 1
+            ';
+            $query = $this->db->prepare($sql);
+            $query->bindParam(':artistTitle', $artistTitle);
+            $query->execute();
+            $result = $query->fetch(PDO::FETCH_OBJ);
+            if (!$result) 
+                return null;
+      
+             return $result->artist_id;
+            
+                
+        } catch (\PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
+        }
+    }
+
 
     public function addCd($cdId, $releaseDate, $artistId){
         try{
