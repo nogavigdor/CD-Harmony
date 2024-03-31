@@ -172,6 +172,7 @@ include 'header.php';
                 fetchProducts(tag, section.dataset.offset, limit)
             .then(data => {
                 if (data === 'no products') {
+                    section.dataset.offset = 0;
                     // No more products to show, so reset the offset to 0 and show products from the start
                     return fetchProducts(tag, 0, limit); // Fetch products from the beginning
                 } else {
