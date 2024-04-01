@@ -95,8 +95,8 @@ use Services\SessionManager;
                 <td><?= $product->artist_title ?></td>
                 <td><?= $product->variant_creation_date ?></td>
                 
-                <td>  <a href="<?= BASE_URL . '/admin/product/edit/' . $product->product_id ?>" class="btn btn-primary">Edit</a>
-                      <a href="<?= BASE_URL . '/admin/product/delete/' . $product->product_id ?>" class="btn btn-danger">Delete</a>
+                <td>  <a href="<?= BASE_URL . '/admin/product/edit/' . $product->product_variant_id ?>" class="btn btn-primary">Edit</a>
+                      <a href="<?= BASE_URL . '/admin/product/delete/' . $product->product_variant_id ?>" class="btn btn-danger">Delete</a>
                     </td>
               </tr>
               <?php } ?>

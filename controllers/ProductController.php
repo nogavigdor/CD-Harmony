@@ -198,7 +198,7 @@ class ProductController
 
             // Validate the CSRF token on form submission - to ensure that only by authorized admin users
             if (!(SessionManager::validateCSRFToken($_POST['csrf_token']))) 
-                throw new \Exception('CSRF token validation failed');
+            echo json_encode("An internal server error occurred. Please try again later.");
             
             if (!($_SERVER['REQUEST_METHOD'] === 'POST')) 
                 throw new \Exception('Invalid request method');
@@ -299,7 +299,7 @@ class ProductController
                             }
 
                             //inserts the cd product - no need for the cd is so just getting a success message
-                            /* parameter returned: bolean */
+                            /* parameter returned: boolean */
                            // echo "$newProductId, $releaseDate, $artistId<br>";
 
                             $cdInserted = $productModel->insertCd($releaseDate, $artistId, $newProductId);
@@ -312,16 +312,16 @@ class ProductController
                             //    echo('before adding image<br>');
                                 //image upload code
                                 $image = $this->imageHandler->handleImageUpload($file, './src/assets/images/albums/');
-
-                                $msg = [];
-                                $msg = $this->imageHandler->getMessages();
-                                //print_r($msg);
-
-                                //exit;
-                                if (count($msg) > 0) {
-                                    throw new \Exception("Error with the image: " . implode(", ", $msg));
-                                }
-                            
+                                $imageErrorMsg = [];
+                                if ($image === false) {
+                                    // If there are errors, return them as JSON
+                                    $imageErrorMsg = $this->imageHandler->getErrorMessages();
+                                    $imageErrorMsgString= implode(' and ', $imageErrorMsg);
+                                    http_response_code(400); // Set HTTP status code to indicate a client error
+                                    echo json_encode(['error' => $imageErrorMsgString]);
+                                    exit; // Terminate script execution
+                                } 
+                                
                                 
                                 $image_name = $image;
                                 $main_image = 1;
@@ -375,7 +375,8 @@ class ProductController
         try {
             if (SessionManager::isAdmin()) {
                 // Get the product details from the database
-                $productDetails = $this->productModel->getProductDetails($id);
+                echo "the product variant id is: $id";
+                $variantDetails = $this->productModel->getVariantDetails($id);
                 // Load the view to display the product form
                 include 'views/admin/edit-product-form.php';
             } else {

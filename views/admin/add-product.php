@@ -128,7 +128,7 @@ SessionManager::generateCSRFToken();
                     alert('Product added successfully');
                     window.location.href = '<?php echo BASE_URL.'/admin/products' ?>';
                 } else {
-                    alert('Product could not be added');
+                    alert('Product could not be added since '+data.error);
                 }
             });
     });

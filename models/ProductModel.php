@@ -157,7 +157,7 @@ namespace Models;
 
     //Get product variants details by product id (using product_variants_details view)
     //Currently it will give 2 variants since there are 2 conditions (new and used) for each product
-    //The parameted is a product id (NOT a product variant id)
+    //The parameter is a product id (NOT a product variant id)
      public function getProductVariantsDetails($id)
         {   //implementing product_details view
         try {
@@ -176,6 +176,27 @@ namespace Models;
             die("Connection failed: " . $e->getMessage());
         }
     }
+
+     //Get a single variant details by variant id (using product_variants_details view)
+    //The parameter is a the product variant id (NOT a product  id)
+    public function getVariantDetails($id)
+    {   //implementing product_details view
+    try {
+       $sql = '
+                SELECT * from product_variants_details
+                WHERE product_variant_id = :id  
+         ';
+  
+    $query = $this->db->prepare($sql);
+    $query->bindParam(':id', $id, \PDO::PARAM_INT);
+    $query->execute();
+    $product_variant_details = $query->fetch(\PDO::FETCH_OBJ);
+    return $product_variant_details;
+    
+    } catch (\PDOException $e) {
+        die("Connection failed: " . $e->getMessage());
+    }
+}
 
     //Get product variant details by product variant id
     //using the product_variants_details view
