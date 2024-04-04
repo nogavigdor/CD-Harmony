@@ -115,7 +115,7 @@ route('/cdharmony/admin/product/edit/(\d+)', 'GET', function ($id) {
     $controller->showEditProductForm($id);
 });
 
-route('/cdharmony/admin/product/update/', 'PUT', function () {
+route('/cdharmony/admin/product/update/', 'POST', function () {
     $controller = new ProductController();
     $controller->updateProduct();
 });

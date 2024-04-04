@@ -11,8 +11,9 @@ class ImageHandler {
 
     public function handleImageUpload($file,$path) {
         // Check if a file was uploaded
-        if (!isset($file['name']) || empty($file['name'])) {
+        if ($file === null || !isset($file['name']) || empty($file['name']))  {
             $this->errorMessages[] = 'No file was uploaded.';
+            return false;
         }
 
         // Get the image details

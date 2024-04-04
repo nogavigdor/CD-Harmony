@@ -75,13 +75,13 @@ SessionManager::generateCSRFToken();
 
                 <!-- Tags list -->
                 <div class="mb-4">
-                    <label for="tags" class="block text-sm font-medium text-gray-700">Tags with comma seperated:</label>
+                    <label for="tags" class="block text-sm font-medium text-gray-700">Please enter tags with comma seperated:</label>
                     <textarea   class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     name="tags" id="tags"></textarea>
                       
                 <!-- Image Upload -->
                 <div class="mb-4">
-                    <label for="updateImage" class="block text-sm font-medium text-gray-700">Upload New Image:</label>
+                    <label for="updateImage" class="block text-sm font-medium text-gray-700">Upload New Image (up to 1 mb):</label>
                     <input type="file" name="image" id="image"
                         class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                 </div>
@@ -90,48 +90,56 @@ SessionManager::generateCSRFToken();
         </div>
     </div>
 </main>
-
 <script>
-    
-    document.getElementById('SubmitAddProductForm').addEventListener('click', function (e) {
-        e.preventDefault();
-        let csrfToken = document.querySelector('input[name="csrf_token"]').value;
-        let productTitle = document.getElementById('productTitle').value;
-        let artistTitle = document.getElementById('artistTitle').value;
-        let releaseDate = document.getElementById('releaseDate').value;
-        let productDescription = document.getElementById('productDescription').value;
-        let productCondition = document.getElementById('productCondition').value;
-        let quantityInStock = document.getElementById('quantityInStock').value;
-        let price = document.getElementById('price').value;
-        let tags = document.getElementById('tags').value;
-        let image = document.getElementById('image').files[0];
-        let formData = new FormData();
-        formData.append('csrf_token', csrfToken);
-        formData.append('productTitle', productTitle);
-        formData.append('artistTitle', artistTitle);
-        formData.append('releaseDate', releaseDate);
-        formData.append('productDescription', productDescription);
-        formData.append('productCondition', productCondition);
-        formData.append('quantityInStock', quantityInStock);
-        formData.append('price', price);
-        formData.append('tags', tags);
-        formData.append('image', image);
-        fetch('<?php echo BASE_URL.'/admin/product/add' ?>', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        }).then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    alert('Product added successfully');
-                    window.location.href = '<?php echo BASE_URL.'/admin/products' ?>';
-                } else {
-                    alert('Product could not be added since '+data.error);
+document.getElementById('SubmitAddProductForm').addEventListener('click', function (e) {
+    e.preventDefault();
+    let csrfToken = document.querySelector('input[name="csrf_token"]').value;
+    let productTitle = document.getElementById('productTitle').value;
+    let artistTitle = document.getElementById('artistTitle').value;
+    let releaseDate = document.getElementById('releaseDate').value;
+    let productDescription = document.getElementById('productDescription').value;
+    let productCondition = document.getElementById('productCondition').value;
+    let quantityInStock = document.getElementById('quantityInStock').value;
+    let price = document.getElementById('price').value;
+    let tags = document.getElementById('tags').value;
+    let image = document.getElementById('image').files[0];
+    let formData = new FormData();
+    formData.append('csrf_token', csrfToken);
+    formData.append('productTitle', productTitle);
+    formData.append('artistTitle', artistTitle);
+    formData.append('releaseDate', releaseDate);
+    formData.append('productDescription', productDescription);
+    formData.append('productCondition', productCondition);
+    formData.append('quantityInStock', quantityInStock);
+    formData.append('price', price);
+    formData.append('tags', tags);
+    formData.append('image', image);
+    fetch('<?php echo BASE_URL.'/admin/product/add' ?>', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    }).then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('Product added successfully');
+                window.location.href = '<?php echo BASE_URL.'/admin/products' ?>';
+            } else {
+                if (data && Object.keys(data).length > 0) {
+                    let errorMessage = '';
+                    for (let key in data) {
+                        errorMessage += data[key] + '\n';
+                    }
+                    alert('Product could not be added:\n' + errorMessage);
                 }
-            });
-    });
+            }
+        }).catch(error => {
+            console.error('Error:', error);
+            alert('There was an error adding the product. Please try again later.');
+        });
+});
+
 
     
     </script>

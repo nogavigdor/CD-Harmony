@@ -10,6 +10,7 @@ $csrfToken=SessionManager::generateCSRFToken();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="<?php echo BASE_URL ?>/src/css/output.css" rel="stylesheet">
+    <link href="<?php echo BASE_URL ?>/src/css/custom.css" rel="stylesheet">
     <script defer src="<?php echo BASE_URL; ?>/src/js/constants.js"></script> 
     <script defer src="<?php echo BASE_URL; ?>/src/js/app.js"></script>   
     <link rel="preconnect" href="https://fonts.googleapis.com">

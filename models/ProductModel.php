@@ -223,45 +223,6 @@ namespace Models;
         }  
     }
 
-       //update a product on the admin page
-       public function updateProduct() {
-        try {
-            $sql = '
-            SELECT
-            pv.product_variant_id,
-            p.product_id,
-            pv.condition_id,
-            p.title AS product_title,
-            p.product_description AS description,
-            a.title AS artist_title,
-            t.title AS tag_title,
-            ip.image_name,
-            con.title AS condition_title,        
-            pv.quantity_in_stock 
-        FROM
-            products p
-            INNER JOIN product_variants pv ON p.product_id = pv.product_id
-            INNER JOIN products_tags pt ON p.product_id = pt.product_id
-            INNER JOIN tags t ON pt.tag_id = t.tag_id
-            LEFT JOIN cds c ON p.product_id = c.product_id
-            LEFT JOIN artists a ON c.artist_id = a.artist_id
-            LEFT JOIN images_for_products ip ON p.product_id = ip.product_id
-            INNER JOIN conditions con ON pv.condition_id = con.condition_id
-            GROUP BY pv.product_variant_id
-             ';
-            $query = $this->db->prepare($sql);
-            //echo $query->queryString;
-
-            $query->execute();
-        //s   var_dump($query->queryString);
-        //var_dump($tag);
-            return $query->fetchAll(PDO::FETCH_OBJ);
-        } catch (\PDOException $e) {
-            die("Connection failed: " . $e->getMessage());
-        }  
-            
-    }
-
     //Get product variant details by product id
 
     //Get all the tags that are associated with a specific product
@@ -279,6 +240,23 @@ namespace Models;
         $tags = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
         return $tags;
+    }
+    //delete a prodiuct-tag entery from the products_tags table
+    public function deleteProductTag($productId, $tagId){
+        try{
+            $sql='     
+            DELETE FROM products_tags
+            WHERE product_id = :productId AND tag_id = :tagId
+            ';
+            $query = $this->db->prepare($sql);
+            
+            $query->bindParam(':productId', $productId);
+            $query->bindParam(':tagId', $tagId);
+            $query->execute();
+            return true;
+        } catch (\PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
+        }
     }
 
   
@@ -321,6 +299,27 @@ namespace Models;
             die("Connection failed: " . $e->getMessage());
         }
     }
+
+    public function updateProduct($productId, $productTitle, $description){
+        try{
+            $sql='     
+            UPDATE products
+            SET title = :productTitle, product_description = :description
+            WHERE product_id = :productId
+            ';
+            $query = $this->db->prepare($sql);
+            
+            $query->bindParam(':productTitle', $productTitle);
+            $query->bindParam(':description', $description);
+            $query->bindParam(':productId', $productId);
+            $query->execute();
+            return true;
+        } catch (\PDOException $e) {
+            error_log("PDOException in updateProduct: " . $e->getMessage());
+        }
+    }
+
+
     //checks if a tag already exists in the table
     public function getTagIdByTitle($tag){
         try{
@@ -362,6 +361,7 @@ namespace Models;
         }
     }
 
+
     public function addProductTag($productId,$tagId){
         try{
             $sql='     
@@ -379,22 +379,27 @@ namespace Models;
         }
     }
 
-    public function addTag($tag,$newProductId) {
+
+    //update tags for an existing product
+    public function updateProductTag($productId, $tagId){
         try{
             $sql='     
-            INSERT INTO tags (tag_id, product_id)
-            VALUES (:tag, :newProductId)
+            UPDATE products_tags
+            SET tag_id = :tagId
+            WHERE product_id = :productId
             ';
             $query = $this->db->prepare($sql);
             
-            $query->bindParam(':tag', $tag);
-            $query->bindParam(':newProductId', $newProductId);
+            $query->bindParam(':tagId', $tagId);
+            $query->bindParam(':productId', $productId);
             $query->execute();
             return true;
         } catch (\PDOException $e) {
             die("Connection failed: " . $e->getMessage());
         }
     }
+
+
     
     public function insertCd($releaseDate, $artistId, $newProductId){
         try{
@@ -410,6 +415,25 @@ namespace Models;
             return true;
         } catch (\PDOException $e) {
             die("Connection failed at insertCd: " . $e->getMessage() . $releaseDate . $artistId . $newProductId);
+        }
+
+    }
+
+    public function updateCd($releaseDate, $artistId, $newProductId){
+        try{
+            $sql='     
+            UPDATE cds
+            SET release_date = :releaseDate, artist_id = :artistId
+            WHERE product_id = :productId
+            ';
+            $query = $this->db->prepare($sql);
+                $query->bindParam(':releaseDate', $releaseDate);
+                $query->bindParam(':artistId', $artistId); 
+                $query->bindParam(':productId', $newProductId);
+            $query->execute();
+            return true;
+        } catch (\PDOException $e) {
+            die("Connection failed at updateCd: " . $e->getMessage() . $releaseDate . $artistId . $newProductId);
         }
 
     }
@@ -435,6 +459,27 @@ namespace Models;
         }
 
     }
+
+    public function updateProductVariant($productVariantId, $price, $quantityInStock){
+        try{
+            $sql='     
+            UPDATE product_variants
+            SET price = :price, quantity_in_stock = :quantityInStock
+            WHERE product_variant_id = :productVariantId
+            ';
+            $query = $this->db->prepare($sql);           
+            $query->bindParam(':productVariantId', $productVariantId);
+            $query->bindParam(':price', $price);
+            $query->bindParam(':quantityInStock', $quantityInStock);
+            $query->execute();
+            return true;
+        } catch (\PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
+        }
+
+    }
+
+  
 
     //checks if an artist already exists in the table and returns its artist id 
     public function checkArtist($artistTitle){
@@ -470,6 +515,23 @@ namespace Models;
             $artistId = $this->db->lastInsertId();
             //returns new artist id
             return $artistId;
+        } catch (\PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
+        }
+    }
+
+    public function updateArtist($artistTitle){
+        try{
+            $sql='     
+            UPDATE artists
+            SET title = :artistTitle
+            WHERE artist_id = :artistId
+            ';
+            $query = $this->db->prepare($sql);
+            
+            $query->bindParam(':artistTitle', $artistTitle);
+            $query->execute();
+            return true;
         } catch (\PDOException $e) {
             die("Connection failed: " . $e->getMessage());
         }
@@ -525,6 +587,26 @@ namespace Models;
             $query = $this->db->prepare($sql);
             
             $query->bindParam(':newProductId', $newProductId);
+            $query->bindParam(':image_name', $image_name);
+            $query->bindParam(':main_image', $main_image);
+            $query->execute();
+            return true;
+        } catch (\PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
+        }
+
+    }
+
+    public function updateImage($productId, $image_name, $main_image){
+        try{
+            $sql='     
+            UPDATE images_for_products
+            SET image_name = :image_name, main_image = :main_image
+            WHERE product_id = :productId
+            ';
+            $query = $this->db->prepare($sql);
+            
+            $query->bindParam(':productId', $productId);
             $query->bindParam(':image_name', $image_name);
             $query->bindParam(':main_image', $main_image);
             $query->execute();

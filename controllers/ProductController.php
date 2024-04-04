@@ -186,11 +186,28 @@ class ProductController
         $query->execute();
     }
 */
+
+public function showAddProductForm()
+{
+    try {
+        if (SessionManager::isAdmin()) {
+            // Load the view to display the product form
+            include 'views/admin/add-product.php';
+        } else {
+            // Redirect to the login page in case the user is not logged as admin
+            header('Location:' . BASE_URL . '/admin-login');
+            exit();
+        }
+    } catch (\PDOException $ex) {
+        error_log('PDO Exception: ' . $ex->getMessage());
+    }
+}
+
     //Adds a new product (cd) to the database
     public function addProduct()
     {   
        try {
-          //  $this->db->beginTransaction();
+            $this->db->beginTransaction();
             //verifying if the user is logged as admin
             if (!SessionManager::isAdmin()) {
                 throw new \Exception('Unauthorized access');
@@ -206,36 +223,63 @@ class ProductController
                     $errType = [];
     
                     /*****Retrieve values from the form *****/
-
+                    if (empty($_POST['productTitle'])) {
+                        $errType['productTitle'] = 'Product Title is required';
+                    }
                     $productTitle = htmlspecialchars(trim($_POST['productTitle']));
+                    if (empty($_POST['artistTitle'])) {
+                        $errType['artistTitle'] = 'Artist Title is required';
+                    }
                     $artistTitle = htmlspecialchars(trim($_POST['artistTitle']));
+                
                     $description = htmlspecialchars(trim($_POST['productDescription']));
+                   
+                    if (empty($_POST['productCondition'])) {
+                        $errType['productCondition'] = 'Product Condition is required';
+                    }
                     $condition = htmlspecialchars(trim($_POST['productCondition']));
+
+                    $price = htmlspecialchars(trim($_POST['price']));
+                    if (!is_numeric($price)) {
+                        $errType['price'] = 'Price must be a number';
+                    }
                     //converting the number to decimal
                     $price = floatval(htmlspecialchars(trim($_POST['price'])));
                     $quantityInStock = htmlspecialchars(trim($_POST['quantityInStock']));
+                    if (!is_numeric($quantityInStock) || $quantityInStock < 0) {
+                        $quantityInStock = 'Quantity in Stock must be a non-negative integer.';
+                        $errType['quantityInStock'] = $quantityInStock;
+                    }
                     $creationDate = date('Y-m-d h:i:s');
                     $tags = htmlspecialchars(trim($_POST['tags']));
+                    if (empty($_POST['releaseDate'])) {
+                        $errType['releaseDate'] = 'Release Date is required';
+                    }
                     $releaseDate = trim($_POST['releaseDate']);
-                    $file = $_FILES['image'];
+                   
+                    $file = isset($_FILES['image']) ? $_FILES['image'] : null;
 
-                    /********  Validating form values **********/
+                    if ($file && $file['name']) {
+                        // Handle image upload
+                        $image = $this->imageHandler->handleImageUpload($file, './src/assets/images/albums/');
 
-                    // // Validate quantityInStock
-                    // if (!is_numeric($quantityInStock) || $quantityInStock < 0) {
-                    //     $quantityInStock = 'Quantity in Stock must be a non-negative integer.';
-                    //     $errType['quantityInStock'] = $quantityInStock;
-                    // }
+                        // Handle potential errors from image upload
+                        if ($image === false) {
+                            $imageErrorMsg = $this->imageHandler->getErrorMessages();
+                            $imageErrorMsgString = implode(' and ', $imageErrorMsg);
+                            $errType['image'] = $imageErrorMsgString;
+                        }
+                    } else {
+                        // Handle case when no image is uploaded
+                         $errType['image'] = 'No image uploaded';
+                    }
 
-                
-                    // //if there are errors, redirect to the add product form and show error message
-                    // SessionManager::setSessionVariable('errors_output', $errType);
-                    // if (count($errType) > 0) {
-                    //     header('Location:' . BASE_URL . '/admin/product/add');
-                    //     exit();
-                    // }
-
-
+                    //if there are errors, return them as JSON
+                    if (!empty($errType)) {
+                        http_response_code(400); // Set HTTP status code to indicate a client error
+                        echo json_encode($errType);
+                        exit(); // Terminate script execution
+                    }
                     $productModel = new ProductModel();
 
                     //creating the product prototype and getting the new product id
@@ -268,22 +312,24 @@ class ProductController
                         //pushes the tag id to the array
                         array_push($id_tags, $tagId);
                         }
-
-                    //updating the the tags for tags and products table (many to many)
-                    foreach ($id_tags as $tagId) {
-                    // echo $newProductId . '---' . $tagId;
-                    //   var_dump($id_tags);
-                    //   var_dump($arr_tags);
-                    //   exit();
-                    //add a tag to a product
-                    //returns a boolean
-                        $tagsSuccess = $this->productModel->addProductTag($newProductId, $tagId);
-                        }
-
-                        //product and tag were added successfully
-                        if (!($tagsSuccess))
-                         throw new \Exception('There was a problem updating the product_tags table, please try again');
-
+                    if(!(empty($id_tags))){
+                             //updating the the tags for tags and products table (many to many)
+                        foreach ($id_tags as $tagId) {
+                        // echo $newProductId . '---' . $tagId;
+                        //   var_dump($id_tags);
+                        //   var_dump($arr_tags);
+                        //   exit();
+                        //add a tag to a product
+                        //returns a boolean
+                            $tagsSuccess = $this->productModel->addProductTag($newProductId, $tagId);
+                            }
+    
+                            //product and tag were added successfully
+                            if (!($tagsSuccess))
+                             throw new \Exception('There was a problem updating the product_tags table, please try again');
+    
+                    }
+               
                             //checks if the artist already exists in the database
                            // echo "the artist title is: $artistTitle<br>";
                             $artistId = $productModel->checkArtist($artistTitle);
@@ -309,24 +355,17 @@ class ProductController
 
                             //if the cd was inserted successfully, continue adding the product image
 
-                            //    echo('before adding image<br>');
-                                //image upload code
+                               
+                                
+                                   // Handle image upload
                                 $image = $this->imageHandler->handleImageUpload($file, './src/assets/images/albums/');
-                                $imageErrorMsg = [];
-                                if ($image === false) {
-                                    // If there are errors, return them as JSON
-                                    $imageErrorMsg = $this->imageHandler->getErrorMessages();
-                                    $imageErrorMsgString= implode(' and ', $imageErrorMsg);
-                                    http_response_code(400); // Set HTTP status code to indicate a client error
-                                    echo json_encode(['error' => $imageErrorMsgString]);
-                                    exit; // Terminate script execution
-                                } 
-                                
-                                
                                 $image_name = $image;
                                 $main_image = 1;
                                 $image_added = $productModel->insertImage($newProductId, $image_name, $main_image);
                                 //   echo('the new image id is: ' . $image_added . '<br>');
+                                //throws an error if the image was not updated
+                                if (!$image_added)
+                                throw new \Exception('There was a problem updating the image table, please try again');
                                 
 
                         
@@ -356,11 +395,13 @@ class ProductController
                                 //sets the success message in the session variable
                                 SessionManager::setSessionVariable('success_message', 'Product added successfully');
                                 $response = ['status' => 'success', 'message' => 'Product added successfully'];
+                               
+                                $this->db->commit();
                                 echo json_encode($response);
 
-          //  $this->db->commit();
+
         } catch (\PDOException $ex) {
-         //   $this->db->rollBack();
+          $this->db->rollBack();
              // Handle exceptions
         $error_message = $ex->getMessage();
         $response = ['status' => 'error', 'message' => $error_message];
@@ -378,7 +419,7 @@ class ProductController
                 echo "the product variant id is: $id";
                 $variantDetails = $this->productModel->getVariantDetails($id);
                 // Load the view to display the product form
-                include 'views/admin/edit-product-form.php';
+                include 'views/admin/edit-product.php';
             } else {
                 // Redirect to the login page in case the user is not logged as admin
                 header('Location:' . BASE_URL . '/admin-login');
@@ -393,94 +434,210 @@ class ProductController
     public function updateProduct()
     {
         try {
-            if (SessionManager::isAdmin()) {
-                // Validate the CSRF token on form submission - to ensure that only by authorized admin users
-                if (SessionManager::validateCSRFToken($_POST['csrf_token'])) {
-                    // CSRF token is valid
-                    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                        // Retrieve values from the form
-                        $productId = htmlspecialchars(trim($_POST['product_id']));
-                        $productVariantId = htmlspecialchars(trim($_POST['productVariantId']));
-                        $productTitle = htmlspecialchars(trim($_POST['productTitle']));
-                        $description = htmlspecialchars(trim($_POST['productDescription']));
-                        $price = htmlspecialchars(trim($_POST['price']));
-                        $stock = htmlspecialchars(trim($_POST['QuantatyInStock']));
-                        $image = htmlspecialchars(trim($_POST['image']));
-                        $tags = htmlspecialchars(trim($_POST['tags']));
-                        $releaseDate = htmlspecialchars(trim($_POST['release_date']));
-                        $artistTitle = htmlspecialchars(trim($_POST['artistTitle']));
+            $this->db->beginTransaction();
+            //verifying if the user is logged as admin
+            if (!SessionManager::isAdmin()) {
+                throw new \Exception('Unauthorized access');
+            }
 
-                        $productModel = new ProductModel();
-                        $success = $productModel->updateProduct($productVariantId, $productTitle, $artistTitle, $description, $price, $stock, $image, $tags, $releaseDate);
-                        if ($success) {
-                            //sets the success message in the session variable
-                            SessionManager::setSessionVariable('success_message', 'Product updated successfully');
-                        }
+            // Validate the CSRF token on form submission - to ensure that only by authorized admin users
+            if (!(SessionManager::validateCSRFToken($_POST['csrf_token']))) 
+            echo json_encode("An internal server error occurred. Please try again later.");
+            
+            if (!($_SERVER['REQUEST_METHOD'] === 'POST')) 
+                throw new \Exception('Invalid request method');
+                    //initializing an array to store the errors
+                    $errType = [];
+    
+                    /*****Retrieve values from the form *****/
+                    $productId = htmlspecialchars(trim($_POST['productId']));
+                    $variantId = htmlspecialchars(trim($_POST['variantId']  ));
+                    $productTitle = htmlspecialchars(trim($_POST['productTitle']));
+                    $artistTitle = htmlspecialchars(trim($_POST['artistTitle']));
+                    $description = htmlspecialchars(trim($_POST['productDescription']));
+                    $price = htmlspecialchars(trim($_POST['price']));
+                    if (!is_numeric($price)) {
+                        $errType['price'] = 'Price must be a number';
                     }
-                }
-            }
-        } catch (\PDOException $ex) {
-            error_log('PDO Exception: ' . $ex->getMessage());
-        }
-    }
-
-    //deletes the product (product variant)
-    public function deleteProduct()
-    {
-        try {
-            if (SessionManager::isAdmin()) {
-                // Validate the CSRF token on form submission - to ensure that only by authorized admin users
-                if (SessionManager::validateCSRFToken($_POST['csrf_token'])) {
-                    // CSRF token is valid
-                    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                        // Retrieve values from the form
-                        $productId = htmlspecialchars(trim($_POST['product_id']));
-                        $productVariantId = htmlspecialchars(trim($_POST['productVariantId']));
-
-                        $productModel = new ProductModel();
-                        $success = $productModel->deleteProduct($productVariantId);
-                        if ($success) {
-                            //sets the success message in the session variable
-                            SessionManager::setSessionVariable('success_message', 'Product deleted successfully');
-                        }
+                    //converting the number to decimal
+                    $price = floatval(htmlspecialchars(trim($_POST['price'])));
+                    $quantityInStock = htmlspecialchars(trim($_POST['quantityInStock']));
+                    if (!is_numeric($quantityInStock) || $quantityInStock < 0) {
+                        $quantityInStock = 'Quantity in Stock must be a non-negative integer.';
+                        $errType['quantityInStock'] = $quantityInStock;
                     }
-                }
-            }
-        } catch (\PDOException $ex) {
-            error_log('PDO Exception: ' . $ex->getMessage());
-        }
-    }
+                    $tags = htmlspecialchars(trim($_POST['tags']));
+                    $releaseDate = trim($_POST['releaseDate']);
 
-    public function showAddProductForm()
-    {
-        try {
-            if (SessionManager::isAdmin()) {
-                // Load the view to display the product form
-                include 'views/admin/add-product.php';
-            } else {
-                // Redirect to the login page in case the user is not logged as admin
-                header('Location:' . BASE_URL . '/admin-login');
-                exit();
-            }
-        } catch (\PDOException $ex) {
-            error_log('PDO Exception: ' . $ex->getMessage());
-        }
-    }
+                    $file = isset($_FILES['image']) ? $_FILES['image'] : null;
 
-    public function search($searchTerm)
-    {
-        try {
-            $productsList = $this->productModel->search($searchTerm);
-            // Check if the products list is empty
-            if (empty($productsList)) {
-                // Load a view that displays a 'no search results' message
-                $productsList = $this->productModel->getAllVariants();
-                SessionManager::setSessionVariable('error_message', 'No results found');
-            }
-            // Load the view to display the products
-            include 'views/admin/products.php';
+                    $image_to_upload_exist = true;
+                    if ($file && $file['name']) {
+                        // Handle image upload
+                        $image = $this->imageHandler->handleImageUpload($file, './src/assets/images/albums/');
+                    
+                        // Handle potential errors from image upload
+                        if ($image === false) {
+                            $imageErrorMsg = $this->imageHandler->getErrorMessages();
+                            $imageErrorMsgString = implode(' and ', $imageErrorMsg);
+                            $errType['image'] = $imageErrorMsgString;
+                        }
+                        //no image was uploaded
+                    } else {
+                         $image_to_upload_exist = false;
+                    }
+
+                    
+                    //if there are errors, return them as JSON
+                    if (!empty($errType)) {
+                        http_response_code(400); // Set HTTP status code to indicate a client error
+                        echo json_encode($errType);
+                        exit(); // Terminate script execution
+                    }
+                    $productModel = new ProductModel();
+
+                    //updating the products table and getting a boolean if successful
+                    $productUpdate = $productModel->updateProduct($productId, $productTitle, $description);
+                  
+
+                    if (!($productUpdate)) 
+                        throw new \Exception('There was a problem updating the product table, please try again');
+
+                    //if a new product prototype was created successfully, continue
+                    
+                    //creating a tags array from the tags string
+                      $form_tags = [];
+                      //creating an array of tags
+                      $form_tags = explode(',', $tags);
+
+                   //get current tags for products from the products_tags table
+                    $currentTags = $this->productModel->getProductTags($productId);
+
+                    // Initialize an empty array to store the titles
+                    $currentTagTitles = [];
+
+                    // Iterate over each associative array in $currentTags
+                    foreach ($currentTags as $tag) {
+                        // Extract the value associated with the 'title' key from each associative array
+                        $title = $tag['title'];
+                        // Add the extracted title to the $currentTagTitles array
+                        $currentTagTitles[] = $title;
+                    }
+
+                    // Tags to delete (tags in $currentTags but not in $id_tags)
+                    $tags_to_delete = array_diff($currentTagTitles, $form_tags);
+
+                    // Tags to update (tags in $id_tags but not in $currentTags)
+                    $tags_to_update = array_diff($form_tags, $currentTagTitles);
+  
+                      //checks if the tags (as strings) exists in the tags table
+                      //and inserts those who don't exist
+                      //returns an array of tag ids that will be associated with the product
+  
+                        $tags_id_to_update = [];
+                      foreach ($tags_to_update as $tag) {
+                          //gets the tag id
+                          $tagId = $this->productModel->getTagIdByTitle($tag);
+                          //if the tag doesn't exist, insert it
+                          if (!$tagId) {
+                              //inserts the tag and returns the tag id
+                              $tagId = $this->productModel->insertTag($tag);
+                          }
+                          //pushes the tag id to the array
+                          array_push($tags_id_to_update, $tagId);
+                          }
+
+                 
+  
+                      //updating the the tags for tags and products table (many to many)
+                      foreach ($tags_id_to_update as $tagId) {
+
+                        //update the tags for an existing product
+                          $tagsSuccess = $this->productModel->addProductTag($productId, $tagId);
+
+                        //product and tag were added successfully
+                        if (!($tagsSuccess))
+                        throw new \Exception('There was a problem updating the product_tags table, please try again');
+
+                          }
+
+                      
+
+                        foreach ($tags_to_delete as $tag) {
+                            //gets the tag id
+                            $tagId = $this->productModel->getTagIdByTitle($tag);
+                             
+                            //deletes the tag from the product
+                            $tagsSuccess = $this->productModel->deleteProductTag($productId, $tagId);
+
+                            
+                          
+                          //product and tag were added successfully
+                        if (!($tagsSuccess))
+                        throw new \Exception('There was a problem updating the product_tags table, please try again');
+
+                            }
+
+
+                            //checks if the artist already exists in the database
+                           // echo "the artist title is: $artistTitle<br>";
+                            $artistId = $productModel->checkArtist($artistTitle);
+                            //if the artist doesn't exist, insert it
+                            if (!$artistId) {
+                                //inserts the artist and returns the artist id
+                                $artistId = $productModel->updateArtist($artistTitle);
+                            }
+                            else
+                            {
+                                //get the artist id
+                                $artistId = $productModel->getArtistId($artistTitle);
+                            }
+
+                            //inserts the cd product - no need for the cd is so just getting a success message
+                            /* parameter returned: boolean */
+                           // echo "$newProductId, $releaseDate, $artistId<br>";
+
+                            $cdInserted = $productModel->updateCd($releaseDate, $artistId, $productId);
+                            if (!$cdInserted) {
+                                throw new \Exception('There was a problem updating the cd table, please try again');
+                            }
+
+                            //if the cd was updated successfully, continue adding the product image
+
+                              
+                              if ($image_to_upload_exist) {
+                                // Handle image upload
+                               $image_name = $image;
+                                $main_image = 1;
+                                $image_added = $productModel->updateImage($productId, $image_name, $main_image);
+                              }
+                                  //throws an error if the image was not updated
+                         
+                                //inserts the product variant and returns the product variant id
+                                /* parameter returned: int */
+                                $new_products_var_added1 = $this->productModel->updateProductVariant($variantId, $price, $quantityInStock);
+
+                                if(!$new_products_var_added1) {
+                                    throw new \Exception('There was a problem updating the product_variant table, please try again');
+                                }
+                           //if the product variant was inserted successfully, continue to confirm the product was added successfully
+                    
+                            
+                                //sets the success message in the session variable
+                                SessionManager::setSessionVariable('success_message', 'Product was updated successfully');
+                                $response = ['status' => 'success', 'message' => 'Product was updated successfully'];
+                               
+                               
+                               $this->db->commit();
+                                echo json_encode($response);
+
         } catch (\PDOException $ex) {
-            error_log('PDO Exception: ' . $ex->getMessage());
+          $this->db->rollBack();
+             // Handle exceptions
+        $error_message = $ex->getMessage();
+        $response = ['status' => 'error', 'message' => $error_message];
+        echo json_encode($response);
+       
         }
     }
 }

@@ -20,14 +20,14 @@ SessionManager::generateCSRFToken();
                 <h3 class="text-blue-900"><?= htmlspecialchars($variantDetails->condition_title) ?? ''; ?> Variant</h3>
                 <!-- Product Title -->
                 <div class="mb-4">
-                    <label for="productTitle" class="block text-sm font-medium text-gray-700">Title:</label>
+                    <label for="productTitle" class="block text-sm font-medium text-gray-700">Product Title:</label>
                     <input type="text" name="productTitle" id="productTitle" value="<?= htmlspecialchars($variantDetails->product_title) ?? ''; ?>"
                         class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                 </div>
 
                    <!-- Artist Title -->
                    <div class="mb-4">
-                    <label for="artistTitle" class="block text-sm font-medium text-gray-700">Title:</label>
+                    <label for="artistTitle" class="block text-sm font-medium text-gray-700">Artist Title:</label>
                     <input type="text" name="artistTitle" id="artistTitle" value="<?= htmlspecialchars($variantDetails->artist_title) ?? ''; ?>"
                         class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                 </div>
@@ -73,13 +73,13 @@ SessionManager::generateCSRFToken();
                 <!-- Image Upload -->
                 <div class="mb-4">
                     <label for="image" class="block text-sm font-medium text-gray-700">Upload New Image:</label>
-                    <input type="file" name="UpdateImage" id="image"
+                    <input type="file" name="image" id="image"
                         class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                 </div>
                 <input class="btn" id="SubmitUpdateProductForm" type="submit" value="Update Product"/>
-                 <input type="hidden" name="product_id" value="<?= $variantDetails->product_id ?? ''; ?>">
-                 <input type="hidden" name="variant_id" value="<?= $variantDetails->product_variant_id ?? ''; ?>">
-                 
+                 <input type="hidden" name="product_id" id="product_id" value="<?= $variantDetails->product_id ?? ''; ?>">
+                 <input type="hidden" name="variant_id" id="variant_id" value="<?= $variantDetails->product_variant_id ?? ''; ?>">
+                   
             </form>
         </div>
     </div>
@@ -97,6 +97,8 @@ SessionManager::generateCSRFToken();
     let price = document.getElementById('price').value;
     let tags = document.getElementById('tags').value;
     let image = document.getElementById('image').files[0];
+    let productId = document.getElementById('product_id').value;
+    let variantId = document.getElementById('variant_id').value;
     let formData = new FormData();
     formData.append('csrf_token', csrfToken);
     formData.append('productTitle', productTitle);
@@ -107,6 +109,8 @@ SessionManager::generateCSRFToken();
     formData.append('price', price);
     formData.append('tags', tags);
     formData.append('image', image);
+    formData.append('productId', productId);
+    formData.append('variantId', variantId);
 
     try {
         const response = await fetch('<?php echo BASE_URL.'/admin/product/update' ?>', {
@@ -117,10 +121,10 @@ SessionManager::generateCSRFToken();
         const data = await response.json();
 
         if (data.status === 'success') {
-            alert('Product added successfully');
+            alert('Product was updated successfully');
             window.location.href = '<?php echo BASE_URL.'/admin/products' ?>';
         } else {
-            alert('Product could not be added due to' + data.image);
+            alert('Product could not be edited since ' + data.image);
         }
     } catch (error) {
         console.error('Error:', error);
