@@ -640,4 +640,30 @@ public function showAddProductForm()
        
         }
     }
+
+    public function deleteProductVariant($variantId){
+        try {
+            $this->db->beginTransaction();
+            //verifying if the user is logged as admin
+            if (!SessionManager::isAdmin()) {
+                throw new \Exception('Unauthorized access');
+            }
+            $productModel = new ProductModel();
+            $productDeleted = $productModel->deleteProductVariant($variantId);
+            if (!$productDeleted) {
+                throw new \Exception('There was a problem deleting the product, please try again');
+            }
+            $this->db->commit();
+            SessionManager::setSessionVariable('success_message', 'Product was deleted successfully');
+            header('Location:' . BASE_URL . '/admin/products');
+            exit();
+        } catch (\PDOException $ex) {
+            $this->db->rollBack();
+            // Handle exceptions
+            $error_message = $ex->getMessage();
+            SessionManager::setSessionVariable('error_message', $error_message);
+            header('Location:' . BASE_URL . '/admin/products');
+            exit();
+        }
+    }
 }

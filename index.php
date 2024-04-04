@@ -105,9 +105,9 @@ route('/cdharmony/admin/product/(\d+)', 'POST', function ($id) {
     $controller->showProductDetails($id,'admin');
 });
 
-route('/cdharmony/admin/product/delete/(\d+)', 'DELETE', function ($id) {
+route('/cdharmony/admin/product/delete/(\d+)', 'DELETE', function ($variantId) {
     $controller = new ProductController();
-    $controller->deleteProduct($id);
+    $controller->deleteProductVariant($variantId);
 });
 
 route('/cdharmony/admin/product/edit/(\d+)', 'GET', function ($id) {

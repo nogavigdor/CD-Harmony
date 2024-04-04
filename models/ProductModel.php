@@ -319,6 +319,22 @@ namespace Models;
         }
     }
 
+    public function deleteProduct($varinatId){
+        try{
+            $sql='     
+            DELETE FROM product_variants
+            WHERE product_variant_id = :variantId
+            ';
+            $query = $this->db->prepare($sql);
+            
+            $query->bindParam(':variantId', $varinatId);
+            $query->execute();
+            return true;
+        } catch (\PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
+        }
+    }
+
 
     //checks if a tag already exists in the table
     public function getTagIdByTitle($tag){
@@ -477,6 +493,18 @@ namespace Models;
             die("Connection failed: " . $e->getMessage());
         }
 
+    }
+
+    public function deleteProductVariant($variantId) {
+        try {
+            $sql = 'DELETE FROM product_variants WHERE product_variant_id = :variantId';
+            $query = $this->db->prepare($sql);
+            $query->bindParam(':variantId', $variantId);
+            $query->execute();
+            return true;
+        } catch (\PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
+        }
     }
 
   
