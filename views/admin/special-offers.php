@@ -12,6 +12,7 @@ use Models\SpecialOfferModel;
 
     <!-- Content Area -->
     <div class="flex-1 p-8">
+    <a href="<?php echo BASE_URL.'/admin/special-offers/add/' ?>" class="btn">Add Special Offer</a>
         <div class="overflow-x-auto">
             <table class="w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">

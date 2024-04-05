@@ -105,7 +105,7 @@ public function getAllArticles() {
         die("Connection failed: " . $e->getMessage());
     }
 }
-
+/*
  public function getInvoiceDetails($orderId){
         try {
             $sql = '
@@ -120,6 +120,28 @@ public function getAllArticles() {
             die("Connection failed: " . $e->getMessage());
         }
  }
+*/
 
+public function addArticle($title, $content, $publish_date, $update_date, $user_id)
+{
+    try {
+        $sql = '
+        INSERT INTO articles (title, content, publish_date, update_date, user_id)
+        VALUES (:title, :content, :publish_date, :update_date, :user_id)
+        ';
+        $query = $this->db->prepare($sql);
+        $query->bindParam(':title', $title, \PDO::PARAM_STR);
+        $query->bindParam(':content', $content, \PDO::PARAM_STR);
+        $query->bindParam(':publish_date', $publish_date, \PDO::PARAM_STR);
+        $query->bindParam(':update_date', $update_date, \PDO::PARAM_STR);
+        $query->bindParam(':user_id', $user_id, \PDO::PARAM_INT);
+        $query->execute();
+        return $this->db->lastInsertId();
+    } catch (\PDOException $ex) {
+        die("Connection failed: " . $e->getMessage());
+    }
+
+    }
 
 }
+

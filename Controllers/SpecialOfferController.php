@@ -3,6 +3,7 @@ namespace Controllers;
 use Services\SessionManager;
 use Models\SpecialOfferModel;
 
+
 class SpecialOfferController 
 {
     private $specialOfferModel;
@@ -132,6 +133,27 @@ class SpecialOfferController
             $specialDealModel = new SpecialDealModel(); // Create an instance of ProductModel
             // Get the special deal details
             return $specialDealModel->deleteSpecialDealDetail(); // Call the method on the instance
+            
+        } catch (\PDOException $ex) {
+            error_log('PDO Exception: ' . $ex->getMessage());
+        }
+    }
+
+    public function showSpecialOfferForm($variant_id)
+    {
+        try {
+            $specialOfferForm = $this->specialOfferModel->getSpecialOfferFormDetails($variant_id); 
+           include 'views/admin/add-special-offers.php';
+
+        } catch (\PDOException $ex) {
+            error_log('PDO Exception: ' . $ex->getMessage());
+        }
+    }
+
+    public function addSpecialOffer($variant_id){
+        try {
+   
+            return $this->specialOfferModel->addSpecialOffer($variant_id); // Call the method on the instance
             
         } catch (\PDOException $ex) {
             error_log('PDO Exception: ' . $ex->getMessage());

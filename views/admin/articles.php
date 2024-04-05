@@ -15,6 +15,7 @@ $articles = $articleModel->getAllArticles();
 
     <!-- Content Area -->
     <div class="flex-1 p-8">
+    <a href="<?php echo BASE_URL.'/admin/article/add/' ?>" class="btn">Add Article</a>
         <h1 class="flex flex-start text-2xl font-semibold mb-8">Articles List</h1>
         <?php if (!empty($articles)) { ?>
             <table class="min-w-full divide-y divide-gray-200">

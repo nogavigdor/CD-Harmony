@@ -146,6 +146,7 @@ namespace Models;
                 $e->getMessage();
             }
         }
+
         //get the special offer details by product variant id
         public function showSpecialOffer(){
             try {
@@ -161,6 +162,28 @@ namespace Models;
                 $query->execute();
                 $result = $query->fetch(PDO::FETCH_ASSOC);
                 return $result;
+            } catch (\PDOException $e) {
+                
+                $e->getMessage();
+            }
+        }
+
+        public function addSpecialOffer($variant_id, $title, $description, $discountSum, $startDate, $endDate)
+        {
+            try {
+                $sql = '
+                    INSERT INTO special_offers (product_variant_id, title, special_offer_description, discount_precentage, special_offer_start_date, special_offer_end_date)
+                    VALUES (:product_variant_id, :title, :special_offer_description, :discount_precentage, :special_offer_start_date, :special_offer_end_date)
+                ';
+
+                $query = $this->db->prepare($sql);
+                $query->bindParam(':product_variant_id', $variant_id);
+                $query->bindParam(':title', $title);
+                $query->bindParam(':special_offer_description', $description);
+                $query->bindParam(':discount_precentage', $discountPrecentage);
+                $query->bindParam(':special_offer_start_date', $startDate);
+                $query->bindParam(':special_offer_end_date', $endDate);
+                $query->execute();
             } catch (\PDOException $e) {
                 
                 $e->getMessage();
@@ -188,6 +211,9 @@ namespace Models;
                 return $e->getMessage();
             }
         }
+
+
+      
 
 
     }

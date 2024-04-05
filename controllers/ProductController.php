@@ -18,13 +18,14 @@ class ProductController
     private $db;
     private $productModel;
     private $imageHandler;
+    private $sessionManager;
 
     public function __construct()
     {
         $this->productModel = new ProductModel();
         $this->imageHandler = new ImageHandler();
-        $session = new SessionManager();
-        $session->startSession();
+        $this->sessionManager = new SessionManager();
+        $this->sessionManager->startSession();
 
         $this->db = DBConnector::getInstance()->connectToDB();
     }
@@ -194,7 +195,8 @@ public function showAddProductForm()
             // Load the view to display the product form
             include 'views/admin/add-product.php';
         } else {
-            // Redirect to the login page in case the user is not logged as admin
+             // User is not logged in as an admin, redirect to the home page
+            SessionManager::setSessionVariable('error_message', 'You are not authorized to view this page.');
             header('Location:' . BASE_URL . '/admin-login');
             exit();
         }

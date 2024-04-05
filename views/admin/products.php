@@ -100,6 +100,9 @@ use Services\SessionManager;
                     <input type="hidden" name="_method" value="DELETE">
                     <button type="submit" class="btn btn-danger">Delete</button>
                  </form>
+                 <td><a class="btn btn-primary" href="<?= BASE_URL . '/admin/product/add/special-offer/' . $product->product_variant_id ?>">
+                  Add Special Offer
+            </a>
                     </td>
               </tr>
               <?php } ?>
