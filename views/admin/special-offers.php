@@ -31,7 +31,16 @@ use Models\SpecialOfferModel;
                     <?php foreach ($specialOffers as $offer){
                         $specialOfferModel = new SpecialOfferModel();
                         $offerDetails = $specialOfferModel->getSpecialOfferDetails($offer['product_variant_id']);
-                    ?>
+
+                        // Check if the current date falls within the offer's date range
+                        $currentDate = date('Y-m-d');
+                        $startDate = $offer['special_offer_start_date'];
+                        $endDate = $offer['special_offer_end_date'];
+                        $dateInRange = ($currentDate >= $startDate && $currentDate <= $endDate);
+                        
+                        // Determine the tooltip message based on whether the current date is within the offer's date range
+                        $tooltipMessage = $dateInRange ? '' : 'update dates range to be eligible for homepage';
+                                        ?>
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($offerDetails['product_variant_id']) ?></td>
                             <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($offerDetails['product_title']) ?></td>
@@ -41,7 +50,11 @@ use Models\SpecialOfferModel;
                             <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($offer['special_offer_start_date']) ?></td>
                             <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($offer['special_offer_end_date']) ?></td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <input type="radio" name="homepage" value="<?= htmlspecialchars($offer['product_variant_id']) ?>" <?= $offer['is_homepage'] ? 'checked' : '' ?> onchange="updateHomepage(this.value)">
+                                <!-- Only allow selection if the current date is within the offer's date range -->
+                                <input type="radio" name="homepage" value="<?= htmlspecialchars($offer['product_variant_id']) ?>" <?= $offer['is_homepage'] ? 'checked' : '' ?> <?= $dateInRange ? '' : 'disabled' ?> onchange="updateHomepage(this.value)" title="<?= htmlspecialchars($tooltipMessage) ?>">
+                                <?php if (!$dateInRange) { ?>
+                                    <span class="text-xs text-gray-500"><?= htmlspecialchars($tooltipMessage) ?></span>
+                                <?php } ?>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
                             <a href="<?= BASE_URL . '/admin/special-offers/edit/' . htmlspecialchars($offer['product_variant_id']) ?>" class="btn btn-primary">Edit</a>

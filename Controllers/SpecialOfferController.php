@@ -63,6 +63,7 @@ class SpecialOfferController
         }
     }
 
+    //update secial offer on homepage
     public function updateHomepage($productVariantId)
     {
         try {
