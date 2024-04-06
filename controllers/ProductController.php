@@ -264,7 +264,11 @@ public function showAddProductForm()
                     $arr_tags = [];
                     //creating an array of tags
                     $arr_tags = explode(',', $tags);
-
+                   
+                     // Loop through the tags array and trim each tag
+                     foreach ($arr_tags as $index => $tag) {
+                        $arr_tags[$index] = trim($tag);
+                    }
                     //creates the products id tags
                     //checks if the tags (as strings) exists in the tags table
                     //and inserts those who don't exist
@@ -479,6 +483,14 @@ public function showAddProductForm()
                       $form_tags = [];
                       //creating an array of tags
                       $form_tags = explode(',', $tags);
+
+                   
+                       // Loop through the tags array and trim each tag
+                        foreach ($form_tags as $index => $tag) {
+                            $form_tags[$index] = trim($tag);
+                        }
+
+                     
 
                    //get current tags for products from the products_tags table
                     $currentTags = $this->productModel->getProductTags($productId);

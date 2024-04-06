@@ -95,7 +95,7 @@ class UserController {
         }
 
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // Log the exception or display a message
             error_log($e->getMessage());
             SessionManager::setSessionVariable('error_message', 'An error occurred while creating your account. Please try again.');

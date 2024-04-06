@@ -143,5 +143,26 @@ public function addArticle($title, $content, $publish_date, $update_date, $user_
 
     }
 
+    public function updateArticle($article_id, $title, $content, $update_date, $user_id)
+    {
+        try {
+            $sql = '
+            UPDATE articles
+            SET title = :title, content = :content, update_date = :update_date, user_id = :user_id
+            WHERE article_id = :article_id
+            ';
+            $query = $this->db->prepare($sql);
+            $query->bindParam(':article_id', $article_id, \PDO::PARAM_INT);
+            $query->bindParam(':title', $title, \PDO::PARAM_STR);
+            $query->bindParam(':content', $content, \PDO::PARAM_STR);
+            $query->bindParam(':update_date', $update_date, \PDO::PARAM_STR);
+            $query->bindParam(':user_id', $user_id, \PDO::PARAM_INT);
+            $query->execute();
+            return true;
+        } catch (\PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
+        }
+    }
+
 }
 

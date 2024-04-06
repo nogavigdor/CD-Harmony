@@ -1,6 +1,6 @@
 <?php use Controllers\ArticleController;
 use Services\SessionManager;
-SessionManager::generateCSRFToken();
+$csrfToken =SessionManager::generateCSRFToken();
 ?>
 <?php include 'admin-header.php' ?>
 

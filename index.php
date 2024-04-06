@@ -177,7 +177,7 @@ route('/cdharmony/admin/article/edit/(\d+)', 'GET', function ($id) {
     $controller->showEditArticleForm($id);
 });
 
-route('/cdharmony/admin/article/edit', 'PUT', function () {
+route('/cdharmony/admin/article/update', 'PUT', function () {
     $controller = new ArticleController();
     $controller->updateArticle();
 });

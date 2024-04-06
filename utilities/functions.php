@@ -51,5 +51,15 @@ function sendMail($to, $subject, $message, $from='', $headers='') {
     } catch (Exception $e) {
         echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
     }
+
+    //Accept a string of tags and return an array of tags trimmed out of any white space
+    function tagsToArray($tags) {
+        $tagsArray = explode(',', $tags);
+        // Loop through the tags array and trim each tag
+        foreach ($tagsArray as $index => $tag) {
+            $tagsArray[$index] = trim($tag);
+        }
+        return $tagsArray;
+    }
 }
                             

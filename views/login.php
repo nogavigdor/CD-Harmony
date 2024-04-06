@@ -1,5 +1,6 @@
 <?php include 'header.php'; 
 use \Services\SessionManager;
+$csrfToken = SessionManager::generateCSRFToken();
 $errors_out = SessionManager::getSessionVariable('errors_output');
 ?>
 <?php include 'partials/message.php'; ?>

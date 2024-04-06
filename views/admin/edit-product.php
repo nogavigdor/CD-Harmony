@@ -120,12 +120,19 @@ SessionManager::generateCSRFToken();
 
         const data = await response.json();
 
-        if (data.status === 'success') {
-            alert('Product was updated successfully');
-            window.location.href = '<?php echo BASE_URL.'/admin/products' ?>';
-        } else {
-            alert('Product could not be edited since ' + data.image);
-        }
+   
+            if (data.status === 'success') {
+                alert('Product was updated successfully');
+                window.location.href = '<?php echo BASE_URL.'/admin/products' ?>';
+            } else {
+                if (data && Object.keys(data).length > 0) {
+                    let errorMessage = '';
+                    for (let key in data) {
+                        errorMessage += data[key] + '\n';
+                    }
+                    alert('Product could not be updated:\n' + errorMessage);
+                }
+            }
     } catch (error) {
         console.error('Error:', error);
         alert('An error occurred while processing your request');

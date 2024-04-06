@@ -44,6 +44,13 @@ class AdminController
 
     public function adminLogin()
     {
+         // Validate the CSRF token on form submission - to ensure that only by authorized admin users
+         if (!(SessionManager::validateCSRFToken($_POST['csrf_token']))) 
+         {
+            SessionManager::setSessionVariable('error_message', 'CSRF token validation failed.');
+            header('Location:'. BASE_URL. '/admin-login');
+         }
+         
         // Validate login credentials 
         if (isset($_POST['password']))
             $email = trim(htmlspecialchars($_POST['email']));

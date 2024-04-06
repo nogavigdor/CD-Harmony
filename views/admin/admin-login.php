@@ -1,5 +1,6 @@
 <?php
 use Services\SessionManager;
+$csrfToken =SessionManager::generateCSRFToken();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -21,6 +22,7 @@ use Services\SessionManager;
     <h1 class="text-pink-600 text-2xl font-semibold mb-6">Admin Login</h1>
 
     <form id="loginForm" method='POST' action='./admin-login' novalidate>
+        <input type="hidden" name="csrf_token" value="<?= $csrfToken; ?>">
         <!-- Email -->
         <div class="mb-4 relative">
             <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>

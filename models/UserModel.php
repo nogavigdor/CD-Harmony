@@ -2,6 +2,7 @@
 namespace Models;
 
 use \DataAccess\DBConnector;
+use Services\SessionManager;
 
 
 use PDO; 
@@ -110,4 +111,26 @@ use PDO;
             error_log('PDOException in getAccount: ' . $e->getMessage());
       }
     }
+
+    //get all admin or editor users
+    public function getAdminANDEditorUsers(){
+        try {    
+            // Fetching user data from the database based on user_id
+            $sql = 'SELECT * FROM users WHERE role_id = 1 OR role_id = 2';
+            
+            $query = $this->db->prepare($sql);
+            $query->execute();
+    
+            // Fetching the user data
+            $users = $query->fetchAll(\PDO::FETCH_ASSOC);
+    
+             // return true if the user was found and false if not
+            return $users;
+            
+        } catch (\PDOException $e) {
+            // Handle PDOException
+            error_log('PDOException in getAccount: ' . $e->getMessage());
+      }
+    }
+
 }
