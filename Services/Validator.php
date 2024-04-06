@@ -83,9 +83,9 @@
             }
 
             public function validateName($name) {
-                if (strlen($name) > 100) {
+                if (strlen($name) > 50) {
                     // Handle text length exceeds 100 characters
-                    return "Your name is too long. Please enter a name up to 100 characters.";
+                    return "Your name is too long. Please enter a name up to 50 characters.";
                 }
 
                 // Passed the check
@@ -93,11 +93,11 @@
             }
 
             public function validateMessage($message) {
-                if (strlen($message) > 3000) {
+                if (strlen($message) > 1000) {
                     // Handle text length exceeds 3000 characters
-                    return "The message you've entered is too long. Please enter a message up to 3000 characters.";
+                    return "The message you've entered is too long. Please enter a message up to 1000 characters.";
                 } elseif (strlen($message) <1) {
-                    // Handle text length does not exceed 3000 characters
+                    // Handle text length does not exceed 1000 characters
                     return "Please write your message";
                 }else {
                     // Passed the check
@@ -133,7 +133,7 @@
         
 
             public function validateTitle($title) {
-                if (strlen($title) > 150) {
+                if (strlen($title) > 100) {
                     // Handle text length exceeds 100 characters
                     return "Title is too long. Please enter a title up to 100 characters.";
                 }
@@ -143,9 +143,9 @@
             }
 
             public function validateText($text) {
-                if (strlen($text) > 5000) {
+                if (strlen($text) > 3000) {
                     // Handle text length exceeds 3000 characters
-                    return "Text is too long. Please enter a text up to 5000 characters.";
+                    return "Text is too long. Please enter a text up to 3000 characters.";
                 }
 
                 // Passed the check

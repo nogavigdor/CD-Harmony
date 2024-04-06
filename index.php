@@ -155,15 +155,6 @@ route('/cdharmony/admin/articles/', 'GET', function () {
     $controller->showAllArticles();
 });
 
-route('/cdharmony/admin/article/delete/(\d+)', 'POST', function ($id) {
-    $controller = new ArticleController();
-    $controller->deleteArticle($id);
-});
-
-route('/cdharmony/admin/article/update/(\d+)', 'POST', function ($id) {
-    $controller = new ArticleController();
-    $controller->updateArticle($id);
-});
 
 route('/cdharmony/admin/article/add/', 'GET', function () {
     $controller = new ArticleController();
@@ -174,6 +165,23 @@ route('/cdharmony/admin/article/add/', 'POST', function () {
     $controller = new ArticleController();
     $controller->addArticle();
 });
+
+
+route('/cdharmony/admin/article/delete/(\d+)', 'DELETE', function ($id) {
+    $controller = new ArticleController();
+    $controller->deleteArticle($id);
+});
+
+route('/cdharmony/admin/article/edit/(\d+)', 'GET', function ($id) {
+    $controller = new ArticleController();
+    $controller->showEditArticleForm($id);
+});
+
+route('/cdharmony/admin/article/edit', 'PUT', function () {
+    $controller = new ArticleController();
+    $controller->updateArticle();
+});
+
 
 route('/cdharmony/admin/special-offers/', 'GET', function () {
     $controller = new SpecialOfferController();

@@ -38,8 +38,15 @@ $articles = $articleModel->getAllArticles();
                             <td class="px-6 py-4 whitespace-nowrap"><?= $article->update_date ?></td>
                             <td class="px-6 py-4 whitespace-nowrap"><?= $article->first_name . ' ' . $article->last_name ?></td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <a href="<?= BASE_URL . '/admin/article/view/' . $article->article_id ?>" class="btn btn-primary">View</a>
-                                <!-- Add other action buttons as needed -->
+                           
+                            <form action="<?= BASE_URL . '/admin/article/edit/' . $article->article_id ?>" method="POST">
+                                <input type="hidden" name="_method" value="PUT">
+                                <button type="submit" class="btn btn-danger">edit</button>
+                            </form>
+                            <form action="<?= BASE_URL . '/admin/product/delete/' . $article->article_id ?>" method="POST">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
                             </td>
                         </tr>
                     <?php } ?>
