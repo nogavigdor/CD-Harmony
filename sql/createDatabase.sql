@@ -321,7 +321,7 @@
     /* It's important to note that I've concatenated the tag titles to one string for better access in the front end */
 
 DROP VIEW IF EXISTS product_variants_details;
-CREATE  OR REPLACE VIEW product_variants_details AS
+CREATE OR REPLACE VIEW product_variants_details AS
 SELECT
     pv.product_variant_id,
     p.product_id,
@@ -329,7 +329,10 @@ SELECT
     p.product_description,
     pv.creation_date AS variant_creation_date,
     pv.price,
-    COALESCE(s.discount_sum, 0) AS discount,
+    CASE
+        WHEN s.product_variant_id IS NOT NULL AND CURDATE() BETWEEN s.special_offer_start_date AND s.special_offer_end_date THEN s.discount_sum
+        ELSE 0
+    END AS discount,
     pv.quantity_in_stock,
     con.title AS condition_title,
     a.title AS artist_title,

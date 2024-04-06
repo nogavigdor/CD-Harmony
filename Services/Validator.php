@@ -105,4 +105,60 @@
                 }
                 
             }
+
+             // Validation to check if input is a date that is earlier or equal to the current date
+            public function releaseDate($date) {
+                $currentDate = date('Y-m-d');
+                if ($date > $currentDate) {
+                    return "Date must be equal to or earlier than the current date.";
+                }
+                return null; // Passed the check
+            }
+
+            // Validation to check if startDate is equal or earlier than endDate
+            public function validateDateRange($startDate, $endDate) {
+                if ($startDate > $endDate) {
+                    return "Start date must be equal to or earlier than end date.";
+                }
+                return null; // Passed the check
+            }
+
+            // Validation to check if two date ranges overlap
+            public function dateRangesOverlap($start1, $end1, $start2, $end2) {
+                if (($start1 <= $end2) && ($end1 >= $start2)) {
+                    return "Date ranges overlap with an existing special offer of this variant";
+                }
+                return null; // Passed the check
+            }
+        
+
+            public function validateTitle($title) {
+                if (strlen($title) > 150) {
+                    // Handle text length exceeds 100 characters
+                    return "Title is too long. Please enter a title up to 100 characters.";
+                }
+
+                // Passed the check
+                return null;
+            }
+
+            public function validateText($text) {
+                if (strlen($text) > 5000) {
+                    // Handle text length exceeds 3000 characters
+                    return "Text is too long. Please enter a text up to 5000 characters.";
+                }
+
+                // Passed the check
+                return null;
+            }
+
+            public function validatePositiveNumber($number) {
+                if (!is_numeric($number)) {
+                    return "Number must be a numeric value.";
+                }
+                if ($number < 0) {
+                    return "Number must be a positive number.";
+                }
+                return null; // Passed the check
+            }
         }

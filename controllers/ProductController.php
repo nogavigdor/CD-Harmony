@@ -154,39 +154,7 @@ class ProductController
             error_log('PDO Exception: ' . $ex->getMessage());
         }
     }
-/*
-    //adds a tag to a product
-    public function addTagToProduct($newProductId, $tag)
-    {
-        //Checks if the tag already exists
-        $tagId = $this->productModel->getTagIdByTitle($tag);
 
-        echo "if its a new tag then the Tagid: $tagId<br> ";
-
-        if (!$tagId) {
-            // If the tag doesn't exist, insert it and get the new tag id
-            $tagId = $this->productModel->insertTag($tag);
-        }
-        echo "after the insertion of the new tag, the tagid is: $tagId<br>";
-        echo "the new product id is: $newProductId<br>";
-        //Associate the tag id with the new product id
-        //returns a boolean
-        $success = $this->productModel->addProductTag($newProductId, $tagId);
-       return $success;
-    }
-    
-/*
-    //adds a tag to a product
-    private function addProductTag($productId, $tagId)
-    {
-        // Insert into the junction table (e.g., product_tags)
-        $sql = 'INSERT INTO product_tags (product_id, tag_id) VALUES (:productId, :tagId)';
-        $query = $this->db->prepare($sql);
-        $query->bindParam(':productId', $productId);
-        $query->bindParam(':tagId', $tagId);
-        $query->execute();
-    }
-*/
 
 public function showAddProductForm()
 {

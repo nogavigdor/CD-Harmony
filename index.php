@@ -307,6 +307,11 @@ route('/cdharmony/admin/product/add/special-offer/(\d+)', 'GET', function ($vari
     $controller->showSpecialOfferForm($variant_id);
 });
 
+route('/cdharmony/admin/product/add-special-offer/', 'POST', function() {
+    $controller = new SpecialOfferController();
+    $controller->addSpecialOffer();
+});
+
 
 
 

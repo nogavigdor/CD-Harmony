@@ -168,25 +168,27 @@ namespace Models;
             }
         }
 
-        public function addSpecialOffer($variant_id, $title, $description, $discountSum, $startDate, $endDate)
+        public function addSpecialOffer($variant_id, $title, $description, $isHomepage,  $discountSum, $startDate, $endDate)
         {
             try {
                 $sql = '
-                    INSERT INTO special_offers (product_variant_id, title, special_offer_description, discount_precentage, special_offer_start_date, special_offer_end_date)
-                    VALUES (:product_variant_id, :title, :special_offer_description, :discount_precentage, :special_offer_start_date, :special_offer_end_date)
+                    INSERT INTO special_offers (product_variant_id, title, special_offer_description, is_homepage, discount_sum, special_offer_start_date, special_offer_end_date)
+                    VALUES (:product_variant_id, :title, :special_offer_description, :is_homepage, :discount_sum, :special_offer_start_date, :special_offer_end_date)
                 ';
 
                 $query = $this->db->prepare($sql);
                 $query->bindParam(':product_variant_id', $variant_id);
                 $query->bindParam(':title', $title);
                 $query->bindParam(':special_offer_description', $description);
-                $query->bindParam(':discount_precentage', $discountPrecentage);
+                $query->bindParam(':is_homepage', $isHomepage);
+                $query->bindParam(':discount_sum', $discountSum);
                 $query->bindParam(':special_offer_start_date', $startDate);
                 $query->bindParam(':special_offer_end_date', $endDate);
                 $query->execute();
+                return $this->db->lastInsertId();
             } catch (\PDOException $e) {
                 
-                $e->getMessage();
+                throw new \PDOException($e->getMessage());
             }
         }
 
@@ -213,7 +215,23 @@ namespace Models;
         }
 
 
-      
+      public function getSpecialOffersByVariantId($variantId){
+        try {
+            $sql = '
+                SELECT *
+                FROM special_offers
+                WHERE product_variant_id = :product_variant_id
+            ';
+
+            $query = $this->db->prepare($sql);
+            $query->bindParam(':product_variant_id', $variantId);
+            $query->execute();
+            $result = $query->fetchAll(PDO::FETCH_ASSOC);
+            return $result;
+        } catch (\PDOException $e) {
+            echo $e->getMessage();
+        }
+      }
 
 
     }
