@@ -11,7 +11,10 @@ use Services\SessionManager;
 
 use DataAccess\DBConnector;
 
+use Services\Validator;
+
 use PDO;
+
 
 class ProductController
 {
@@ -19,11 +22,13 @@ class ProductController
     private $productModel;
     private $imageHandler;
     private $sessionManager;
+    private $validator;
 
     public function __construct()
     {
         $this->productModel = new ProductModel();
         $this->imageHandler = new ImageHandler();
+        $this->validator = new Validator();
         $this->sessionManager = new SessionManager();
         $this->sessionManager->startSession();
 
@@ -221,7 +226,7 @@ public function showAddProductForm()
                         $errType['quantityInStock'] = $quantityInStock;
                     }
                     $creationDate = date('Y-m-d h:i:s');
-                    $tags = htmlspecialchars(trim($_POST['tags']));
+                    
                     if (empty($_POST['releaseDate'])) {
                         $errType['releaseDate'] = 'Release Date is required';
                     }
@@ -259,21 +264,17 @@ public function showAddProductForm()
                         throw new \Exception('There was a problem updating the product table, please try again');
 
                     //if a new product prototype was created successfully, continue
-                    
+                    $tags = htmlspecialchars(trim($_POST['tags']));
                     //creating a tags array from the tags string
                     $arr_tags = [];
-                    //creating an array of tags
-                    $arr_tags = explode(',', $tags);
-                   
-                     // Loop through the tags array and trim each tag
-                     foreach ($arr_tags as $index => $tag) {
-                        $arr_tags[$index] = trim($tag);
-                    }
+                    
+                    //creating an array of tags without commas and spaces and without duplicates
+                    $arr_tags = tagsToArray($tags);
+                    
                     //creates the products id tags
                     //checks if the tags (as strings) exists in the tags table
                     //and inserts those who don't exist
                     //returns an array of tag ids that will be associated with the product
-
                     $id_tags = [];
                     foreach ($arr_tags as $tag) {
                         //gets the tag id
@@ -478,17 +479,12 @@ public function showAddProductForm()
                         throw new \Exception('There was a problem updating the product table, please try again');
 
                     //if a new product prototype was created successfully, continue
-                    
+                
                     //creating a tags array from the tags string
-                      $form_tags = [];
-                      //creating an array of tags
-                      $form_tags = explode(',', $tags);
-
-                   
-                       // Loop through the tags array and trim each tag
-                        foreach ($form_tags as $index => $tag) {
-                            $form_tags[$index] = trim($tag);
-                        }
+                    $form_tags = [];
+                    
+                    //creating an array of tags without commas and spaces and without duplicates
+                    $form_tags = tagsToArray($tags);
 
                      
 

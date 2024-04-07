@@ -587,7 +587,7 @@ namespace Models;
     }
 
 
-    public function addCd($cdId, $releaseDate, $artistId){
+    public function addCd($productId, $releaseDate, $artistId){
         try{
             $sql='     
             INSERT INTO cds (product_id, artist_id, release_date)

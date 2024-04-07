@@ -52,6 +52,9 @@ function sendMail($to, $subject, $message, $from='', $headers='') {
         echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
     }
 
+
+}
+                            
     //Accept a string of tags and return an array of tags trimmed out of any white space
     function tagsToArray($tags) {
         $tagsArray = explode(',', $tags);
@@ -59,7 +62,8 @@ function sendMail($to, $subject, $message, $from='', $headers='') {
         foreach ($tagsArray as $index => $tag) {
             $tagsArray[$index] = trim($tag);
         }
+
+         // Remove duplicates from the array
+         $tagsArray = array_unique($tagsArray);
         return $tagsArray;
     }
-}
-                            
