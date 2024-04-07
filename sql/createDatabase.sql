@@ -158,8 +158,8 @@
                 special_offer_description varchar(300) NOT NULL,
                 is_homepage tinyint(1) NOT NULL,
                 discount_sum decimal(10,2) NOT NULL,
-                special_offer_start_date timestamp NOT NULL,
-                special_offer_end_date timestamp NOT NULL,
+                special_offer_start_date date NOT NULL,
+                special_offer_end_date date NOT NULL,
                 product_variant_id int,
                 FOREIGN KEY (product_variant_id) REFERENCES product_variants (product_variant_id)
             ) ENGINE=InnoDB;

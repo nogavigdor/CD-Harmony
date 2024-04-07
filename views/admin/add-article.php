@@ -18,7 +18,7 @@ $csrfToken =SessionManager::generateCSRFToken();
           <form action="<?php echo BASE_URL.'/admin/article/add' ?>" method="POST" enctype="multipart/form-data" class="max-w-lg mx-auto p-4 bg-white shadow-md rounded-md">
                 <input type="hidden" name="csrf_token" value="<?= $csrfToken; ?>">  
                 <input type="hidden" name="userId" id="userId" value="<?= $this->sessionManager->getloggedInUserId(); ?>">
-                <h1 class="text-2xl font-semibold text-gray-700">Add Article</h1>
+                <h3 class="text-2xl font-semibold text-gray-700">Add Article</h3>
                 <!--Article Title -->
                 <div class="mb-4">
                     <label for="productTitle" class="block text-sm font-medium text-gray-700">Title:</label>

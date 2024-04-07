@@ -18,50 +18,7 @@ class SpecialOfferController
         $this->validator = new Validator();
         $this->db = DBConnector::getInstance()->connectToDB();
     }
-    public function createSpecialOffer()
-    {
-        try {
-            $title = $_POST['title'];
-            $description = $_POST['description'];
-            $discountPrecentage = $_POST['discountPrecentage'];
-            $startDate = $_POST['startDate'];
-            $endDate = $_POST['endDate'];
-            $this->specialOfferModel->createSpecialOffer($productVariantId, $title, $description, $discountPrecentage, $startDate, $endDate); // Call the method on the instance
-            
-        } catch (\PDOException $ex) {
-            error_log('PDO Exception: ' . $ex->getMessage());
-        }
-    }   
-
-    public function updateSpecialOffer()
-    {
-        try {
-            $title = $_POST['title'];
-            $description = $_POST['description'];
-            $discountPrecentage = $_POST['discountPrecentage'];
-            $startDate = $_POST['startDate'];
-            $endDate = $_POST['endDate'];
-            $productVariantId = $_POST['productVariantID'];
-            // update the special deal details
-            $success = $this->specialOfferModel->updateSpecialOffer($productVariantID, $title, $description, $discountPrecentage, $startDate, $endDate); // Call the method on the instance
-            SessionManager::setSessionVariable('success_massage', 'Special Offer updated successfully');
-        } catch (\PDOException $ex) {
-            error_log('PDO Exception: ' . $ex->getMessage());
-        }
-    }
-
-    public function deleteSpecialOffer()
-    {
-        try {
-            $productVariantId = $_POST['productVariantId'];
-            // Get the special deal details
-            $success=$specialOfferModel->deleteSpecialOffer($productID); // Call the method on the instance
-            SessionManager::setSessionVariable('success_massage', 'Special Offer deleted successfully');
-            
-        } catch (\PDOException $ex) {
-            error_log('PDO Exception: ' . $ex->getMessage());
-        }
-    }
+   
 
     //update secial offer on homepage
     public function updateHomepage($productVariantId)
@@ -86,19 +43,6 @@ class SpecialOfferController
     }
 
     
-
-	public function showSpecialOffer()
-    {
-        try {
-            // Get the special deal details
-            return $this->specialOfferModel->showSpecialOffer(); // Call the method on the instance
-            
-        } catch (\PDOException $ex) {
-            error_log('PDO Exception: ' . $ex->getMessage());
-        }
-    }
-
-   
 
     public function getSpecialOffer($productVariantId)
     {
@@ -133,18 +77,6 @@ class SpecialOfferController
         }
     }
 
-    public function deleteSpecialOfferDetails($id)
-    {
-        try {
-            // Create an instance of the model
-            $specialDealModel = new SpecialDealModel(); // Create an instance of ProductModel
-            // Get the special deal details
-            return $specialDealModel->deleteSpecialDealDetail(); // Call the method on the instance
-            
-        } catch (\PDOException $ex) {
-            error_log('PDO Exception: ' . $ex->getMessage());
-        }
-    }
 
     public function showSpecialOfferForm($variant_id)
     {
@@ -292,19 +224,117 @@ class SpecialOfferController
         }
     }
     
-
-    public function updateSpecialOfferDetails($id)
+    public function showEditSpecialOfferForm($id)
     {
         try {
-            // Create an instance of the model
-            $specialOfferModel = new SpecialOfferModel(); // Create an instance of ProductModel
-            // Get the special deal details
-            return $specialOfferModel->deleteSpecialOffer(); // Call the method on the instance
-            
+            // Get the special offer details
+            $offer = $this->specialOfferModel->getSpecialOfferBySpecialOfferId($id);
+            $offerDetails = $this->specialOfferModel->getSpecialOfferDetails($offer['product_variant_id']);
+            include 'views/admin/edit-special-offer.php';
         } catch (\PDOException $ex) {
             error_log('PDO Exception: ' . $ex->getMessage());
         }
     }
+
+    public function updateSpecialOffer() {
+        try {
+          $this->db->beginTransaction();
+            
+            // Retrieve form data and sanitize input
+            $csrfToken = htmlspecialchars($_POST['csrfToken'] ?? '');
+            $specialOfferTitle = htmlspecialchars(trim($_POST['specialOfferTitle'] ?? ''));
+            $specialOfferDescription = htmlspecialchars(trim($_POST['specialOfferDescription'] ?? ''));
+            $discount = htmlspecialchars(trim($_POST['discount'] ?? ''));
+            $startDate = htmlspecialchars(trim($_POST['startDate'] ?? ''));
+            $endDate = htmlspecialchars(trim($_POST['endDate'] ?? ''));
+            $specialOfferId = htmlspecialchars(trim($_POST['specialOfferId'] ?? ''));
+            
+            // Verify if the user is logged in as an admin
+            if (!SessionManager::isAdmin()) {
+                throw new \Exception('Unauthorized access');
+            }
+            
+            // Validate the CSRF token on form submission
+            if (!SessionManager::validateCSRFToken($csrfToken)) {
+                throw new \Exception('CSRF token validation failed');
+            }
+            
+            // Validate request method
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                throw new \Exception('Invalid request method');
+            }
+            
+            // Initialize an array to store errors
+            $errors = [];
+            
+            // Validate special offer title
+            if (empty($specialOfferTitle)) {
+                $errors['specialOfferTitle'] = 'Special Offer Title is required';
+            }
+            
+            // Validate special offer description
+            if (empty($specialOfferDescription)) {
+                $errors['specialOfferDescription'] = 'Special Offer description is required';
+            }
+            
+            // Validate discount
+            if (empty($discount)) {
+                $errors['discount'] = 'Discount is required';
+            } else {
+                $discountValidation = $this->validator->validatePositiveNumber($discount);
+                if ($discountValidation !== null) {
+                    $errors['discount'] = $discountValidation;
+                }
+            }
+
+            $discount = floatval($discount);
+            
+            // Validate start and end dates
+            if (empty($startDate)) {
+                $errors['startDate'] = 'Start date is required';
+            }
+            
+            if (empty($endDate)) {
+                $errors['endDate'] = 'End date is required';
+            }
+            
+            // Validate date range so that the start date is before or equals to the end date
+            if ($startDate && $endDate) {
+                $dateRangeValidation = $this->validator->validateDateRange($startDate, $endDate);
+                if ($dateRangeValidation !== null) {
+                    $errors['dateRange'] = $dateRangeValidation;
+                }
+            }
+    
+            // Handle errors
+              // Check for errors
+              if (!empty($errors)) {
+                http_response_code(400);
+                echo json_encode($errors);
+                return;
+            }
+            echo $specialOfferId;
+            exit();
+            // update special offer in the database
+            $success = $this->specialOfferModel->updateSpecialOffer($specialOfferId, $specialOfferTitle, $specialOfferDescription, $discount, $startDate, $endDate);
+            if (!$success) {
+                throw new \Exception('There was a problem updating the special offer in the database');
+            }
+
+             
+            $this->db->commit();
+            echo json_encode(['status' => 'success', 'message' => 'Special Offer updated successfully']);
+            
+          
+            
+        } catch (\PDOException $ex) {
+           $this->db->rollBack();
+            error_log('PDO Exception: ' . $ex->getMessage());
+            echo 'An error occurred while processing your request';
+        } catch (\Exception $ex) {
+            error_log('Exception: ' . $ex->getMessage());
+            echo 'An error occurred while processing your request';
+        }
+    }
+    
 }
-
-

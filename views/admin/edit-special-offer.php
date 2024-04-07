@@ -1,6 +1,6 @@
 <?php use Controllers\ProductController;
 use Services\SessionManager;
-SessionManager::generateCSRFToken();
+$csrfToken=SessionManager::generateCSRFToken();
 ?>
 <?php include 'admin-header.php' ?>
 
@@ -13,108 +13,85 @@ SessionManager::generateCSRFToken();
         <div class="flex-1 p-8">
             <?php
             ?>
-            <form action="<?= BASE_URL.'/admin/product/update' ?>" method="POST" enctype="multipart/form-data" class="max-w-lg mx-auto p-4 bg-white shadow-md rounded-md">
-                <input type="hidden" name="csrf_token" value="<?= $csrfToken; ?>"> 
-                <h3><?= htmlspecialchars($specialOffer['product_title'] ?? '') . ' - ' . htmlspecialchars($specialOffer['artist_title'] ?? ''); ?></h3> 
-                <h3 class="text-blue-900"><?= htmlspecialchars($specialOffer['condition_title'] ?? ''); ?> Variant</h3>
-                <!-- Product Title -->
+            <form action="<?= BASE_URL.'/admin/special-offer/update' ?>" method="POST" enctype="multipart/form-data" class="max-w-lg mx-auto p-4 bg-white shadow-md rounded-md">
+                <input type="hidden" name="csrfToken" value="<?= $csrfToken; ?>"> 
+                <input type="hidden" name="_method" id="_method" value="PUT">
+                <h3 class="mb-4 text-2xl font-semibold text-gray-700">Edit Special Offer</h3>
+                <h3 class="text-blue-900"><?= htmlspecialchars($offerDetails['condition_title'] ?? ''); ?> Variant</h3>
+                <h3 class="mb-4"><?= "Product Title: " . htmlspecialchars($offerDetails['product_title'] ?? '');  ?></h3> 
+                <h3 class="mb-4"><?= 'Artist Name: ' . htmlspecialchars($offerDetails['artist_title'] ?? ''); ?></h3>
+                <!--Image Preview -->
                 <div class="mb-4">
-                    <label for="productTitle" class="block text-sm font-medium text-gray-700">Product Title:</label>
-                    <input type="text" name="productTitle" id="productTitle" value="<?= htmlspecialchars($specialOffer['product_title'] ?? ''); ?>"
+                    <img class="h-48" src="<?= BASE_URL . '/src/assets/images/albums/'. htmlspecialchars($offerDetails['image_name'] ?? ''); ?>" alt="Current Image" class="mt-1 w-full rounded-md border-gray-300 shadow-sm">
+                </div>
+                <h3 class="text-blue-900"><?= htmlspecialchars($offerDetails['condition_title'] ?? ''); ?> Variant</h3>
+                <!-- Special Offer Title -->
+                <div class="mb-4">
+                    <label for=specialOfferTitle" class="block text-sm font-medium text-gray-700">Special Offer Title:</label>
+                    <input type="text" name="specialOfferTitle" id="specialOfferTitle" value="<?= htmlspecialchars($offer['title'] ?? ''); ?>"
                         class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                 </div>
-
-                <!-- Artist Title -->
+                <!-- Description -->
                 <div class="mb-4">
-                    <label for="artistTitle" class="block text-sm font-medium text-gray-700">Artist Title:</label>
-                    <input type="text" name="artistTitle" id="artistTitle" value="<?= htmlspecialchars($specialOffer['artist_title'] ?? ''); ?>"
-                        class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    <label for="specialOfferDescription" class="block text-sm font-medium text-gray-700">Description:</label>
+                    <textarea name="specialOfferDescription" id="specialOfferDescription"
+                        class="h-36 mt-1 p-2 block w-full  rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50  auto"><?= htmlspecialchars($offer['special_offer_description'] ?? ''); ?></textarea>
                 </div>
 
+                
                 <!-- Start Date -->
                 <div class="mb-4">
-                    <label for="releaseDate" class="block text-sm font-medium text-gray-700">Release Date:</label>
-                    <input type="date" name="releaseDate" id="releaseDate" value="<?= $specialOffer['release_date'] ?? ''; ?>"
+                    <label for="startDate" class="block text-sm font-medium text-gray-700">Start Date:</label>
+                    <input type="date" name="startDate" id="startDate" value="<?= $offer['special_offer_start_date'] ?? ''; ?>"
+                        class="h-8 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                </div>
+                  <!-- End Date -->
+                  <div class="mb-4">
+                    <label for="endDate" class="block text-sm font-medium text-gray-700">End Date:</label>
+                    <input type="date" name="endDate" id="endDate" value="<?= $offer['special_offer_end_date'] ?? ''; ?>"
                         class="h-8 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                 </div>
 
-                <!-- End Date -->
-                <div class="mb-4">
-                    <label for="productDescription" class="block text-sm font-medium text-gray-700">Description:</label>
-                    <textarea name="productDescription" id="productDescription"
-                        class="h-72 mt-1 p-2 block w-full  rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50  auto"><?= htmlspecialchars($specialOffer['product_description'] ?? ''); ?></textarea>
-                </div>
-
-                <!-- Product Variant Fields -->
-                <div id="cdFields">
-                    <div class="mb-4">
-                        <label for="quantityInStock" class="block text-sm font-medium text-gray-700">Quantity in Stock:</label>
-                        <input type="number" name="quantityInStock" id="quantityInStock" value="<?= $specialOffer['quantity_in_stock'] ?? ''; ?>"
-                            class="mt-1 h-8 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                    </div>
 
                     <div class="mb-4">
-                        <label for="price" class="block text-sm font-medium text-gray-700">Price:</label>
-                        <input type="text" name="price" id="price" value="<?= $specialOffer['price'] ?? ''; ?>"
-                            class="h-8 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                    </div>
-                </div>
-
-                <!-- Tags list -->
+                      
+                        <p><?="Price: " . $offerDetails['price'] ?? ''; ?> DKK</p>
+                           
+                <!-- Discount Sum -->
                 <div class="mb-4">
-                    <label for="tags" class="block text-sm font-medium text-gray-700">Tags (please edit with comma and no space gaps):</label>
-                    <textarea   class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                    name="tags" id="tags"><?= $specialOffer['tag_titles'] ?? ''; ?></textarea>
-                </div>
-                
-                <!-- Current Image Preview -->
-                <div class="mb-4">
-                    <label for="currentImage" class="block text-sm font-medium text-gray-700">Current Image:</label>
-                    <img h-96 src="<?= BASE_URL . '/src/assets/images/albums/'. htmlspecialchars($specialOffer['image_name'] ?? ''); ?>" alt="Current Image" class="mt-1 w-full rounded-md border-gray-300 shadow-sm">
-                </div>
-
-                <!-- Image Upload -->
-                <div class="mb-4">
-                    <label for="image" class="block text-sm font-medium text-gray-700">Upload New Image:</label>
-                    <input type="file" name="image" id="image"
-                        class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                </div>
-                <input class="btn" id="SubmitUpdateProductForm" type="submit" value="Update Product"/>
-                <input type="hidden" name="product_id" id="product_id" value="<?= $specialOffer['product_id'] ?? ''; ?>">
-                <input type="hidden" name="variant_id" id="variant_id" value="<?= $specialOffer['product_variant_id'] ?? ''; ?>">
+                    <label for="discount" class="block text-sm font-medium text-gray-700">Discount Sum:</label>
+                    <input type="number" name="discount" id="discount" value="<?= $offer['discount_sum'] ?? ''; ?>"
+                        class="h-8 w-full mt-1 p-2 block   rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                        <input type="hidden" name="specialOfferId" id="specialOfferId" value="<?= $offer['special_offer_id)'] ?? ''; ?>">    
+                <input class="btn" id="SubmitUpdateSpecialOfferForm" type="submit" value="Update Special Offer"/>
+              
             </form>
         </div>
     </div>
 </main>
 <script>
-   document.getElementById('SubmitUpdateProductForm').addEventListener('click', async function (e) {
+   document.getElementById('SubmitUpdateSpecialOfferForm').addEventListener('click', async function (e) {
     e.preventDefault();
-    let csrfToken = document.querySelector('input[name="csrf_token"]').value;
-    let productTitle = document.getElementById('productTitle').value;
-    let artistTitle = document.getElementById('artistTitle').value;
-    let releaseDate = document.getElementById('releaseDate').value;
-    let productDescription = document.getElementById('productDescription').value;
-    let quantityInStock = document.getElementById('quantityInStock').value;
-    let price = document.getElementById('price').value;
-    let tags = document.getElementById('tags').value;
-    let image = document.getElementById('image').files[0];
-    let productId = document.getElementById('product_id').value;
-    let variantId = document.getElementById('variant_id').value;
+    let csrfToken = document.querySelector('input[name="csrfToken"]').value;
+    let specialOfferTitle = document.getElementById('specialOfferTitle').value;
+    let startDate = document.getElementById('startDate').value;
+    let endDate = document.getElementById('endDate').value;
+    let specialOfferDescription = document.getElementById('specialOfferDescription').value;
+    let discount = document.getElementById('discount').value;
+    let specialOfferId = document.getElementById('specialOfferId').value;
+    let _method = document.getElementById('_method').value;
     let formData = new FormData();
-    formData.append('csrf_token', csrfToken);
-    formData.append('productTitle', productTitle);
-    formData.append('artistTitle', artistTitle);
-    formData.append('releaseDate', releaseDate);
-    formData.append('productDescription', productDescription);
-    formData.append('quantityInStock', quantityInStock);
-    formData.append('price', price);
-    formData.append('tags', tags);
-    formData.append('image', image);
-    formData.append('productId', productId);
-    formData.append('variantId', variantId);
+    formData.append('csrfToken', csrfToken);
+    formData.append('specialOfferTitle', specialOfferTitle);
+    formData.append('startDate', startDate);
+    formData.append('endDate', endDate);
+    formData.append('specialOfferDescription', specialOfferDescription);
+    formData.append('discount', discount);
+    formData.append('specialOfferId', specialOfferId);
+    formData.append('_method', _method);
 
     try {
-        const response = await fetch('<?php echo BASE_URL.'/admin/product/update' ?>', {
+        const response = await fetch('<?php echo BASE_URL.'/admin/special-offer/update' ?>', {
             method: 'POST',
             body: formData
         });
@@ -122,11 +99,17 @@ SessionManager::generateCSRFToken();
         const data = await response.json();
 
         if (data.status === 'success') {
-            alert('Product was updated successfully');
-            window.location.href = '<?php echo BASE_URL.'/admin/products' ?>';
-        } else {
-            alert('Product could not be edited since ' + data.image);
-        }
+                alert('Special Offer was updated successfully');
+                window.location.href = '<?php echo BASE_URL.'/admin/special-offers' ?>';
+            } else {
+                if (data && Object.keys(data).length > 0) {
+                    let errorMessage = '';
+                    for (let key in data) {
+                        errorMessage += data[key] + '\n';
+                    }
+                    alert('Special Offer could not be updated:\n' + errorMessage);
+                }
+            } 
     } catch (error) {
         console.error('Error:', error);
         alert('An error occurred while processing your request');

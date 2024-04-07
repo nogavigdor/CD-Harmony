@@ -15,6 +15,7 @@ $csrfToken=SessionManager::generateCSRFToken();
             ?>
             <form action="<?= BASE_URL.'/admin/article/edit' ?>" method="POST" enctype="multipart/form-data" class="max-w-lg mx-auto p-4 bg-white shadow-md rounded-md">
                 <input type="hidden" name="csrf_token" id="csrf_token" value="<?= $csrfToken; ?>"> 
+                <h3 class="text-2xl font-semibold text-gray-700">Edit Article</h3>
                 <!-- User ID -->
                 <div class="mb-4">
                 <label for="userId" class="block text-sm font-medium text-gray-700">Select author:</label>

@@ -57,8 +57,8 @@ use Models\SpecialOfferModel;
                                 <?php } ?>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
-                            <a href="<?= BASE_URL . '/admin/special-offers/edit/' . htmlspecialchars($offer['product_variant_id']) ?>" class="btn btn-primary">Edit</a>
-                            <a href="<?= BASE_URL . '/admin/special-offers/delete/' . htmlspecialchars($offer['product_variant_id'])?>" class="btn btn-danger">Delete</a>
+                            <a href="<?= BASE_URL . '/admin/special-offers/edit/' . htmlspecialchars($offer['special_offer_id']) ?>" class="btn btn-primary">Edit</a>
+                            <a href="<?= BASE_URL . '/admin/special-offers/delete/' . htmlspecialchars($offer['special_offer_id'])?>" class="btn btn-danger">Delete</a>
                             </td>
                         </tr>
                     <?php } ?>

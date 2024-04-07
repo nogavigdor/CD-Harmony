@@ -17,7 +17,7 @@ $csrfToken =SessionManager::generateCSRFToken();
         ?>
           <form action="<?php echo BASE_URL.'/admin/product/add' ?>" method="POST" enctype="multipart/form-data" class="max-w-lg mx-auto p-4 bg-white shadow-md rounded-md">
                 <input type="hidden" name="csrf_token" value="<?= $csrfToken; ?>">  
-
+                <h3 class="text-2xl font-semibold text-gray-700">Add Product Variant</h3>
                 <!--Product Title -->
                 <div class="mb-4">
                     <label for="productTitle" class="block text-sm font-medium text-gray-700">Product Title:</label>

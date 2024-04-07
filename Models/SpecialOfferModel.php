@@ -36,29 +36,6 @@ namespace Models;
             }
         }
 
-        public function updateSpecialOffer($productVariantId, $title, $description, $discountPrecentage, $startDate, $endDate)
-        {
-            try {
-                $sql = '
-                    UPDATE special_offers
-                    SET title = :title, special_offer_description = :special_offer_description, discount_precentage = :discount_precentage, special_offer_start_date = :special_offer_start_date, special_offer_end_date = :special_offer_end_date
-                    WHERE product_variant_id = :product_variant_id
-                ';
-
-                $query->bindParam(':product_variant_id', $productVariantId);
-                $query->bindParam(':title', $title);
-                $query->bindParam(':special_offer_description', $description);
-                $query->bindParam(':discount_precentage', $discountPrecentage);
-                $query->bindParam(':special_offer_start_date', $startDate);
-                $query->bindParam(':special_offer_end_date', $endDate);
-                $query = $this->db->prepare($sql);
-                $query->execute();
-            } catch (\PDOException $e) {
-         
-                $e->getMessage();
-            } 
-        }
-
         public function deleteSpecialOffer($productVariantId)
         {
             try {
@@ -76,25 +53,54 @@ namespace Models;
             }
         }
 
-        function getSpecialOffer($productVariantId)
-        {
-            try {
-                $sql = '
-                    SELECT *
-                    FROM special_offers
-                    WHERE product_variant_id = :product_variant_id AND
-                ';
+        
+public function getSpecialOfferBySpecialOfferId($specialOfferId){
+    try {
+        $sql = '
+            SELECT *
+            FROM special_offers
+            WHERE special_offer_id = :special_offer_id
+        ';
 
-                $query->bindParam(':product_variant_id', $productVariantId);
-                $query = $this->db->prepare($sql);
-                $query->execute();
-                $result = $query->fetch(PDO::FETCH_ASSOC);
-                return $result;
-            } catch (\PDOException $e) {
-                
-                $e->getMessage();
-            }
-        }
+        $query = $this->db->prepare($sql);
+        $query->bindParam(':special_offer_id', $specialOfferId);
+        $query->execute();
+        $result = $query->fetch(PDO::FETCH_ASSOC);
+        return $result;
+    } catch (\PDOException $e) {
+        echo $e->getMessage();
+    }
+
+}
+
+ //get special offer by product variant id which is active
+ //  (current date is between start date and end date)
+function getSpecialOffer($productVariantId)
+{
+    try {
+        $currentDate = date('Y-m-d'); // Get current date
+
+        $sql = '
+            SELECT *
+            FROM special_offers
+            WHERE product_variant_id = :product_variant_id 
+            AND start_date <= :current_date 
+            AND end_date >= :current_date
+            LIMIT 1
+        ';
+
+        $query = $this->db->prepare($sql);
+        $query->bindParam(':product_variant_id', $productVariantId);
+        $query->bindParam(':current_date', $currentDate);
+        $query->execute();
+        $result = $query->fetch(PDO::FETCH_ASSOC);
+        return $result;
+    } catch (\PDOException $e) {
+        // Handle exception
+        echo $e->getMessage();
+        return false;
+    }
+}
         //get the special offer details by product variant id
         //from the product_variants_details view
         public function getSpecialOfferDetails($productVariantId)
@@ -234,6 +240,28 @@ namespace Models;
       }
 
 
-    }
-
+      public function updateSpecialOffer($specialOfferId, $title, $description, $discount, $startDate, $endDate)
+      {
+          try {
+              $sql = '
+                  UPDATE special_offers
+                  SET title = :title, special_offer_description = :special_offer_description, discount_sum = :discount_sum, special_offer_start_date = :special_offer_start_date, special_offer_end_date = :special_offer_end_date
+                  WHERE special_offer_id = :special_offer_id
+              ';
+              $query = $this->db->prepare($sql);
+              $query->bindParam(':special_offer_id', $specialOfferId);
+              $query->bindParam(':title', $title);
+              $query->bindParam(':special_offer_description', $description);
+              $query->bindParam(':discount_sum', $discount);
+              $query->bindParam(':special_offer_start_date', $startDate);
+              $query->bindParam(':special_offer_end_date', $endDate);
+              $result = $query->execute();
+              return $result;
+ 
+            } catch (\PDOException $e) {
+                echo $e->getMessage();
+            }
+      }
+      
+ }
 

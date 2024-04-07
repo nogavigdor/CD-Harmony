@@ -17,7 +17,7 @@ SessionManager::generateCSRFToken();
         ?>
           <form action="<?php echo BASE_URL.'/admin/product/update' ?>" method="POST" enctype="multipart/form-data" class="max-w-lg mx-auto p-4 bg-white shadow-md rounded-md">
                 <input type="hidden" name="csrf_token" value="<?= $csrfToken; ?>">  
-                <h3 class="text-blue-900"><?= htmlspecialchars($variantDetails->condition_title) ?? ''; ?> Variant</h3>
+                <h3 class="text-2xl font-semibold text-gray-700">Edit <?= htmlspecialchars($variantDetails->condition_title) ?? ''; ?> Product</h3>
                 <!-- Product Title -->
                 <div class="mb-4">
                     <label for="productTitle" class="block text-sm font-medium text-gray-700">Product Title:</label>
@@ -79,6 +79,7 @@ SessionManager::generateCSRFToken();
                 <input class="btn" id="SubmitUpdateProductForm" type="submit" value="Update Product"/>
                  <input type="hidden" name="product_id" id="product_id" value="<?= $variantDetails->product_id ?? ''; ?>">
                  <input type="hidden" name="variant_id" id="variant_id" value="<?= $variantDetails->product_variant_id ?? ''; ?>">
+                 <input type="hidden" name="_method" id="_method" value="PUT">
                    
             </form>
         </div>
@@ -99,6 +100,7 @@ SessionManager::generateCSRFToken();
     let image = document.getElementById('image').files[0];
     let productId = document.getElementById('product_id').value;
     let variantId = document.getElementById('variant_id').value;
+    let _method = document.getElementById('_method').value;
     let formData = new FormData();
     formData.append('csrf_token', csrfToken);
     formData.append('productTitle', productTitle);
@@ -111,6 +113,8 @@ SessionManager::generateCSRFToken();
     formData.append('image', image);
     formData.append('productId', productId);
     formData.append('variantId', variantId);
+    formData.append('_method', _method);
+    
 
     try {
         const response = await fetch('<?php echo BASE_URL.'/admin/product/update' ?>', {

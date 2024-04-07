@@ -15,6 +15,7 @@ $csrfToken=SessionManager::generateCSRFToken();
             ?>
             <form action="<?= BASE_URL.'/admin/product/update' ?>" method="POST" enctype="multipart/form-data" class="max-w-lg mx-auto p-4 bg-white shadow-md rounded-md">
                 <input type="hidden" name="csrf_token" value="<?= $csrfToken; ?>"> 
+                <h3 class="text-2xl font-semibold text-gray-700">Add Special Offer</h3>
                 <h3><?= htmlspecialchars($specialOffer['product_title'] ?? '') . ' - ' . htmlspecialchars($specialOffer['artist_title'] ?? ''); ?></h3> 
                 <h3 class="text-blue-900"><?= htmlspecialchars($specialOffer['condition_title'] ?? ''); ?> Variant</h3>
                  <!-- Image Preview -->
