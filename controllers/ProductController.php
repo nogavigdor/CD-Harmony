@@ -391,8 +391,9 @@ public function showAddProductForm()
         try {
             if (SessionManager::isAdmin()) {
                 // Get the product details from the database
-                echo "the product variant id is: $id";
+              
                 $variantDetails = $this->productModel->getVariantDetails($id);
+
                 // Load the view to display the product form
                 include 'views/admin/edit-product.php';
             } else {
@@ -619,24 +620,78 @@ public function showAddProductForm()
         }
     }
 
-    public function deleteProductVariant($variantId){
+    public function deleteProductVariant(){
         try {
-            $this->db->beginTransaction();
+
+            $variantId = $_POST['product_variant_id'];
+            $productId = $_POST['product_id'];
+            $csrf_token = $_POST['csrf_token'];
+
+            // Validate the CSRF token on form submission - to ensure that only by authorized admin users
+            if (!(SessionManager::validateCSRFToken($csrf_token)))
+                throw new \Exception('Unauthorized access');
+
             //verifying if the user is logged as admin
             if (!SessionManager::isAdmin()) {
                 throw new \Exception('Unauthorized access');
             }
-            $productModel = new ProductModel();
-            $productDeleted = $productModel->deleteProductVariant($variantId);
+       //     $this->db->beginTransaction();
+       
+           
+            //returns product id of the product variant
+            $productVariantDeleted = $this->productModel->deleteProductVariant($variantId);
+            if (!$productVariantDeleted) {
+                throw new \Exception('There was a problem deleting the product variant, please try again');
+            }
+
+         // check if another variant exists in the products table
+        $variants = $this->productModel->getAllVariants();
+        $hasVariants = !empty($variants);
+        //    echo "the has variants variable is:".$hasVariants;
+        //    exit();
+        if ($hasVariants) {
+            // if there are other variants, stop the deletion process and return with a success message
+            SessionManager::setSessionVariable('success_message', 'Product Variant was deleted successfully');
+            header('Location:' . BASE_URL . '/admin/products');
+            exit(); // stop further execution
+        }
+            //After the variant deletion, no more variants exists so the product and its reletad appearnaces should be deleted
+             
+             $productTagsDeleted = $this->productModel->deleteProductTags($productId);
+
+             if (!$productTagsDeleted) {
+                 throw new \Exception('There was a problem deleting the product tags, please try again');
+             }
+
+
+             $productImageDeleted = $this->productModel->deleteProductImage($productId);
+
+             if (!$productImageDeleted) {
+                 throw new \Exception('There was a problem deleting the product image, please try again');
+             }
+ 
+
+            $cdDeleted = $this->productModel->deleteCd($productId);
+
+            if(!$cdDeleted) {
+                throw new \Exception('There was a problem deleting the cd, please try again');
+            }
+
+
+            $productDeleted = $this->productModel->deleteProduct($productId);
+
             if (!$productDeleted) {
                 throw new \Exception('There was a problem deleting the product, please try again');
             }
-            $this->db->commit();
-            SessionManager::setSessionVariable('success_message', 'Product was deleted successfully');
+            
+      //      $this->db->commit();
+           //The product was succssefully deleted from all its relevant tables
+            SessionManager::setSessionVariable('success_message', 'Product Variant was deleted successfully');
             header('Location:' . BASE_URL . '/admin/products');
-            exit();
+
+
         } catch (\PDOException $ex) {
-            $this->db->rollBack();
+         //   $this->db->rollBack();
             // Handle exceptions
             $error_message = $ex->getMessage();
             SessionManager::setSessionVariable('error_message', $error_message);

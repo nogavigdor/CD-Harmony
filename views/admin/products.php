@@ -80,7 +80,7 @@ use Services\SessionManager;
                 <th>Condition</th>
                 <th>Album Title</th>
                 <th>Artist</th>
-                <th>Date Added</th>
+          
                
                 <th colspan="2">Actions</th>
               </tr>
@@ -93,11 +93,14 @@ use Services\SessionManager;
                 <td><?= $product->condition_title ?></td>
                 <td><?= $product->product_title ?></td>
                 <td><?= $product->artist_title ?></td>
-                <td><?= $product->variant_creation_date ?></td>
+              
                 
                 <td>  <a href="<?= BASE_URL . '/admin/product/edit/' . $product->product_variant_id ?>" class="btn btn-primary">Edit</a>
-                <form action="<?= BASE_URL . '/admin/product/delete/' . $product->product_variant_id ?>" method="POST">
+                <form action="<?= BASE_URL . '/admin/products/' ?>" method="POST">
                     <input type="hidden" name="_method" value="DELETE">
+                    <input type="hidden" name="csrf_token" value="<?= $csrfToken; ?>">
+                    <input type="hidden" name="product_variant_id" value="<?= $product->product_variant_id ?>">
+                    <input type="hidden" name="product_id" value="<?= $product->product_id ?>">
                     <button type="submit" class="btn btn-danger">Delete</button>
                  </form>
             

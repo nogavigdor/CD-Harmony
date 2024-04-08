@@ -13,7 +13,14 @@ class ImageHandler {
 
     private $errorMessages = [];
 
-    public function handleImageUpload($file,$path) {
+         // Function to sanitize file name
+         private function sanitizeFileName($fileName) {
+            // Remove special characters and spaces from the file name
+            $sanitizedFileName = preg_replace("/[^a-zA-Z0-9_.]/", "", $fileName);
+            return $sanitizedFileName;
+        }
+
+          public function handleImageUpload($file,$path) {
         // Check if a file was uploaded
         if ($file === null || !isset($file['name']) || empty($file['name']))  {
             $this->errorMessages[] = 'No file was uploaded.';
@@ -21,11 +28,13 @@ class ImageHandler {
         }
 
         // Get the image details
-        $imageName = md5(time().rand(1,1000000)).$file['name'];
+        $sanitizedFileName = $this->sanitizeFileName($file['name']); // Sanitize the file name
+        $imageName = md5(time().rand(1,1000000)).$sanitizedFileName;
         $imageSize = $file['size'];
         $imageTmpName = $file['tmp_name'];
         $imageError = $file['error'];
         $imageType = $file['type'];
+
 
         // Check for upload errors
         if ($imageError !== UPLOAD_ERR_OK) {

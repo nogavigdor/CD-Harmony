@@ -11,9 +11,10 @@ class SpecialOfferController
     private $db;
     private $specialOfferModel;
     private $validator;
+    private $session;
     public function __construct() {
-        $session = new SessionManager();
-        $session->startSession();
+        $this->session = new SessionManager();
+        $this->session->startSession();
         $this->specialOfferModel = new SpecialOfferModel();
         $this->validator = new Validator();
         $this->db = DBConnector::getInstance()->connectToDB();
@@ -38,6 +39,8 @@ class SpecialOfferController
         try {
             // Update the special offer product to be on the homepage
             $success = $this->specialOfferModel->updateHomepage($productVariantId);
+
+        
 
             // Send JSON response indicating success or failure
             if ($success) {
@@ -346,6 +349,42 @@ class SpecialOfferController
         } catch (\Exception $ex) {
             error_log('Exception: ' . $ex->getMessage());
             echo 'An error occurred while processing your request';
+        }
+    }
+
+    public function deleteSpecialOffer() {
+        try {
+            // Verify if the user is logged in as an admin
+            if (!SessionManager::isAdmin()) {
+                throw new \Exception('Unauthorized access');
+            }
+
+            $specialOfferId = htmlspecialchars(trim($_POST['special_offer_id']));
+
+            $isHomepage = $this->specialOfferModel->isHomepage($specialOfferId);
+
+            //if special offer is set to display on the homepage, it can't be deleted
+            if ($isHomepage['is_homepage']) {
+              SessionManager::setSessionVariable('error_message', 'Special Offer is on the homepage and cannot be deleted');
+                header('Location: ' . BASE_URL . '/admin/special-offers');
+            }
+            
+            // Delete the special offer
+            $success = $this->specialOfferModel->deleteSpecialOffer($specialOfferId);
+   
+            if (!$success)
+            {
+                throw new \Exception('There was a problem deleting the special offer');
+            }
+
+            SessionManager::setSessionVariable('success_message', 'Special Offer was deleted successfully');
+            header('Location: ' . BASE_URL . '/admin/special-offers');
+            exit();
+    
+        } catch (\Exception $ex) {
+            error_log('Exception: ' . $ex->getMessage());
+            http_response_code(500); // Internal Server Error status code
+            echo json_encode(['status' => 'error', 'message' => 'An error occurred while deleting the special offer']);
         }
     }
     

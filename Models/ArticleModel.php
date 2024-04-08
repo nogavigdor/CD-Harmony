@@ -164,5 +164,21 @@ public function addArticle($title, $content, $publish_date, $update_date, $user_
         }
     }
 
+    public function deleteArticle($article_id)
+    {
+        try {
+            $sql = '
+            DELETE FROM articles
+            WHERE article_id = :article_id
+            ';
+            $query = $this->db->prepare($sql);
+            $query->bindParam(':article_id', $article_id, \PDO::PARAM_INT);
+            $query->execute();
+            return true;
+        } catch (\PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
+        }
+    }
+
 }
 

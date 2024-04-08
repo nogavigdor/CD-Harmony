@@ -39,11 +39,8 @@ $articles = $articleModel->getAllArticles();
                             <td class="px-6 py-4 whitespace-nowrap"><?= $article->first_name . ' ' . $article->last_name ?></td>
                             <td class="px-6 py-4 whitespace-nowrap">
                            
-                            <form action="<?= BASE_URL . '/admin/article/edit/' . $article->article_id ?>" method="POST">
-                                <input type="hidden" name="_method" value="GET">
-                                <button type="submit" class="btn btn-danger">edit</button>
-                            </form>
-                            <form action="<?= BASE_URL . '/admin/product/delete/' . $article->article_id ?>" method="POST">
+                            <a class="btn" href="<?= BASE_URL . '/admin/article/edit/' . $article->article_id ?>">edit</a>
+                            <form action="<?= BASE_URL . '/admin/article/delete/' . $article->article_id ?>" method="POST">
                                 <input type="hidden" name="_method" value="DELETE">
                                 <button type="submit" class="btn btn-danger">Delete</button>
                             </form>

@@ -18,26 +18,20 @@ $csrfToken=SessionManager::generateCSRFToken();
                 <h3 class="text-2xl font-semibold text-gray-700">Edit Article</h3>
                 <!-- User ID -->
                 <div class="mb-4">
-                <label for="userId" class="block text-sm font-medium text-gray-700">Select author:</label>
-                <select name="userId" id="userId" class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                    <?php foreach ($usersAdminAndEditor  as $user) : ?>
-                        <option value="<?= $user['user_id'] ?>" <?= $user['user_id'] == $article->user_id ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($user['first_name']) ?>
-                        </option>
-                    <?php endforeach; ?>
+
                 </select>
                  </div>
                 <!-- Article Title -->
                 <div class="mb-4">
-                    <label for="articleTitle" class="block text-sm font-medium text-gray-700">Product Title:</label>
+                    <label for="articleTitle" class="block text-base font-medium text-gray-700">Product Title:</label>
                     <input type="text" name="articleTitle" id="articleTitle" value="<?= htmlspecialchars($article->title ?? ''); ?>"
                         class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                 </div>
 
                 <!-- Publish Date -->
-                <h3 class="mb-4">
-                    <?= "Publish Date:" . htmlspecialchars($article->publish_date ?? ''); ?>
-                </h3>
+                <h4 class="mb-4">
+                    <?= "Publish Date: " . htmlspecialchars($article->publish_date ?? ''); ?>
+                </h4>
 
                 <!-- Content -->
                 <div class="mb-4">

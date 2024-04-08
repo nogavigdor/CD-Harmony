@@ -255,5 +255,30 @@ class ArticleController
 
     }
 
+    public function deleteArticle($id){
+        try {
+
+            if (!SessionManager::isAdmin()) {
+                // User is not logged in as an admin, redirect to the home page
+                SessionManager::setSessionVariable('error_message', 'You are not authorized to view this page.');
+                header('Location:'. BASE_URL.   '/');
+                exit;
+            }
+
+            // Call the method to delete the article
+            $result = $this->articleModel->deleteArticle($id);
+            if (!$result) 
+                throw new \Exception('Article could not be deleted');
+
+            // Redirect to the page that displays all articles
+            SessionManager::setSessionVariable('success_message', 'Article deleted successfully');
+            header('Location:'. BASE_URL.   '/admin/articles');
+
+       
+        } catch (\PDOException $ex) {
+            error_log('PDO Exception: ' . $ex->getMessage());
+        }
+    }
+
 
 }

@@ -105,9 +105,9 @@ route('/cdharmony/admin/product/(\d+)', 'POST', function ($id) {
     $controller->showProductDetails($id,'admin');
 });
 
-route('/cdharmony/admin/product/delete/(\d+)', 'DELETE', function ($variantId) {
+route('/cdharmony/admin/products/', 'DELETE', function () {
     $controller = new ProductController();
-    $controller->deleteProductVariant($variantId);
+    $controller->deleteProductVariant();
 });
 
 route('/cdharmony/admin/product/edit/(\d+)', 'GET', function ($id) {
@@ -177,6 +177,7 @@ route('/cdharmony/admin/article/edit/(\d+)', 'GET', function ($id) {
     $controller->showEditArticleForm($id);
 });
 
+
 route('/cdharmony/admin/article/update', 'PUT', function () {
     $controller = new ArticleController();
     $controller->updateArticle();
@@ -199,9 +200,9 @@ route('/cdharmony/admin/special-offer/update/', 'PUT', function () {
     $controller->updateSpecialOffer();
 });
 
-route('/cdharmony/admin/special-offers/delete/(\d+)', 'DELETE', function ($id) {
+route('/cdharmony/admin/special-offers/delete/', 'DELETE', function () {
     $controller = new SpecialOfferController();
-    $controller->deleteSpecialOffer($id);
+    $controller->deleteSpecialOffer();
 });
 
 route('/cdharmony/admin/special-offers/update-homepage', 'POST', function () {

@@ -43,10 +43,10 @@ namespace Models;
                     DELETE FROM special_offers
                     WHERE product_variant_id = :product_variant_id
                 ';
-
-                $query->bindParam(':product_variant_id', $productVariantId);
                 $query = $this->db->prepare($sql);
+                $query->bindParam(':product_variant_id', $productVariantId);
                 $query->execute();
+                return true;
             } catch (\PDOException $e) {
                 
                 $e->getMessage();
@@ -261,6 +261,24 @@ function getSpecialOffer($productVariantId)
             } catch (\PDOException $e) {
                 echo $e->getMessage();
             }
+      } 
+
+      public function isHomepage($specialOfferId){
+        try {
+            $sql = '
+                SELECT is_homepage
+                FROM special_offers
+                WHERE special_offer_id = :special_offer_id
+            ';
+
+            $query = $this->db->prepare($sql);
+            $query->bindParam(':special_offer_id', $specialOfferId);
+            $query->execute();
+            $result = $query->fetch(PDO::FETCH_ASSOC);
+            return $result;
+        } catch (\PDOException $e) {
+            echo $e->getMessage();
+        }
       }
       
  }
