@@ -18,6 +18,18 @@ class SpecialOfferController
         $this->validator = new Validator();
         $this->db = DBConnector::getInstance()->connectToDB();
     }
+
+    public function showSpecialOffer()
+    {
+        try {
+            // Get the special deal details
+            return $this->specialOfferModel->showSpecialOffer(); // Call the method on the instance
+            
+        } catch (\PDOException $ex) {
+            error_log('PDO Exception: ' . $ex->getMessage());
+        }
+    }
+
    
 
     //update secial offer on homepage

@@ -153,7 +153,7 @@ function getSpecialOffer($productVariantId)
             }
         }
 
-        //get the special offer details by product variant id
+        //show special offer on the homepage
         public function showSpecialOffer(){
             try {
                 $sql = '
