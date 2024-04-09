@@ -178,6 +178,7 @@ class ArticleController
             // Load the view to display the form for editing an article
             $article = $this->articleModel->getArticleDetails($id);
             $usersAdminAndEditor = $this->userModel->getAdminANDEditorUsers();
+            $currentUser=$this->sessionManager->getloggedInUserId(); 
             include 'views/admin/edit-article.php';
         } catch (\PDOException $ex) {
             error_log('PDO Exception: ' . $ex->getMessage());
@@ -229,7 +230,7 @@ class ArticleController
                     $errType['title']=$validation;
                 }
             }
-
+            
             if (empty($user_id)) {
                 $errType['user_id'] = 'Author is required';
             }

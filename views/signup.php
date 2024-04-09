@@ -91,7 +91,7 @@
         </div>
     </div>
 </main>
-    <script src="/cdharmony/src/js/signupValidator.js"></script> 
+    <script src="/src/js/signupValidator.js"></script> 
     <script>
     document.getElementById('registrationForm').addEventListener('submit', function() {
     // Show the loader
