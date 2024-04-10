@@ -2,6 +2,7 @@
 namespace Controllers;
 
 use Models\UserModel;
+use Models\OrderModel;
 use Models\CartModel;
 use \Services\Validator;
 use \Services\SessionManager;
@@ -9,11 +10,15 @@ use \Services\SessionManager;
 class UserController {
     
    private $session;
+   private $userModel;
+   private $orderModel;
 
     public function __construct() {
         $session = new SessionManager();
         $session->startSession();
         $this->session = $session;
+        $this->userModel = new UserModel();
+        $this->orderModel = new OrderModel();
         
     }
     
@@ -172,10 +177,16 @@ class UserController {
         }
     }
 
-    public function accountView() {
+    public function acountView(){
         try {
-            if (SessionManager::isLoggedIn()) {
-                include 'views/account.php';
+            if (SessionManager::isLoggedIn()&&SessionManager::isCustomer()) {
+                $user_id = SessionManager::getSessionVariable('user')['usr_id'];
+                //get all the orders of the logged in user
+                $ordersDetails = $this->orderModel->getOrderDetailsById($user_id);
+                $ordersSummary = $this->orderModel->getOrderSummaryById($user_id);
+             
+
+                include 'views/acount.php';
             } else {
                 SessionManager::setSessionVariable('error_message', 'Please login to view your account.');  
                 header("Location: " . BASE_URL . "/login");

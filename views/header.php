@@ -18,6 +18,7 @@ $csrfToken=SessionManager::generateCSRFToken();
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <?php
         // Include view-specific JavaScript files based on the last part of the URL
+        //this function is defined in the utilities/functions.php file which returns the last part of the url
         $currentView = getCurrentView();
         
         if ($currentView == 'contact') {
@@ -37,8 +38,8 @@ $csrfToken=SessionManager::generateCSRFToken();
     <body class="bg-primary  font-body min-h-screen">
    
      <!-- Header -->
-    <header class="relative bg-secondary text-white p-4">
-        <div class="container mx-auto flex justify-between items-center">
+    <header class="relative h-36  bg-secondary text-white p-4">
+        <div class="container h-36 mx-auto flex justify-between items-center">
           <div>  <a href="<?php echo BASE_URL; ?>"><img src="<?php echo BASE_URL; ?>/src/assets/logo_no_background.png" alt="CD Harmony Logo" class="w-64"></a></div>
         <?php    
        if($currentView != 'login' && $currentView != 'signup') { ?>
@@ -53,7 +54,7 @@ $csrfToken=SessionManager::generateCSRFToken();
             </div>
            -->
             <!-- Navigation Links -->
-            <nav  class="space-x-4 text-xl">
+            <nav  class="space-x-4 text-lg">
          
                 <a href="<?php echo BASE_URL; ?>" class="text-white">Shop</a>
         
@@ -94,22 +95,22 @@ $csrfToken=SessionManager::generateCSRFToken();
 
                 <?php
                 // Login Button
-                if (SessionManager::isLoggedIn()) {  ?>
+                if (SessionManager::isLoggedIn()&&SessionManager::isCustomer()) {  ?>
        
                     
-                <!-- User Symbol -->
-                <button id="userBtn" class="ml-4 relative z-10 w-10 h-10 rounded-full overflow-hidden border-2 border-gray-400 hover:border-gray-300 focus:border-gray-300 focus:outline-none">
+                   <!-- User Symbol -->
+                    <button id="userBtn" class="ml-4 relative z-10 w-10 h-10 rounded-full overflow-hidden border-2 border-gray-400 hover:border-gray-300 focus:border-gray-300 focus:outline-none">
                    <!--For future use when account area is completed -->
                    <!-- <img src="user-avatar.jpg" alt="User Avatar" class="w-full h-full object-cover">  -->
-                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" data-slot="icon" class="w-6 h-6">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-</svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" data-slot="icon" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    </svg>
 
                 </button>
 
                 <!-- User Menu -->
                 <div id="menu" class="hidden absolute top-[50px]  right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2">
-                    <a href="<?= BASE_URL . '/account';?>" class="block px-4 py-2 text-gray-800 hover:bg-orange-200 hover:text-gray-600">Account</a>
+                    <a href="<?= BASE_URL . '/acount';?>" class="block px-4 py-2 text-gray-800 hover:bg-orange-200 hover:text-gray-600">Account</a>
                     <a href="<?= BASE_URL . '/logout'; ?>"class="block px-4 py-2 text-gray-800 hover:bg-orange-200 hover:text-gray-600">Logout</a>
                 </div>
                 <?php   } else {

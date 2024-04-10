@@ -6,7 +6,7 @@ include 'header.php';
 ?>
 
         <!-- Main content section -->
-        <main class="container mx-auto p-4">
+        <main class="container  mx-auto p-4">
             <h1 class="text-base-100">Welcome to CD Harmony</h1>
             <!-- Hero section -->
              <div class="grid grid-cols-1 sm:grid-cols-3 h-600 gap-4 " >

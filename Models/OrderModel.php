@@ -128,4 +128,32 @@ use Exception;
                 die("Connection failed: " . $e->getMessage());
             }
         }
+
+        public function getOrderDetailsById($userId){
+            try {
+                $sql = 'SELECT * FROM order_details WHERE user_id = :user_id';
+               
+                $query = $this->db->prepare($sql);
+                $query->bindparam(':user_id', $userId);
+                $query->execute();
+                return $query->fetchAll(\PDO::FETCH_ASSOC);
+               
+            } catch (\PDOException $e) {
+                die("Connection failed: " . $e->getMessage());
+            }
+        }
+
+        public function getOrderSummaryById($userId){
+            try {
+                $sql = 'SELECT * FROM order_summary WHERE user_id = :user_id';
+               
+                $query = $this->db->prepare($sql);
+                $query->bindparam(':user_id', $userId);
+                $query->execute();
+                return $query->fetchAll(\PDO::FETCH_ASSOC);
+               
+            } catch (\PDOException $e) {
+                die("Connection failed: " . $e->getMessage());
+            }
+        }
     }

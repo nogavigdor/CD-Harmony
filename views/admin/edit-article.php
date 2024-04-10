@@ -97,7 +97,7 @@ $csrfToken=SessionManager::generateCSRFToken();
     }
 });
 
-
+    
     
     </script>
 

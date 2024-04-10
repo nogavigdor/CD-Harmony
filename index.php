@@ -337,6 +337,11 @@ route('/cdharmony/admin/product/add-special-offer/', 'POST', function() {
     $controller->addSpecialOffer();
 });
 
+route('/cdharmony/acount/', 'GET', function() {
+    $controller = new UserController();
+    $controller->acountView();
+});
+
 
 
 

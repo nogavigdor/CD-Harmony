@@ -1455,14 +1455,14 @@ Personally, "The Head on the Door" has been a companion during introspective mom
 In the ever-changing landscape of music, "The Head on the Door" stands as a testament to The Cure\'s ability to evolve while staying true to their unique sound. It\'s more than an album; it\'s a captivating chapter in the ongoing story of a band that has left an indelible mark on the world of alternative music.',
 date('Y-m-d H:i:s'), date('Y-m-d H:i:s'), $user_idAdmin);
 
-/*
+
 // Get the last inserted product_variant_id
 $productVariantId = $db->lastInsertId();
 $discountSum = 50;
 $specialOfferTitle = "Exclusive Deal";
 $specialOfferDescription = "Get a special discount!";
-$specialOfferStartDate = date('Y-m-d H:i:s'); // Set the start date to the current date and time
-$specialOfferEndDate = date('Y-m-d H:i:s', strtotime('+60 days')); // Set the end date 30 days from now
+$specialOfferStartDate = date('Y-m-d'); // Set the start date to the current date and time
+$specialOfferEndDate = date('Y-m-d', strtotime('+60 days')); // Set the end date 30 days from now
 $isHomepage = 1;
 
 
@@ -1476,7 +1476,7 @@ $stmtSpecialOffer->bindParam(':startDate', $specialOfferStartDate, PDO::PARAM_ST
 $stmtSpecialOffer->bindParam(':endDate', $specialOfferEndDate, PDO::PARAM_STR);
 $stmtSpecialOffer->bindParam(':productVariantId', $productVariantId, PDO::PARAM_INT);
 $stmtSpecialOffer->execute();
-*/
+
 
  // Commit the transaction
  $db->commit();
