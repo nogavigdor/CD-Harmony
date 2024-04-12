@@ -241,118 +241,101 @@ namespace Models;
 
         return $tags;
     }
-        //delete a prodiuct-tag entery from the products_tags table
-        public function deleteProductTag($productId, $tagId){
-            try{
-                $sql='     
-                DELETE FROM products_tags
-                WHERE product_id = :productId AND tag_id = :tagId
-                ';
-                $query = $this->db->prepare($sql);
-                
-                $query->bindParam(':productId', $productId);
-                $query->bindParam(':tagId', $tagId);
-                $query->execute();
-                return true;
-            } catch (\PDOException $e) {
-                die("Connection failed: " . $e->getMessage());
-            }
+    //delete a prodiuct-tag entery from the products_tags table
+    public function deleteProductTag($productId, $tagId){
+        try{
+            $sql='     
+            DELETE FROM products_tags
+            WHERE product_id = :productId AND tag_id = :tagId
+            ';
+            $query = $this->db->prepare($sql);
+            
+            $query->bindParam(':productId', $productId);
+            $query->bindParam(':tagId', $tagId);
+            $query->execute();
+            return true;
+        } catch (\PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
         }
+    }
 
+  
+
+    //Gets all the products variants
+    public function getAllVariants($sortBy = null, $orderBy = null){
+        try{
+            $sql = 'SELECT * FROM product_variants_details';
+
+            if ($sortBy&&$orderBy) {
+                // Adjust the query for sorting
+                $sql .= " ORDER BY $sortBy $orderBy";
+            }
     
-
-        //Gets all the products variants
-        public function getAllVariants($sortBy = null, $orderBy = null){
-            try{
-                $sql = 'SELECT * FROM product_variants_details';
-
-                if ($sortBy&&$orderBy) {
-                    // Adjust the query for sorting
-                    $sql .= " ORDER BY $sortBy $orderBy";
-                }
-        
-                $query = $this->db->prepare($sql);
-                $query->execute();
-                return $query->fetchAll(PDO::FETCH_OBJ);
-            } catch (\PDOException $e) {
-                die("Connection failed: " . $e->getMessage());  
-            }
+            $query = $this->db->prepare($sql);
+            $query->execute();
+            return $query->fetchAll(PDO::FETCH_OBJ);
+        } catch (\PDOException $e) {
+            die("Connection failed: " . $e->getMessage());  
         }
+    }
 
 
-        public function addProduct($productTitle, $description, $creationDate){
-            try{
-                $sql='     
-                INSERT INTO products (title, product_description, creation_date)
-                VALUES (:productTitle, :description, :creationDate)
-                ';
-                $query = $this->db->prepare($sql);
-                
-                $query->bindParam(':productTitle', $productTitle);
-                $query->bindParam(':description', $description);
-                $query->bindParam(':creationDate', $creationDate);
-                $query->execute();
-                $productId = $this->db->lastInsertId();
-                
-                return $productId;
-            } catch (\PDOException $e) {
-                die("Connection failed: " . $e->getMessage());
-            }
+    public function addProduct($productTitle, $description, $creationDate){
+        try{
+            $sql='     
+            INSERT INTO products (title, product_description, creation_date)
+            VALUES (:productTitle, :description, :creationDate)
+            ';
+            $query = $this->db->prepare($sql);
+            
+            $query->bindParam(':productTitle', $productTitle);
+            $query->bindParam(':description', $description);
+            $query->bindParam(':creationDate', $creationDate);
+            $query->execute();
+            $productId = $this->db->lastInsertId();
+            
+            return $productId;
+        } catch (\PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
         }
+    }
 
-        public function updateProduct($productId, $productTitle, $description){
-            try{
-                $sql='     
-                UPDATE products
-                SET title = :productTitle, product_description = :description
-                WHERE product_id = :productId
-                ';
-                $query = $this->db->prepare($sql);
-                
-                $query->bindParam(':productTitle', $productTitle);
-                $query->bindParam(':description', $description);
-                $query->bindParam(':productId', $productId);
-                $query->execute();
-                return true;
-            } catch (\PDOException $e) {
-                error_log("PDOException in updateProduct: " . $e->getMessage());
-            }
+    public function updateProduct($productId, $productTitle, $description){
+        try{
+            $sql='     
+            UPDATE products
+            SET title = :productTitle, product_description = :description
+            WHERE product_id = :productId
+            ';
+            $query = $this->db->prepare($sql);
+            
+            $query->bindParam(':productTitle', $productTitle);
+            $query->bindParam(':description', $description);
+            $query->bindParam(':productId', $productId);
+            $query->execute();
+            return true;
+        } catch (\PDOException $e) {
+            error_log("PDOException in updateProduct: " . $e->getMessage());
         }
+    }
 
-        public function deleteProduct($productId){
-            try{
-                $sql='     
-                DELETE FROM products
-                WHERE product_id = :product_id
-                ';
-                $query = $this->db->prepare($sql);
-                
-                $query->bindParam(':product_id', $productId);
-                $query->execute();
-                return true;
-            } catch (\PDOException $e) {
-                die("Connection failed: " . $e->getMessage());
-            }
+    public function deleteProduct($varinatId){
+        try{
+            $sql='     
+            DELETE FROM product_variants
+            WHERE product_variant_id = :variantId
+            ';
+            $query = $this->db->prepare($sql);
+            
+            $query->bindParam(':variantId', $varinatId);
+            $query->execute();
+            return true;
+        } catch (\PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
         }
+    }
 
 
-        //delete product tags from the products_tags table
-        public function deleteProductTags($productId){
-            try{
-                $sql='     
-                DELETE FROM products_tags
-                WHERE product_id = :productId
-                ';
-                $query = $this->db->prepare($sql);
-                
-                $query->bindParam(':productId', $productId);
-                $query->execute();
-                return true;
-            } catch (\PDOException $e) {
-                die("Connection failed: " . $e->getMessage());
-            }
-        }
-    
     //checks if a tag already exists in the table
     public function getTagIdByTitle($tag){
         try{
@@ -514,7 +497,7 @@ namespace Models;
 
     public function deleteProductVariant($variantId) {
         try {
-            $sql = 'UPDATE product_variants SET is_deleted = 1 WHERE product_variant_id = :variantId';
+            $sql = 'DELETE FROM product_variants WHERE product_variant_id = :variantId';
             $query = $this->db->prepare($sql);
             $query->bindParam(':variantId', $variantId);
             $query->execute();
@@ -524,52 +507,7 @@ namespace Models;
         }
     }
 
-    //checks if a variant of a specific product exists in the product_variants table
-    public function checkProductVariants($productId) {
-        try {
-            $sql = 'SELECT COUNT(*) FROM product_variants WHERE product_id = :productId';
-            $query = $this->db->prepare($sql);
-            $query->bindParam(':productId', $productId);
-            $query->execute();
-            return $query->fetchColumn() > 0;
-        } catch (\PDOException $e) {
-            die("Connection failed: " . $e->getMessage());
-        }
-    }
-
-    public function deleteProductImage($productId){
-        try{
-            $sql='     
-            DELETE FROM images_for_products
-            WHERE product_id = :productId
-            ';
-            $query = $this->db->prepare($sql);
-            
-            $query->bindParam(':productId', $productId);
-            $query->execute();
-            return true;
-        } catch (\PDOException $e) {
-            die("Connection failed: " . $e->getMessage());
-        }
-    }
-
-    public function deleteCd($productId){
-        try{
-            $sql='     
-            DELETE FROM cds
-            WHERE product_id = :productId
-            ';
-            $query = $this->db->prepare($sql);
-            
-            $query->bindParam(':productId', $productId);
-            $query->execute();
-            return true;
-        } catch (\PDOException $e) {
-            die("Connection failed: " . $e->getMessage());
-        }
-    }
   
-
 
     //checks if an artist already exists in the table and returns its artist id 
     public function checkArtist($artistTitle){

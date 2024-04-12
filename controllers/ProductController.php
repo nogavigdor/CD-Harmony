@@ -131,8 +131,7 @@ class ProductController
             error_log('PDO Exception: ' . $ex->getMessage());
         }
     }
-
-    public function showAdminProducts($sortBy = null, $orderedBy = null)
+public function showAdminProducts($sortBy = 'product_variant_id', $orderedBy = 'DESC')
     {
         try {
             if (!SessionManager::isAdmin()) {
@@ -140,7 +139,7 @@ class ProductController
                 header('Location:' . BASE_URL);
                 exit();
             }
-            //in case of loading the admin products the first time, both parameters will be null
+            //Loading all the product variants which are not marked as deleted 
             $productsList = $this->productModel->getAllVariants($sortBy, $orderedBy);
 
             include 'views/admin/products.php'; // Include the view file
@@ -149,6 +148,7 @@ class ProductController
         }
     }
 
+    
     public function showProductForm()
     {
         try {

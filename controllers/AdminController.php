@@ -41,7 +41,7 @@ class AdminController
   }
 
 
-
+    //checks admin login and redirects to the admin page upon successful login
     public function adminLogin()
     {
          // Validate the CSRF token on form submission - to ensure that only by authorized admin users
@@ -84,7 +84,8 @@ class AdminController
             SessionManager::setSessionVariable('success_message', $successMessage);  
               // Redirect to the admin page
               header('Location:'. BASE_URL. '/admin');
-              exit();         
+              exit();   
+              //if the user is not found or the password is incorrect redirect back to the admin login page      
         } else {
             $errorMessage = 'Please enter valid credentials.';
             SessionManager::setSessionVariable('error_message', $errorMessage);

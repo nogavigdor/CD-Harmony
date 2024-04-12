@@ -291,12 +291,6 @@ route('/cdharmony/admin/company/', 'POST', function () {
 });
 
 
-route('/cdharmony/admin/products/', 'GET', function () {
-    $controller = new CompanyController();
-    $controller->updateCompanyDetails();
-});
-
-
 
 // Sort products on admin page
 route('/cdharmony/admin/products/sort/(\w+)/(\w+)', 'GET', function ($sortBy, $orderBy) {
@@ -320,12 +314,8 @@ route('/cdharmony/admin/products/', 'GET', function () {
     $controller = new ProductController();
     $controller->showAdminProducts();
 });
-/*
-route('/cdharmony/admin/products/', 'POST', function () {
-    $controller = new AdminController();
-    $controller->handleProduct();
-});
-*/
+
+
 
 route('/cdharmony/admin/product/add/special-offer/(\d+)', 'GET', function ($variant_id) {
     $controller = new SpecialOfferController();
