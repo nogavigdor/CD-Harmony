@@ -514,7 +514,7 @@ namespace Models;
 
     public function deleteProductVariant($variantId) {
         try {
-            $sql = 'DELETE FROM product_variants WHERE product_variant_id = :variantId';
+            $sql = 'UPDATE product_variants SET is_deleted = 1 WHERE product_variant_id = :variantId';
             $query = $this->db->prepare($sql);
             $query->bindParam(':variantId', $variantId);
             $query->execute();

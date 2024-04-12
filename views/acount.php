@@ -16,9 +16,9 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="flex items-center text-gray-700 hover:text-gray-900">
+                    <a href="<?php BASE_URL.'/acount/information'?>" class="flex items-center text-gray-700 hover:text-gray-900">
                         <i class="fas fa-address-card mr-2"></i> <!-- Icon for Update Address -->
-                        <span>Update Address</span>
+                        <span>Information</span>
                     </a>
                 </li>
                 <!-- Add more options here if needed -->
@@ -53,12 +53,13 @@
                                 <div class="font-bold">Price</div>
                                 <div class="font-bold">Quantity</div>
                                 <?php foreach ($ordersDetails as $orderDetail): ?>
-                                    
+                                    <?php if($orderDetail['order_id']==$orderSummary['order_id']) : ?>
                                       <div>  <img src="<?php echo BASE_URL . IMAGE_PATH . $orderDetail['image_name']; ?>" alt="<?php echo $orderDetail['product_title']; ?>" class="w-16 h-16 object-cover"></div>
                                     <div><?php echo $orderDetail['condition_title']; ?></div>
                                       <div><?php echo $orderDetail['product_title']; ?></div>
                                     <div><?php echo $orderDetail['item_price']; ?>DKK</div>
                                     <div><?php echo $orderDetail['quantity']; ?></div>
+                                    <?php endif; ?>
                                 <?php endforeach; ?>
                             </dl>
                         </div>

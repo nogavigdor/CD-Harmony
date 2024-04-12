@@ -196,5 +196,21 @@ class UserController {
                 error_log('PDO Exception: ' . $ex->getMessage());
             }
     }
+
+    public function accountInformationView(){
+        try {
+            if (SessionManager::isLoggedIn()&&SessionManager::isCustomer()) {
+                $user_id = SessionManager::getSessionVariable('user')['usr_id'];
+                $user = $this->userModel->getUserById($user_id);
+                include 'views/account-information.php';
+            } else {
+                SessionManager::setSessionVariable('error_message', 'Please login to view your account.');  
+                header("Location: " . BASE_URL . "/login");
+                exit(); 
+            }
+            } catch (\PDOException $ex) {
+                error_log('PDO Exception: ' . $ex->getMessage());
+            }
+    }
     
 }

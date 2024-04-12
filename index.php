@@ -320,12 +320,12 @@ route('/cdharmony/admin/products/', 'GET', function () {
     $controller = new ProductController();
     $controller->showAdminProducts();
 });
-
-//CHECK THIS LATER
+/*
 route('/cdharmony/admin/products/', 'POST', function () {
     $controller = new AdminController();
     $controller->handleProduct();
 });
+*/
 
 route('/cdharmony/admin/product/add/special-offer/(\d+)', 'GET', function ($variant_id) {
     $controller = new SpecialOfferController();
@@ -342,6 +342,11 @@ route('/cdharmony/acount/', 'GET', function() {
     $controller->acountView();
 });
 
+
+route('/cdharmony/acount/information', 'GET', function() {
+    $controller = new UserController();
+    $controller->acountInformationView();
+});
 
 
 

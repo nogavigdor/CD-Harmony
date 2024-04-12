@@ -98,6 +98,7 @@
                     quantity_in_stock int NOT NULL,
                     product_id int,
                     condition_id int,
+                    is_deleted boolean NOT NULL DEFAULT 0,
                     FOREIGN KEY (product_id) REFERENCES products (product_id),
                     FOREIGN KEY (condition_id) REFERENCES conditions (condition_id)
                 ) ENGINE=InnoDB;

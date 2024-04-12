@@ -96,7 +96,7 @@ class AdminController
 
     
    
-
+/*
     public function getProductDetails()
     {
         // Check if the user is logged in and if it has an admin role
@@ -109,6 +109,8 @@ class AdminController
             exit();
             }
     }
+    */
+    
     //checks if the user is logged in and if it has an admin role
     public static function authorizeAdmin() {
         if (SessionManager::getSessionVariable('user') && SessionManager::getSessionVariable('user')['role'] == 1) {
