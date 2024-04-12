@@ -131,6 +131,11 @@
         </main>
         <script>
             const baseURL = window.location.origin; 
+
+              // Creates a new div for for alers/sucess message
+              let messageDiv = document.createElement('div');
+            messageDiv.classList.add('fixed', 'top-20', 'left-1/2', 'transform', '-translate-x-1/2', 'm-6', 'p-4', 'rounded', 'shadow-lg', 'transition', 'duration-500', 'ease-in-out', 'transform', 'z-50');
+            messageDiv.style.backgroundColor = '#f3f4f6';
            
             function updateProductQty(id){
                 //alert(id);
@@ -171,6 +176,19 @@
                     else if(arr_response[0]=="success"){
                         var qty=arr_response[1];
                         document.getElementById("cartItemCount").innerHTML=qty;
+                            
+                        // Sets the a success message upon updating the item quantity
+                      messageDiv.textContent = 'Quantaty was updated successfuly.';
+                      messageDiv.classList.add('bg-green-800', 'text-gray-900');
+                        
+                        document.body.appendChild(messageDiv);
+
+                        // Remove the message div after 1 second
+                        setTimeout(function() {
+                            messageDiv.remove();
+                        }, 1000);
+
+                        
                     }
 
                 }

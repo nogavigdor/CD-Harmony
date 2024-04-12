@@ -187,7 +187,7 @@ const baseURL = window.location.origin;
               // Adds the message alers/success message div to the DOM
                 document.body.appendChild(messageDiv);
 
-                // Remove the message div after 3 seconds
+                // Remove the message div after 1 seconds
                 setTimeout(function() {
                     messageDiv.remove();
                 }, 1000);
