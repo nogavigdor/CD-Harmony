@@ -29,8 +29,8 @@ use Exception;
                     VALUES (NOW(), :order_status_id, :order_payment_id, :user_id)
                 ");
                 $stmt->execute([
-                    'order_status_id' => 1, // 1 for 'Pending'
-                    'order_payment_id' => 1, // 1 for 'Not Paid'
+                    'order_status_id' => 1, // 1 for 'Pending' (delivery statys)
+                    'order_payment_id' => 2, // 1 for 'Paid'
                     'user_id' => $userId
                 ]);
 
@@ -156,4 +156,17 @@ use Exception;
                 die("Connection failed: " . $e->getMessage());
             }
         }
+/*For future implementation when payment_intent_id is integrated
+        public function updateOrderStatus($paymentIntentId){
+            try {
+                $sql = 'UPDATE orders SET order_status_id = 2 WHERE order_payment_id = :order_payment_id';
+                $query = $this->db->prepare($sql);
+                $query->bindparam(':order_payment_id', $paymentIntentId);
+                $query->execute();
+                return $query->rowCount();
+            } catch (\PDOException $e) {
+                die("Connection failed: " . $e->getMessage());
+            }
+        }
+        */
     }

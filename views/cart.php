@@ -15,7 +15,7 @@
             
             <div class="flex mb-4">
             <a href="<?= BASE_URL ?>" class="btn flex-1 text-center py-2 m-2">Back to shop</a>  
-                <a href="<?= BASE_URL.'/cart/checkout-stripe' ?>" class="btn bg-accent  flex-1 text-center py-2 m-2 ">Checkout</a>
+                <a href="<?= BASE_URL.'/cart/stripe-checkout' ?>" class="btn bg-accent  flex-1 text-center py-2 m-2 ">Checkout</a>
             </div>
 
             <?php
@@ -119,7 +119,7 @@
                     <p class="text-lg font-semibold">Total Grand: <?= number_format($cart['total_grand'] ?? 0, 2); ?> DKK</p>
                  </div>
             <div class="flex flex-end"> 
-                    <a class="btn bg-accent" href="<?= BASE_URL.'/cart/checkout-stripe';?>" id="checkout" class="btn">Checkout</a>
+                    <a class="btn bg-accent" href="<?= BASE_URL.'/cart/stripe-checkout';?>" id="checkout" class="btn">Checkout</a>
             </div>
 
 

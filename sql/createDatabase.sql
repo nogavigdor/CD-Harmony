@@ -227,13 +227,15 @@
                 */
                 /* For future use - in case the carts table are added - this line should be added:
                      FOREIGN KEY (cart_master_id) REFERENCES cart_master(cart_master_id)  */
+
+               /* In future user payment_intent_id for stripe payment should be added:
+                    payment_intent_id VARCHAR(255),  */
                 CREATE TABLE orders
                 (
                     order_id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
                     creation_date timestamp NOT NULL,
                     order_status_id int,
                     order_payment_id int,
-                    cart_master_id int, 
                     user_id int,
                     FOREIGN KEY (user_id) REFERENCES users(user_id),
                     FOREIGN KEY (order_status_id) REFERENCES orders_status(order_status_id),

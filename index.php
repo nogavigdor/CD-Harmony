@@ -74,10 +74,16 @@ route('/cdharmony/cart/checkout', 'GET', function () {
     $controller->checkoutView();
 });
 
-//stripe checkout view
-route('/cdharmony/cart/checkout-stripe', 'GET', function () {
+//stripe checkout 
+route('/cdharmony/cart/stripe-checkout', 'GET', function () {
     $controller = new CheckoutController();
     $controller->stripeCheckout();
+});
+
+//stripe webhook
+route('/cdharmony/cart/stripe-webhook', 'GET', function () {
+    $controller = new CheckoutController();
+    $controller->stripeWebhook();
 });
 
 // Checkout cart

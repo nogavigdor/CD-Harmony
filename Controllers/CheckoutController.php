@@ -5,6 +5,8 @@ use Models\OrderModel;
 use Services\SessionManager;
 use Services\EmailService;
 use Stripe\Checkout\Session;
+use Stripe\Webhook;
+use Stripe\Stripe;
 
 // Include Composer's autoloader
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -70,6 +72,11 @@ class CheckoutController {
                 'cancel_url' => BASE_URL . '/cart',
             ]);
 
+
+             // Retrieve the paymentIntentId from the checkout session
+              //  $paymentIntentId = $checkoutSession->payment_intent;
+
+
              // Redirect the user to the Stripe checkout page
             header('Location: ' . $checkoutSession->url);
             exit;
@@ -79,7 +86,44 @@ class CheckoutController {
         }
     }
 
+    public function stripeWebhook(){
+        // Retrieve the request's body and parse it as JSON
+        $input = file_get_contents('php://input');
+        $event = json_decode($input);
 
+        // Verify the webhook signature
+        $webhookSecret = STRIPE_WEBHOOK_SECRET; // You should store this securely
+        $signatureHeader = $_SERVER['HTTP_STRIPE_SIGNATURE'];
+
+        try {
+            $event = Webhook::constructEvent($input, $signatureHeader, $webhookSecret);
+        } catch (\Exception $e) {
+            http_response_code(400);
+            exit();
+        }
+
+        // Handle the event
+        //I've built it as switch statement in order to handle different type of events
+        //in case I'll need to add more events in the future
+        switch ($event->type) {
+            case 'payment_intent.refunded':
+                // A payment intent has been refunded
+                $paymentIntent = $event->data->object;
+                $paymentIntentId = $paymentIntent->id;
+                
+                // Update your database to reflect the refund status
+                // Example: Update the order status or record the refunded amount
+                $this->orderModel->updateOrderStatus($paymentIntentId);
+                break;
+          default:
+                // Handle other event types as needed
+                break;
+        }
+
+        // Send a 200 response to acknowledge receipt of the event
+        http_response_code(200);
+
+    }
 
     public function checkoutView(){
 
