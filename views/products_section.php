@@ -12,19 +12,24 @@
                     
                      </div>
                  <?php endif; ?>
+                  
+
                 <div class="p-4">
                 <p class="text-lg text-primary font-semibold"><?= htmlspecialchars($product->product_title) ?></p>
                 <p class="mt-2 text-lg  text-base-500"><?= htmlspecialchars($product->artist_title) ?></p>
                 <p class="mt-2"><?= htmlspecialchars($product->tag_title) ?></p>
                 <div class="mt-4">
                     <!-- Display New Price -->
-                    <?php if ($product->new_quantity > 0) : ?>
-                        <div class="text-lg  text-base-500"><?= $product->new_price ?> DKK (New)</div>
+                   <?php     if ($product->new_price > 0) : ?>
+                            <div class="text-lg  text-base-500"><?= $product->new_price ?> DKK (New)</div>
                     <?php endif; ?>
+                 
+                    
                     <!-- Display Used Price -->
-                    <?php if ($product->used_quantity > 0) : ?>
-                        <div class="text-lg  text-base-800"><?= $product->used_price ?> DKK (Used)</div>
-                    <?php endif; ?>
+                        <?php if ($product->used_price > 0) : ?>
+                            <div class="text-lg  text-base-800"><?= $product->used_price ?> DKK (Used)</div>
+                        <?php endif; ?>    
+              
                     <div class="mt-2">
                         <a href="<?= BASE_URL ?>/product/<?= $product->product_id ?>" class="btn btn-secondary w-full text-white">View Details</a>
                     </div>

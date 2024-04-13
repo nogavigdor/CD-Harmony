@@ -44,7 +44,7 @@ class ImageHandler {
 
         // Check the file size
         if ($imageSize > self::MAX_SIZE * 1024) {
-            $this->errorMessages[] = 'The file is too large. Please upload a file that is less than 1MB.';
+            $this->errorMessages[] = 'The file is too big. Please upload a file that is less than 1MB.';
             return false;
         }
 
