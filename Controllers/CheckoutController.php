@@ -4,6 +4,13 @@ use Models\ProductModel;
 use Models\OrderModel;
 use Services\SessionManager;
 use Services\EmailService;
+use Stripe\Checkout\Session;
+
+// Include Composer's autoloader
+require_once __DIR__ . '/../vendor/autoload.php';
+
+\Stripe\Stripe::setApiKey(STRIPE_SECRET_KEY);
+
 
 class CheckoutController {
     private $session;
@@ -13,6 +20,66 @@ class CheckoutController {
         $this->orderModel = new OrderModel();
         $this->session->startSession();
     }
+
+    public function stripeCheckout(){
+        try{
+        
+
+            $cart = SessionManager::getSessionVariable('cart');
+  
+            $lineItems = [];
+            $total = 0;
+   
+           
+            // Convert price from string to float
+            foreach ($cart as $product_variant_id => $cartItem) {
+                 // Check if the current item is one of the additional keys
+                if (!is_numeric($product_variant_id)) {
+                    continue; // Skip this iteration if it's not a product item
+                }
+
+                // Cast the price to float and quantity to integer
+                $price = (float) $cartItem['price'];
+                $quantity = (int) $cartItem['quantity'];
+                 // Log the quantity for debugging
+
+                // Create the line item with the correctly typed values
+                $lineItems[] = [
+                    'price_data' => [
+                        'currency' => 'dkk',
+                        'product_data' => [
+                            'name' => $cartItem['product_title'],
+                        ],
+                        'unit_amount' => $price * 100,
+                    ],
+                    'quantity' => $quantity,
+                ];
+            
+                // Calculate the total
+                $total += $price * $quantity;
+            }
+
+       
+       
+
+            $checkoutSession = Session::create([
+                'payment_method_types' => ['card'],
+                'line_items' => $lineItems,
+                'mode' => 'payment',
+                'success_url' => BASE_URL . '/order-confirmation',
+                'cancel_url' => BASE_URL . '/cart',
+            ]);
+
+             // Redirect the user to the Stripe checkout page
+            header('Location: ' . $checkoutSession->url);
+            exit;
+          
+        }catch (\PDOException $ex) {
+            error_log('PDO Exception: ' . $ex->getMessage());
+        }
+    }
+
+
 
     public function checkoutView(){
 
@@ -24,6 +91,9 @@ class CheckoutController {
         }
 
     }
+
+
+
     public function checkout() {
  
         // Check if the user is logged and  a customer before checkout

@@ -21,7 +21,7 @@
                     <span class="font-bold">Information</span>
                 </a>
             </li>
-            <!-- Add more options here if needed -->
+           
         </ul>
     </aside>
 
@@ -41,7 +41,7 @@
                             Order Date: <?php echo $orderSummary['order_date']; ?>
                         </p>
                         <p class="text-sm inline-block ml-4">
-                            Total Price: $<?php echo $orderSummary['order_grand_total']; ?>
+                            Total Price: <?php echo $orderSummary['order_grand_total']; ?> DKK 
                         </p>
                     </div>
                     <!-- Display Order Items --> 

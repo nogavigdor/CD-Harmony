@@ -74,6 +74,12 @@ route('/cdharmony/cart/checkout', 'GET', function () {
     $controller->checkoutView();
 });
 
+//stripe checkout view
+route('/cdharmony/cart/checkout-stripe', 'GET', function () {
+    $controller = new CheckoutController();
+    $controller->stripeCheckout();
+});
+
 // Checkout cart
 route('/cdharmony/cart/checkout', 'POST', function () {
     $controller = new CheckoutController();

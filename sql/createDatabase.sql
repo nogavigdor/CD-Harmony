@@ -198,7 +198,7 @@
                 ('unpaid'),
                 ('paid'),
                 ('refund');
-
+                /* For future use
                 CREATE TABLE cart_master
                 (
                     cart_master_id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
@@ -224,20 +224,20 @@
                     FOREIGN KEY (cart_master_id) REFERENCES cart_master (cart_master_id),
                     FOREIGN KEY (product_variant_id) REFERENCES product_variants (product_variant_id)
                 ) ENGINE=InnoDB;
-
-
+                */
+                /* For future use - in case the carts table are added - this line should be added:
+                     FOREIGN KEY (cart_master_id) REFERENCES cart_master(cart_master_id)  */
                 CREATE TABLE orders
                 (
                     order_id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
                     creation_date timestamp NOT NULL,
                     order_status_id int,
                     order_payment_id int,
-                    cart_master_id int,
+                    cart_master_id int, 
                     user_id int,
                     FOREIGN KEY (user_id) REFERENCES users(user_id),
                     FOREIGN KEY (order_status_id) REFERENCES orders_status(order_status_id),
                     FOREIGN KEY (order_payment_id) REFERENCES orders_payment(order_payment_id),
-                    FOREIGN KEY (cart_master_id) REFERENCES cart_master(cart_master_id)
                 ) ENGINE=InnoDB;
 
                 CREATE TABLE orders_lines
