@@ -330,6 +330,7 @@
         p.product_description,
         pv.creation_date AS variant_creation_date,
         pv.price,
+        pv.is_deleted,
         CASE
             WHEN s.product_variant_id IS NOT NULL AND CURDATE() BETWEEN s.special_offer_start_date AND s.special_offer_end_date THEN s.discount_sum
             ELSE 0

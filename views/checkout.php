@@ -48,7 +48,7 @@ use Controllers\ProductController;
     <?php endif; ?>
   </div>
   <div class="flex flex-col gap-y-4">
-    <!-- Add your update and delete logic here -->
+   
     
   </div>
 </div>
@@ -57,7 +57,7 @@ use Controllers\ProductController;
         }
     } else {
         // If the cart is empty
-        echo "<p>Your cart is empty.</p>";
+        echo "Nothing was ordered.</p>";
     }
     ?>
 

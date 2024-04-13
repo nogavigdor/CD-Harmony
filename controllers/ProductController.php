@@ -75,6 +75,9 @@ class ProductController
             //route for admin
             if ($role == 'admin') {
                 if (AdminController::authorizeAdmin()) {
+
+                    $controller = new ProductController();
+                    $productVars = $controller->getProductVariantsDetails($product->product_id);
                     // Load the view to display the product details if the user is an admin
                     include 'views/admin/product_details.php';
                 } else {

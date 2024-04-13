@@ -23,8 +23,9 @@ use Controllers\ProductController;
            <?php
              ?>
                     <?php
-                    if ($variants['new']['discount']>0)  {
-                       
+                 
+                    if (isset($variants['new'])){
+                       if($variants['new']['discount']>0){
                         ?>   
                      <div class="badge w-72 h-16 absolute top-0 left-0 transform -translate-y-4 -translate-x-4 flex bg-base-100 border-secondary border-4 rounded-lg">
                       <span class="p-4 font-bold text-xl text-secondary">
@@ -35,9 +36,10 @@ use Controllers\ProductController;
                     </div>
                         <?php
                     }
+                }
 
-                    if ($variants['used']['discount']>0) { ?>
-                            
+                    if (isset($variants['used'])) { 
+                      if ($variants['used']['discount']>0){   ?>   
                      <div class="badge w-72 h-16 absolute top-0 left-0 transform -translate-y-4 -translate-x-4 flex bg-base-100 border-secondary border-4 rounded-lg">
                       <span class="p-4 font-bold text-xl text-secondary">
                     <?php
@@ -46,6 +48,7 @@ use Controllers\ProductController;
                      </span>
                     </div>
                     <?php
+                      }
                     }
                     ?>
             
@@ -94,10 +97,17 @@ use Controllers\ProductController;
                                     </div>
                                         <!-- Add to Cart button -->
                                         
-                                  
-             
-                                        <button type="submit" class="mt-16 ml-4 px-4 -32 py-2 bg-accent btn-lg text-white rounded transform transition duration-500 ease-in-out hover:brightness-125 md:w-1/3 ">Add to Cart</button>
-                                     
+                                        <?php
+                                        if(isset($variants['new']) || isset($variants['used'])){?>
+                                        <button type="submit" class="w-52 mt-16 ml-4 px-4 -32 py-2 bg-accent btn-lg text-white rounded transform transition duration-500 ease-in-out hover:brightness-125 md:w-2/3 ">Add to Cart</button>
+                                        <?php
+                                        }
+                                        else{
+                                            ?>
+                                            <p class="text-xl text-primary mt-2">We appologize but the product is currently unavailble.<p>
+                                            <?php
+                                        }
+                                        ?>
                                     </div>
                                     </form>    
 
@@ -187,7 +197,7 @@ const baseURL = window.location.origin;
               // Adds the message alers/success message div to the DOM
                 document.body.appendChild(messageDiv);
 
-                // Remove the message div after 1 seconds
+                // Remove the message div after 3 seconds
                 setTimeout(function() {
                     messageDiv.remove();
                 }, 1000);

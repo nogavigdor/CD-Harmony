@@ -8,15 +8,17 @@
     <!-- Main content section -->
     <main class="container mx-auto p-4 bg-white mt-8 min-h-screen">
         <h1 class="text-2xl headline text-secondary font-bold mb-4">Your Cart</h1>
-        <div class="flex mb-4">
-        <a href="<?= BASE_URL ?>" class="btn flex-1 text-center py-2 m-2">Back to shop</a>  
-            <a href="<?= BASE_URL.'/cart/checkout' ?>"class="btn bg-accent  flex-1 text-center py-2 m-2 ">Checkout</a>
-        </div>
+      
         <?php 
         // Iterate through cart items and display each one
-        if (SessionManager::isVar('cart')) {
-            //$cart = SessionManager::getSessionVariable('cart');
+        if (SessionManager::isVar('cart')) { ?>
             
+            <div class="flex mb-4">
+            <a href="<?= BASE_URL ?>" class="btn flex-1 text-center py-2 m-2">Back to shop</a>  
+                <a href="<?= BASE_URL.'/cart/checkout' ?>" class="btn bg-accent  flex-1 text-center py-2 m-2 ">Checkout</a>
+            </div>
+
+            <?php
             $discountTotalVar = 0;
             $subTotalVar = 0;
             $grandTotalVar =0;
@@ -107,23 +109,41 @@
             $cart['total_sub']=$subTotal;
             $cart['total_grand']=$grandTotal;
 
-            //Updating the cart session with the new values
-            SessionManager::setSessionVariable('cart',$cart);
-        } else {
-            // If the cart is empty
-            echo "<p>Your cart is empty.</p>";
-
-              
-        }
-        ?>
-        <div class="flex flex-col  gap-y-4  md:flex-row gap-x-8 justify-between">
-            <p class="text-lg font-semibold">Total Discount: <?= number_format($cart['total_discount'] ?? 0, 2); ?> DKK</p>
-            <p class="text-lg font-semibold">Total Sub: <?= number_format($cart['total_sub'] ?? 0, 2); ?> DKK</p>
-            <p class="text-lg font-semibold">Total Grand: <?= number_format($cart['total_grand'] ?? 0, 2); ?> DKK</p>
-        </div>
+            if ($cart['total_grand']>0) {
+                //Updating the cart session with the new values
+                SessionManager::setSessionVariable('cart',$cart);
+                    ?>
+                <div class="flex flex-col  gap-y-4  md:flex-row gap-x-8 justify-between">
+                    <p class="text-lg font-semibold">Total Discount: <?= number_format($cart['total_discount'] ?? 0, 2); ?> DKK</p>
+                    <p class="text-lg font-semibold">Total Sub: <?= number_format($cart['total_sub'] ?? 0, 2); ?> DKK</p>
+                    <p class="text-lg font-semibold">Total Grand: <?= number_format($cart['total_grand'] ?? 0, 2); ?> DKK</p>
+                 </div>
             <div class="flex flex-end"> 
                     <a class="btn bg-accent" href="<?= BASE_URL.'/cart/checkout';?>" id="checkout" class="btn">Checkout</a>
             </div>
+
+
+                <?php
+            }else{
+                SessionManager::unsetSessionVariable('cart');
+                 // If the cart is empty
+            echo "<p>Your cart is empty.</p>";
+            }
+     
+            ?>
+
+       
+            <?php
+        } else { ?>
+            <a href="<?= BASE_URL ?>" class="btn flex-1 text-center py-2 m-2">Back to shop</a>  
+            <?php
+            // If the cart is empty
+            echo '<h2 class="text-2xl text-secondary headline"> Your cart is empty.</h2>';
+
+              
+        } 
+        ?>
+       
      
        
   

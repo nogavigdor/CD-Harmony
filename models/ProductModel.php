@@ -163,7 +163,7 @@ namespace Models;
         try {
            $sql = '
                     SELECT * from product_variants_details
-                    WHERE product_id = :id  
+                    WHERE product_id = :id  AND is_deleted = 0
              ';
       
         $query = $this->db->prepare($sql);
