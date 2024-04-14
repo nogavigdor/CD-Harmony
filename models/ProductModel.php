@@ -14,6 +14,7 @@ namespace Models;
             $this->db = DBConnector::getInstance()->connectToDB();
         }
 
+        //Get all products 
         public function getAllProducts(){
             try{
                 $sql='     
@@ -39,6 +40,8 @@ namespace Models;
                 LEFT JOIN artists a ON c.artist_id = a.artist_id
                 LEFT JOIN images_for_products ip ON p.product_id = ip.product_id
                 INNER JOIN conditions con ON pv.condition_id = con.condition_id
+                WHERE 
+                pv.is_delete = 0
                 GROUP BY p.product_id
                 ';
                 $query = $this->db->prepare($sql);
@@ -90,7 +93,7 @@ namespace Models;
         
 
 
-        //get recent release of cds
+        //get recent release of cds 
         public function getRecentReleases() {
             // Implement the logic to fetch recent releases here
             // For example:
@@ -261,10 +264,10 @@ namespace Models;
 
   
 
-    //Gets all the products variants
+    //Gets all the products variants (which are not deleted)
     public function getAllVariants($sortBy = null, $orderBy = null){
         try{
-            $sql = 'SELECT * FROM product_variants_details';
+            $sql = 'SELECT * FROM product_variants_details WHERE is_deleted = 0';
 
             if ($sortBy&&$orderBy) {
                 // Adjust the query for sorting
@@ -319,21 +322,6 @@ namespace Models;
         }
     }
 
-    public function deleteProduct($varinatId){
-        try{
-            $sql='     
-            DELETE FROM product_variants
-            WHERE product_variant_id = :variantId
-            ';
-            $query = $this->db->prepare($sql);
-            
-            $query->bindParam(':variantId', $varinatId);
-            $query->execute();
-            return true;
-        } catch (\PDOException $e) {
-            die("Connection failed: " . $e->getMessage());
-        }
-    }
 
 
     //checks if a tag already exists in the table
@@ -495,9 +483,10 @@ namespace Models;
 
     }
 
+    //soft delete a product variant - set is_deleted to 1
     public function deleteProductVariant($variantId) {
         try {
-            $sql = 'DELETE FROM product_variants WHERE product_variant_id = :variantId';
+            $sql = 'UPDATE product_variants SET is_deleted = 1 WHERE product_variant_id = :variantId';
             $query = $this->db->prepare($sql);
             $query->bindParam(':variantId', $variantId);
             $query->execute();
@@ -722,6 +711,7 @@ namespace Models;
         return $query->fetchColumn() > 0;
     }
     
+  
 
 
    }

@@ -65,7 +65,6 @@
                     street varchar(100) NOT NULL,
                     email varchar(100) NOT NULL,
                     phone_number varchar(20) NOT NULL,
-                    logo varchar(200) NOT NULL,
                     opening_hours text NOT NULL,
                     postal_code_id varchar(4) NOT NULL,
                     FOREIGN KEY (postal_code_id) REFERENCES postal_codes (postal_code_id)

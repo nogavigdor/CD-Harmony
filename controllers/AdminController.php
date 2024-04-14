@@ -49,6 +49,7 @@ class AdminController
          {
             SessionManager::setSessionVariable('error_message', 'CSRF token validation failed.');
             header('Location:'. BASE_URL. '/admin-login');
+            exit();
          }
          
         // Validate login credentials 

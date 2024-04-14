@@ -297,7 +297,7 @@ route('/cdharmony/admin/company/', 'GET', function () {
     $controller->showCompanyDetails();
 });
 
-route('/cdharmony/admin/company/', 'POST', function () {
+route('/cdharmony/admin/company/', 'PUT', function () {
     $controller = new CompanyController();
     $controller->updateCompanyDetails();
 });
@@ -345,10 +345,7 @@ route('/cdharmony/acount/', 'GET', function() {
 });
 
 
-route('/cdharmony/acount/information', 'GET', function() {
-    $controller = new UserController();
-    $controller->acountInformationView();
-});
+
 
 
 

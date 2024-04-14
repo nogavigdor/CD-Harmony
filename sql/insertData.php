@@ -1272,7 +1272,7 @@ foreach ($data as $row) {
 
 
 // Prepare the SQL statement
-$sql = "INSERT INTO `company_details` (`company_details_id`, `company_name`, `street`, `email`, `phone_number`, `logo`, `opening_hours`, `postal_code_id`) 
+$sql = "INSERT INTO `company_details` (`company_details_id`, `company_name`, `street`, `email`, `phone_number`, `opening_hours`, `postal_code_id`) 
         VALUES (NULL, :company_name, :street, :email, :phone_number, :logo, :opening_hours, :postal_code_id)";
 
 // Prepare the statement
@@ -1283,7 +1283,6 @@ $companyName = 'CD Harmony';
 $street = 'Melody 1';
 $email = 'info@cdharmony.dk';
 $phoneNumber = '52333333';
-$logo = '\\src\\assets\\logo_no_background.png';
 $openingHours = 'Monday - Friday 8:00 - 17:00';
 $postalCodeId = '6000';
 
@@ -1291,7 +1290,6 @@ $stmt->bindParam(':company_name', $companyName);
 $stmt->bindParam(':street', $street);
 $stmt->bindParam(':email', $email);
 $stmt->bindParam(':phone_number', $phoneNumber);
-$stmt->bindParam(':logo', $logo);
 $stmt->bindParam(':opening_hours', $openingHours);
 $stmt->bindParam(':postal_code_id', $postalCodeId);
 

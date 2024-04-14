@@ -361,12 +361,14 @@ class SpecialOfferController
 
             $specialOfferId = htmlspecialchars(trim($_POST['special_offer_id']));
 
-            $isHomepage = $this->specialOfferModel->isHomepage($specialOfferId);
 
+            $isHomepage = $this->specialOfferModel->isHomepage($specialOfferId);
+       
             //if special offer is set to display on the homepage, it can't be deleted
             if ($isHomepage['is_homepage']) {
-              SessionManager::setSessionVariable('error_message', 'Special Offer is on the homepage and cannot be deleted');
+              SessionManager::setSessionVariable('alert_message', 'Special Offer is on the homepage and cannot be deleted');
                 header('Location: ' . BASE_URL . '/admin/special-offers');
+                exit();
             }
             
             // Delete the special offer
@@ -380,7 +382,6 @@ class SpecialOfferController
             SessionManager::setSessionVariable('success_message', 'Special Offer was deleted successfully');
             header('Location: ' . BASE_URL . '/admin/special-offers');
             exit();
-    
         } catch (\Exception $ex) {
             error_log('Exception: ' . $ex->getMessage());
             http_response_code(500); // Internal Server Error status code

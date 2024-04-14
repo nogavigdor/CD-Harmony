@@ -27,6 +27,7 @@ use Services\SessionManager;
 
 
 <div class="grid grid-cols-3 gap-4">
+    <!-- Sorting form -->
     <div>
         <form id="sortForm" action="<?= BASE_URL . '/admin/products/sort/' ?>" method="GET" class="flex flex-col space-y-4">
         <div class="flex items-center space-x-2">
@@ -56,7 +57,7 @@ use Services\SessionManager;
     <div>
         <form id="searchForm" action="<?= BASE_URL . '/admin/products/search/' ?>" method="GET" class="flex flex-col space-y-4">
             <div class="flex items-center space-x-2">
-                <label for="search_by" class="text-sm font-medium text-gray-700">Search by:</label>
+                <label for="search_by" class="text-sm font-medium text-gray-700">Search Term:</label>
                 <input id="search_by" type="text" class="block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
             </div>
             <button type="button" id="searchButton" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
@@ -68,7 +69,7 @@ use Services\SessionManager;
         <!-- The remaining third of the screen -->
     </div>
 </div>
-        <h2 class="text-2xl font-semibold mb-4">Product List</h2>
+        <h2 class="text-2xl text-black font-semibold mb-4">Product List</h2>
             <?php
         
             if (!empty($productsList)) {?>

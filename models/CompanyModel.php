@@ -35,7 +35,7 @@ class CompanyModel
     }
 
 
-    public function updateCompanyDetails($companyId, $companyName, $street, $postalCodeId, $openingHours, $email, $phoneNumber, $logo)
+    public function updateCompanyDetails($companyId, $street, $postalCodeId, $openingHours, $email, $phoneNumber)
     {
     try {
         $query = $this->db->prepare('
@@ -65,7 +65,26 @@ class CompanyModel
     
 }
 
+public function validatePostalCode($postalCodeId)
+{
+    try {
+        $query = $this->db->prepare('
+            SELECT city FROM postal_codes
+            WHERE postal_code_id = :postal_code_id
+        ');
+
+        $query->bindParam(':postal_code_id', $postalCodeId);
+        $query->execute();
+
+        return $query->execute();
+    } catch (\PDOException $e) {
+        // Handle errors (log or rethrow the exception)
+        throw $e;
+    }
 
 
 
+
+
+}
 }

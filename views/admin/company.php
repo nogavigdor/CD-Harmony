@@ -3,23 +3,24 @@
 <main class='content bg-primary'>
 <?php
 use Services\SessionManager;
+$csrfToken = SessionManager::generateCSRFToken()
 ?>
 
 
-<div class="flex h-screen bg-gray-100">
+<div class="flex  bg-gray-100">
         <!-- Sidebar -->
         <?php include './partials/admin-sidebar.php' ?>
 
         <!-- Content Area -->
        
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
+        <div class="container h-screen mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
         <h1 class="h1">Company Information</h1>
                 <!-- Company Details Form -->
                 <div class=" mt-10  grid grid-cols-1 gap-x-8 p-y-8 sm:grid-cols-6">
-                        <form  action="" method="POST">
-                        <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">      
-                        <?php $controller = new \controllers\CompanyController(); 
-                        $company = $controller->getCompanyDetails(); ?>
+                        <form  action="<?= BASE_URL.'/admin/company'; ?>" method="POST">
+                        <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>"> 
+                        <input type="hidden" name="_method" value="PUT">     
+                     
                         <input  type="hidden" name="company_details_id" value="<?php echo $company->company_details_id; ?>">
 
                         <label for="company_name" class="block text-sm font-medium text-gray-700">Company Name:</label>
@@ -43,8 +44,6 @@ use Services\SessionManager;
                         <label for="phone_number" class="block text-sm font-medium text-gray-700">Phone Number:</label>
                         <input type="text" id="phone_number" name="phone_number" value="<?php echo $company->phone_number; ?>" class="mt-1 p-2 border rounded-md">
 
-                        <!-- Add similar fields for other attributes -->
-                        <input type="file" id="logo" name="logo" class="file-input file-input-bordered w-full max-w-xs" />
                         <button type="submit" class="mt-4 bg-base-100 text-gray-900 py-2 px-4 rounded-md transition-all duration-300 ease-in-out transform hover:bg-primary hover:text-white active:scale-95">Update Company Details</button>
                          </form>
                 
@@ -55,4 +54,5 @@ use Services\SessionManager;
 </div>
 
 </main>
+
 <?php include 'admin-footer.php' ?>

@@ -20,9 +20,7 @@
                         <tr>
                             <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Product Variant ID</th>
                             <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Product title</th>
-                            <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Artist Title</th>
                             <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Special Offer Title</th>
-                            <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Special Offer Description</th>
                             <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Start Date</th>
                             <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">End Date</th>
                             <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">On Homepage</th>
@@ -46,9 +44,7 @@
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($offerDetails['product_variant_id']) ?></td>
                                 <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($offerDetails['product_title']) ?></td>
-                                <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($offerDetails['artist_title']) ?></td>
                                 <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($offer['title']) ?></td>
-                                <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($offer['special_offer_description']) ?></td>
                                 <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($offer['special_offer_start_date']) ?></td>
                                 <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($offer['special_offer_end_date']) ?></td>
                                 <td class="px-6 py-4 whitespace-nowrap">

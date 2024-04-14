@@ -22,13 +22,13 @@ namespace Models;
                     VALUES (:product_variant_id, :title, :special_offer_description, :discount_precentage, :special_offer_start_date, :special_offer_end_date)
                 ';
 
+                $query = $this->db->prepare($sql);
                 $query->bindParam(':product_variant_id', $productVariantId);
                 $query->bindParam(':title', $title);
                 $query->bindParam(':special_offer_description', $description);
                 $query->bindParam(':discount_precentage', $discountPrecentage);
                 $query->bindParam(':special_offer_start_date', $startDate);
-                $query->bindParam(':special_offer_end_date', $endDate);
-                $query = $this->db->prepare($sql);
+                $query->bindParam(':special_offer_end_date', $endDate); 
                 $query->execute();
             } catch (\PDOException $e) {
                 
@@ -36,15 +36,18 @@ namespace Models;
             }
         }
 
-        public function deleteSpecialOffer($productVariantId)
+        //delete special offer by special offer id
+
+        //delete special offer by product variant id
+        public function deleteSpecialOffer($specialOfferId)
         {
             try {
                 $sql = '
                     DELETE FROM special_offers
-                    WHERE product_variant_id = :product_variant_id
+                    WHERE special_offer_id = :special_offer_id
                 ';
                 $query = $this->db->prepare($sql);
-                $query->bindParam(':product_variant_id', $productVariantId);
+                $query->bindParam(':special_offer_id', $specialOfferId);
                 $query->execute();
                 return true;
             } catch (\PDOException $e) {
@@ -84,8 +87,8 @@ function getSpecialOffer($productVariantId)
             SELECT *
             FROM special_offers
             WHERE product_variant_id = :product_variant_id 
-            AND start_date <= :current_date 
-            AND end_date >= :current_date
+            AND special_offer_start_date <= :current_date 
+            AND special_offer_end_date >= :current_date
             LIMIT 1
         ';
 
@@ -100,6 +103,26 @@ function getSpecialOffer($productVariantId)
         echo $e->getMessage();
         return false;
     }
+}
+
+//check if a product variant has a special offer
+public function isSpecialOffer($productVariantId){
+    try {
+        $sql = '
+            SELECT *
+            FROM special_offers
+            WHERE product_variant_id = :product_variant_id
+        ';
+
+        $query = $this->db->prepare($sql);
+        $query->bindParam(':product_variant_id', $productVariantId);
+        $query->execute();
+        $result = $query->fetch(PDO::FETCH_ASSOC);
+        return $result;
+    } catch (\PDOException $e) {
+        echo $e->getMessage();
+    }
+
 }
         //get the special offer details by product variant id
         //from the product_variants_details view

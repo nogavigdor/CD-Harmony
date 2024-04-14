@@ -16,6 +16,7 @@ if(SessionManager::getSessionVariable('error_message')){
   <script defer src="<?php echo BASE_URL; ?>/src/js/constants.js"></script> 
   <script defer src="<?php echo BASE_URL; ?>/src/js/app.js"></script>  
   <link href="<?php echo BASE_URL ?>/src/css/output.css" rel="stylesheet">
+  <link href="<?php echo BASE_URL ?>/src/css/custom.css" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">

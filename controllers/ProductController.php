@@ -3,6 +3,8 @@ namespace Controllers;
 
 use Models\ProductModel;
 
+use Models\SpecialOfferModel;
+
 use Controllers\AdminController;
 
 use Services\ImageHandler;
@@ -14,12 +16,13 @@ use DataAccess\DBConnector;
 use Services\Validator;
 
 use PDO;
-
+use Stripe\BillingPortal\Session;
 
 class ProductController
 {
     private $db;
     private $productModel;
+    private $specialOfferModel;
     private $imageHandler;
     private $sessionManager;
     private $validator;
@@ -27,6 +30,7 @@ class ProductController
     public function __construct()
     {
         $this->productModel = new ProductModel();
+        $this->specialOfferModel = new SpecialOfferModel();
         $this->imageHandler = new ImageHandler();
         $this->validator = new Validator();
         $this->sessionManager = new SessionManager();
@@ -628,6 +632,7 @@ public function showAddProductForm()
         }
     }
 
+    //soft delete
     public function deleteProductVariant(){
         try {
 
@@ -652,7 +657,15 @@ public function showAddProductForm()
             }
    
        
-           
+           //check if product variant has a special offer - if yes - send a message that
+           //a special offer must be deleted first
+              $specialOffer = $this->specialOfferModel->isSpecialOffer($variantId);
+                if ($specialOffer) {
+                    SessionManager::setSessionVariable('alert_message', 'The product variant has a special offer. Please delete the special offer first.');;
+                    header('Location:' . BASE_URL . '/admin/products');
+                    exit();
+                }
+            //no special offer - delete the product variant (soft delete - mark as deleted in the database)
             //returns product id of the product variant
             $productVariantDeleted = $this->productModel->deleteProductVariant($variantId);
             if (!$productVariantDeleted) {
@@ -676,6 +689,24 @@ public function showAddProductForm()
             SessionManager::setSessionVariable('error_message', $error_message);
             header('Location:' . BASE_URL . '/admin/products');
             exit();
+        }
+    }
+
+    public function search($searchTerm) {
+        try {
+
+            if (empty($searchTerm)) {
+                // Redirect backs to admin page in case the search term is empty
+                SessionManager::setSessionVariable('alert_message', 'Please enter a search term.');
+                header('Location:' . BASE_URL.'/admin/products');
+                exit();
+            }
+            $productsList = $this->productModel->search($searchTerm); // Call the method on the instance
+
+            // Load the view to display the products
+            include 'views/admin/products.php';
+        } catch (\PDOException $ex) {
+            error_log('PDO Exception: ' . $ex->getMessage());
         }
     }
 }
