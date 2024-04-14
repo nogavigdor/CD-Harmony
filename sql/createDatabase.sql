@@ -239,7 +239,7 @@
                     user_id int,
                     FOREIGN KEY (user_id) REFERENCES users(user_id),
                     FOREIGN KEY (order_status_id) REFERENCES orders_status(order_status_id),
-                    FOREIGN KEY (order_payment_id) REFERENCES orders_payment(order_payment_id),
+                    FOREIGN KEY (order_payment_id) REFERENCES orders_payment(order_payment_id)
                 ) ENGINE=InnoDB;
 
                 CREATE TABLE orders_lines

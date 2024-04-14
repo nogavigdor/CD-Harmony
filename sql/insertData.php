@@ -1,6 +1,10 @@
 <?php   
 use DataAccess\DBConnector;
 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+
 //require(__DIR__ . '/db_constants.php');
 
 // Create an instance of the DBConnector
@@ -102,26 +106,30 @@ try {
            // Insert album data into the product_variants table for "new" condition
            $priceNew = rand(1, 5) * 10 + 89.95;
            $quantityInStockNew = rand(0, 10);
+           $isDeleted = 0;
            $conditionId = 1;
-           $stmtConditionNew = $db->prepare("INSERT INTO product_variants (price, quantity_in_stock, product_id, condition_id, creation_date) VALUES (:priceNew, :quantityInStockNew, :productId, :conditionId, :creationDate)");
+           $stmtConditionNew = $db->prepare("INSERT INTO product_variants (price, quantity_in_stock, product_id, condition_id, creation_date, is_deleted) VALUES (:priceNew, :quantityInStockNew, :productId, :conditionId, :creationDate, :isDeleted)");
            $stmtConditionNew->bindParam(':priceNew', $priceNew, PDO::PARAM_INT);
            $stmtConditionNew->bindParam(':quantityInStockNew', $quantityInStockNew, PDO::PARAM_INT);
            $stmtConditionNew->bindParam(':productId', $productId, PDO::PARAM_INT);
            $stmtConditionNew->bindParam(':conditionId', $conditionId, PDO::PARAM_INT);
-              $stmtConditionNew->bindParam(':creationDate', $creationDate, PDO::PARAM_STR); 
+           $stmtConditionNew->bindParam(':creationDate', $creationDate, PDO::PARAM_STR); 
+           $stmtConditionNew->bindParam(':isDeleted', $isDeleted, PDO::PARAM_INT);   
            $stmtConditionNew->execute();
 
            // Insert album data into the product_variants table for "used" condition
            $priceUsed = $priceNew - 40;
            $quantityInStockUsed = rand(0, 10);
            $conditionId = 2;
+           $isDeleted = 0;
            // Insert album data into the product_variants table for "new" condition
-           $stmtConditionUsed = $db->prepare("INSERT INTO product_variants (price, quantity_in_stock, product_id, condition_id, creation_date) VALUES (:priceUsed, :quantityInStockUsed, :productId, :conditionId, :creationDate)");
+           $stmtConditionUsed = $db->prepare("INSERT INTO product_variants (price, quantity_in_stock, product_id, condition_id, creation_date, is_deleted) VALUES (:priceUsed, :quantityInStockUsed, :productId, :conditionId, :creationDate, :isDeleted)");
            $stmtConditionUsed->bindParam(':priceUsed', $priceUsed, PDO::PARAM_INT);
            $stmtConditionUsed->bindParam(':quantityInStockUsed', $quantityInStockUsed, PDO::PARAM_INT);
            $stmtConditionUsed->bindParam(':productId', $productId, PDO::PARAM_INT);
            $stmtConditionUsed->bindParam(':conditionId', $conditionId, PDO::PARAM_INT);
            $stmtConditionUsed->bindParam(':creationDate', $creationDate, PDO::PARAM_STR);
+           $stmtConditionUsed->bindParam(':isDeleted', $isDeleted, PDO::PARAM_INT);
            $stmtConditionUsed->execute();
        
         }
@@ -1292,66 +1300,69 @@ $stmt->execute();
 
    
 
-// Insert an admin to users
+
+// Prepare and execute the statement for inserting an admin
+function insertUser($db, $first_name, $last_name, $email, $user_password, $creation_date, $role_id)
+{
+    $stmt = $db->prepare('INSERT INTO users (first_name, last_name, email, user_password, creation_date, role_id) VALUES (:first_name, :last_name, :email, :user_password, :creation_date, :role_id)');
+
+    $stmt->bindParam(':first_name', $first_name, PDO::PARAM_STR);
+    $stmt->bindParam(':last_name', $last_name, PDO::PARAM_STR);
+    $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+    $stmt->bindParam(':user_password', $user_password, PDO::PARAM_STR);
+    $stmt->bindParam(':creation_date', $creation_date, PDO::PARAM_STR);
+    $stmt->bindParam(':role_id', $role_id, PDO::PARAM_INT);
+
+    $stmt->execute();
+}
+
+
+
+// Set parameter values for Admin
+
 $setPassAdmin = 'AdminPassword';
 $iterationsAdmin = ['cost' => 15];
 $HpassAdmin = password_hash($setPassAdmin, PASSWORD_BCRYPT, $iterationsAdmin);
-
-// Prepare and execute the statement for inserting an admin
-$sqlAdmin = "INSERT INTO users (first_name, last_name, email, user_password, creation_date, role_id) VALUES (:first_name, :last_name, :email, :user_password, :creation_date, :role_id)";
-$stmtAdmin = $db->prepare($sqlAdmin);
-
-// Bind parameters
-$stmtAdmin->bindParam(':first_name', $first_nameAdmin, PDO::PARAM_STR);
-$stmtAdmin->bindParam(':last_name', $last_nameAdmin, PDO::PARAM_STR);
-$stmtAdmin->bindParam(':email', $emailAdmin, PDO::PARAM_STR);
-$stmtAdmin->bindParam(':user_password', $HpassAdmin, PDO::PARAM_STR);
-$stmtAdmin->bindParam(':creation_date', $creation_dateAdmin, PDO::PARAM_STR);
-$stmtAdmin->bindParam(':role_id', $role_idAdmin, PDO::PARAM_INT);
-
-// Set parameter values
 $first_nameAdmin = 'Noga';
 $last_nameAdmin = 'Vigdor';
 $emailAdmin = 'admin@cdharmony.dk';
 $creation_dateAdmin = date('Y-m-d H:i:s');
-$role_idAdmin = 1; 
+$role_idAdmin = 1;
 
-// Execute the statement
-$stmtAdmin->execute();
+insertUser($db, $first_nameAdmin, $last_nameAdmin, $emailAdmin, $HpassAdmin, $creation_dateAdmin, $role_idAdmin);
 
 // Get the last inserted user_id
 $user_idAdmin = $db->lastInsertId();
+
+// set parameter values for editor
+$setPassEditor = "EditorPassword";
+$iterationsEditor = ['cost' => 15];
+$HpassEditor = password_hash($setPassEditor, PASSWORD_BCRYPT, $iterationsEditor);
+$first_nameEditor = 'Jorgen';
+$last_nameEditor = 'Jorgensen';
+$emailEditor = 'jorgen@dot.com';
+$creation_dateEditor = date('Y-m-d H:i:s');
+$role_idEditor = 2;
+
+insertUser($db, $first_nameEditor, $last_nameEditor, $emailEditor, $HpassEditor, $creation_dateEditor, $role_idEditor);
+
 
 // Insert a customer to users
 $setPassCustomer = 'CustomerPassword';
 $iterationsCustomer = ['cost' => 15];
 $HpassCustomer = password_hash($setPassCustomer, PASSWORD_BCRYPT, $iterationsCustomer);
 
-// Prepare and execute the statement for inserting a customer
-$sqlCustomer = "INSERT INTO users (first_name, last_name, email, user_password, creation_date, role_id) VALUES (:first_name, :last_name, :email, :user_password, :creation_date, :role_id)";
-$stmtCustomer = $db->prepare($sqlCustomer);
 
 // Set parameter values
-$first_nameCustomer = 'John';
-$last_nameCustomer = 'Doe';
+$first_nameCustomer = 'Noga';
+$last_nameCustomer = 'Vigdor';
 $emailCustomer = 'noga.vigdor@gmail.com';
 $creation_dateCustomer = date('Y-m-d H:i:s');
 $role_idCustomer = 3; 
 
+insertUser($db, $first_nameCustomer, $last_nameCustomer, $emailCustomer, $HpassCustomer, $creation_dateCustomer, $role_idCustomer);
 
-// Bind parameters
-$stmtCustomer->bindParam(':first_name', $first_nameCustomer, PDO::PARAM_STR);
-$stmtCustomer->bindParam(':last_name', $last_nameCustomer, PDO::PARAM_STR);
-$stmtCustomer->bindParam(':email', $emailCustomer, PDO::PARAM_STR);
-$stmtCustomer->bindParam(':user_password', $HpassCustomer, PDO::PARAM_STR);
-$stmtCustomer->bindParam(':creation_date', $creation_dateCustomer, PDO::PARAM_STR);
-$stmtCustomer->bindParam(':role_id', $role_idCustomer, PDO::PARAM_INT);
-
-
-// Execute the statement
-$stmtCustomer->execute();
-
-
+$customerId = $db->lastInsertId();
 //$stmt->debugDumpParams();
 
 
@@ -1457,7 +1468,9 @@ date('Y-m-d H:i:s'), date('Y-m-d H:i:s'), $user_idAdmin);
 
 
 // Get the last inserted product_variant_id
-$productVariantId = $db->lastInsertId();
+//$productVariantId = $db->lastInsertId();
+/*
+$productVariantId = 29;
 $discountSum = 50;
 $specialOfferTitle = "Exclusive Deal";
 $specialOfferDescription = "Get a special discount!";
@@ -1476,7 +1489,91 @@ $stmtSpecialOffer->bindParam(':startDate', $specialOfferStartDate, PDO::PARAM_ST
 $stmtSpecialOffer->bindParam(':endDate', $specialOfferEndDate, PDO::PARAM_STR);
 $stmtSpecialOffer->bindParam(':productVariantId', $productVariantId, PDO::PARAM_INT);
 $stmtSpecialOffer->execute();
+*/
 
+//Insert orders
+function insertOrder($db, $creationDate, $orderStatusId, $orderPaymentId, $userId) {
+    $stmt = $db->prepare('INSERT INTO orders (creation_date, order_status_id, order_payment_id, user_id) VALUES (:creation_date, :order_status_id, :order_payment_id, :user_id)');
+
+    $stmt->bindParam(':creation_date', $creationDate, PDO::PARAM_STR);
+    $stmt->bindParam(':order_status_id', $orderStatusId, PDO::PARAM_INT);
+    $stmt->bindParam(':order_payment_id', $orderPaymentId, PDO::PARAM_INT);
+    $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+
+    $stmt->execute();
+}
+
+/*
+//Insert orders lines
+
+function insertOrderLine($db, $quantity, $price, $order_id, $product_variant_id) {
+    $stmt = $db->prepare('INSERT INTO orders_lines (quantity, price, order_id, product_variant_id) VALUES (:quantity, :price, :order_id, :product_variant_id)');
+
+    $stmt->bindParam(':quantity', $quantity, PDO::PARAM_INT);
+    $stmt->bindParam(':price', $price, PDO::PARAM_INT);
+    $stmt->bindParam(':order_id', $order_id, PDO::PARAM_INT);
+    $stmt->bindParam(':product_variant_id', $product_variant_id, PDO::PARAM_INT);
+
+    $stmt->execute();
+}
+
+//first order
+
+$creationDate = date('Y-m-d H:i:s');
+$orderStatusId = 1;
+$orderPaymentId = 2;
+$userId = $customerId;
+
+
+
+insertOrder($db, $creationDate, $orderStatusId, $orderPaymentId, $userId);
+
+$quantity = 2;
+$price = 97;
+$orderId = $db->lastInsertId();
+$product_variant_id = 29;
+
+insertOrderLine($db, $quantity, $price, $orderId, $product_variant_id);
+
+//Insert orders lines
+$quantity = 1;
+$price = 50;
+$orderId = $db->lastInsertId();
+$product_variant_id = 976;
+
+insertOrderLine($db, $quantity, $price, $orderId, $product_variant_id);
+
+
+//second order
+
+$creationDate = date('Y-m-d H:i:s');
+$orderStatusId = 1;
+$orderPaymentId = 2;
+$userId = $customerId;
+
+insertOrder($db, $creationDate, $orderStatusId, $orderPaymentId, $userId);
+
+$quantity = 3;
+$price = 79;
+$orderId = $db->lastInsertId();
+$product_variant_id = 966;
+
+insertOrderLine($db, $quantity, $price, $orderId, $product_variant_id);
+
+$quantity = 1;
+$price = 50;
+$orderId = $db->lastInsertId();
+$product_variant_id = 669;
+
+insertOrderLine($db, $quantity, $price, $orderId, $product_variant_id);
+
+$quantity = 5;
+$price = 99;
+$orderId = $db->lastInsertId();
+$product_variant_id = 211;
+
+insertOrderLine($db, $quantity, $price, $orderId, $product_variant_id);
+*/
 
  // Commit the transaction
  $db->commit();
