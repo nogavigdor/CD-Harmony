@@ -135,8 +135,8 @@ try {
         }
 
     }
-
-
+//last insterted product variant to use later on for insertion of speciall offer. s
+$lastInsertedProductVariant =  $db->lastInsertId();
 
 //insertion of Zipcode table
 
@@ -1273,7 +1273,7 @@ foreach ($data as $row) {
 
 // Prepare the SQL statement
 $sql = "INSERT INTO `company_details` (`company_details_id`, `company_name`, `street`, `email`, `phone_number`, `opening_hours`, `postal_code_id`) 
-        VALUES (NULL, :company_name, :street, :email, :phone_number, :logo, :opening_hours, :postal_code_id)";
+        VALUES (NULL, :company_name, :street, :email, :phone_number, :opening_hours, :postal_code_id)";
 
 // Prepare the statement
 $stmt = $db->prepare($sql);
@@ -1467,9 +1467,9 @@ date('Y-m-d H:i:s'), date('Y-m-d H:i:s'), $user_idAdmin);
 
 // Get the last inserted product_variant_id
 //$productVariantId = $db->lastInsertId();
-/*
-$productVariantId = 29;
-$discountSum = 50;
+
+$productVariantId = $lastInsertedProductVariant;
+$discountSum = 30;
 $specialOfferTitle = "Exclusive Deal";
 $specialOfferDescription = "Get a special discount!";
 $specialOfferStartDate = date('Y-m-d'); // Set the start date to the current date and time
@@ -1487,7 +1487,7 @@ $stmtSpecialOffer->bindParam(':startDate', $specialOfferStartDate, PDO::PARAM_ST
 $stmtSpecialOffer->bindParam(':endDate', $specialOfferEndDate, PDO::PARAM_STR);
 $stmtSpecialOffer->bindParam(':productVariantId', $productVariantId, PDO::PARAM_INT);
 $stmtSpecialOffer->execute();
-*/
+
 
 //Insert orders
 function insertOrder($db, $creationDate, $orderStatusId, $orderPaymentId, $userId) {
@@ -1501,7 +1501,7 @@ function insertOrder($db, $creationDate, $orderStatusId, $orderPaymentId, $userI
     $stmt->execute();
 }
 
-/*
+
 //Insert orders lines
 
 function insertOrderLine($db, $quantity, $price, $order_id, $product_variant_id) {
@@ -1526,20 +1526,21 @@ $userId = $customerId;
 
 insertOrder($db, $creationDate, $orderStatusId, $orderPaymentId, $userId);
 
+$orderId1 = $db->lastInsertId();
+
 $quantity = 2;
 $price = 97;
-$orderId = $db->lastInsertId();
-$product_variant_id = 29;
+$product_variant_id = $lastInsertedProductVariant;
 
-insertOrderLine($db, $quantity, $price, $orderId, $product_variant_id);
+insertOrderLine($db, $quantity, $price, $orderId1, $product_variant_id);
 
 //Insert orders lines
 $quantity = 1;
 $price = 50;
-$orderId = $db->lastInsertId();
-$product_variant_id = 976;
 
-insertOrderLine($db, $quantity, $price, $orderId, $product_variant_id);
+$product_variant_id = $lastInsertedProductVariant-777;
+
+insertOrderLine($db, $quantity, $price, $orderId1, $product_variant_id);
 
 
 //second order
@@ -1551,27 +1552,26 @@ $userId = $customerId;
 
 insertOrder($db, $creationDate, $orderStatusId, $orderPaymentId, $userId);
 
+$orderId2 = $db->lastInsertId();
+
 $quantity = 3;
 $price = 79;
-$orderId = $db->lastInsertId();
-$product_variant_id = 966;
+$product_variant_id = $lastInsertedProductVariant-32;
 
-insertOrderLine($db, $quantity, $price, $orderId, $product_variant_id);
+insertOrderLine($db, $quantity, $price, $orderId2, $product_variant_id);
 
 $quantity = 1;
 $price = 50;
-$orderId = $db->lastInsertId();
-$product_variant_id = 669;
+$product_variant_id = $lastInsertedProductVariant-67;
 
-insertOrderLine($db, $quantity, $price, $orderId, $product_variant_id);
+insertOrderLine($db, $quantity, $price, $orderId2, $product_variant_id);
 
 $quantity = 5;
 $price = 99;
-$orderId = $db->lastInsertId();
-$product_variant_id = 211;
+$product_variant_id = $product_variant_id = $lastInsertedProductVariant;-502;
 
-insertOrderLine($db, $quantity, $price, $orderId, $product_variant_id);
-*/
+insertOrderLine($db, $quantity, $price, $orderId2, $product_variant_id);
+
 
  // Commit the transaction
  $db->commit();

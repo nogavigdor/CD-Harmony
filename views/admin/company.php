@@ -32,9 +32,6 @@ $csrfToken = SessionManager::generateCSRFToken()
                         <label for="postal_code_id" class="block text-sm font-medium text-gray-700">Postal Code:</label>
                         <input type="text" id="postal_code_id" name="postal_code_id" value="<?php echo $company->postal_code_id; ?>" class="mt-1 p-2 border rounded-md">
 
-                        <label for="city" class="block text-sm font-medium text-gray-700">City:</label>
-                        <input type="text" id="city" name="city" value="<?php echo $company->city; ?>" class="mt-1 p-2 border rounded-md">
-
                         <label for="opening_hours" class="block text-sm font-medium text-gray-700">Opening Hours:</label>
                         <input type="text" id="opening_hours" name="opening_hours" value="<?php echo $company->opening_hours; ?>" class="mt-1 p-2 border rounded-md">
 

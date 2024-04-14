@@ -65,7 +65,6 @@ class CompanyController
                     $companyId=htmlspecialchars(trim($_POST['company_details_id']));
                     $companyName = htmlspecialchars(trim($_POST['company_name']));
                     $street = htmlspecialchars(trim($_POST['street']));
-                    $city = htmlspecialchars(trim($_POST['city']));
                     $postalCodeId = htmlspecialchars(trim($_POST['postal_code_id']));
                     $openingHours = htmlspecialchars(trim($_POST['opening_hours']));
                     $phoneNumber = htmlspecialchars(trim($_POST['phone_number']));
@@ -96,15 +95,6 @@ class CompanyController
                         }
                     }
 
-                    //validate city
-                    if (empty($city)) {
-                        $errType['city'] = 'City is required';
-                    } else {
-                      if ($this->validator->validateName($city))  
-                        {
-                            $errType['city'] = 'City should be up to 50 characters';
-                        }
-                    }
 
                     //validate postal code
                     if (empty($postalCodeId)) {
