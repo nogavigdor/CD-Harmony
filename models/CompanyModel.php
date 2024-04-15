@@ -65,26 +65,21 @@ class CompanyModel
     
 }
 
+//checks if the postal code exists in the database
 public function validatePostalCode($postalCodeId)
-{
-    try {
-        $query = $this->db->prepare('
-            SELECT city FROM postal_codes
-            WHERE postal_code_id = :postal_code_id
-        ');
+    {
+        try {
+            $query = $this->db->prepare('
+                SELECT * FROM postal_codes WHERE postal_code_id = :postal_code_id
+            ');
 
-        $query->bindParam(':postal_code_id', $postalCodeId);
-        $query->execute();
+            $query->bindParam(':postal_code_id', $postalCodeId);
+            $query->execute();
 
-        return $query->execute();
-    } catch (\PDOException $e) {
-        // Handle errors (log or rethrow the exception)
-        throw $e;
+            return $query->rowCount() > 0;
+        } catch (\PDOException $e) {
+            // Handle errors (log or rethrow the exception)
+            throw $e;
+        }
     }
-
-
-
-
-
-}
 }

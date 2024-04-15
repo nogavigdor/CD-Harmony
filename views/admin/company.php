@@ -51,5 +51,55 @@ $csrfToken = SessionManager::generateCSRFToken()
 </div>
 
 </main>
+<script>
+    // Submit company details form asynchronously
+document.querySelector('form').addEventListener('submit', async (e) => {
+    e.preventDefault(); // Prevent the default form submission
 
+    const formData = new FormData(e.target); // Create a FormData object from the form
+
+    try {
+        const response = await fetch('<?php echo BASE_URL.'/admin/company' ?>', {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const responseData = await response.json(); // Parse the JSON response
+       // console.log(responseData)
+
+        // Check if the response indicates success
+        if (responseData.success) {
+            // Show success message
+            alert(responseData.message);
+       
+        } else {
+            // Show error message
+            alert(responseData.message);
+            // Display validation errors, if any
+            if (responseData.errors) {
+               
+                Object.keys(responseData.errors).forEach((key) => {
+                const errorMessage = responseData.errors[key];
+                const inputElement = document.querySelector(`[name="${key}"]`);
+                if (inputElement) {
+                        // Display the error message next to the input field
+                        const errorElement = document.createElement('span');
+                        errorElement.classList.add('text-red-500', 'text-sm');
+                        errorElement.textContent = errorMessage;
+                        inputElement.parentNode.insertBefore(errorElement, inputElement.nextSibling);
+    }
+                });
+            }
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while processing your request. Please try again later.');
+    }
+});
+
+</script>
 <?php include 'admin-footer.php' ?>
