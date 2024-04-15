@@ -1490,7 +1490,7 @@ $specialOffers = [
         'discountSum' => 30,
         'startDate' => date('Y-m-d'),
         'endDate' => date('Y-m-d', strtotime('+60 days')),
-        'productVariantId' => $productVariantId-342,
+        'productVariantId' => $productVariantId-971,
         'isHomepage' => 1
     ],
     [
@@ -1499,7 +1499,7 @@ $specialOffers = [
         'discountSum' => 20,
         'startDate' => date('Y-m-d'),
         'endDate' => date('Y-m-d', strtotime('+30 days')),
-        'productVariantId' => $productVariantId-555,
+        'productVariantId' => $productVariantId-330,
         'isHomepage' => 0
     ],
     [
