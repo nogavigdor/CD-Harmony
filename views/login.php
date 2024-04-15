@@ -28,7 +28,7 @@ $errors_out = SessionManager::getSessionVariable('errors_output');
     </form>
 
     <div class="mt-4">
-        <p>Don't have an account? <a text-accent text-xl href="./signup">Register here</a></p>
+        <p>Don't have an account? <a class="text-secondary underline " href="./signup">Register here</a></p>
     </div>
 </div>
 <script>

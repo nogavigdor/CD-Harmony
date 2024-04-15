@@ -33,8 +33,13 @@ class UserController {
         //and converts any special characters to HTML entities
         if (isset($_POST['first_name']))
           $first_name =htmlspecialchars(trim( $_POST['first_name']));
+        else
+          $first_name = "";
         if (isset($_POST['last_name']))
           $last_name = htmlspecialchars(trim( $_POST['last_name']));
+        else
+            $last_name = "";
+        
         if (isset($_POST['email']))
             $email = htmlspecialchars(trim($_POST['email']));
         if (isset($_POST['password']))
