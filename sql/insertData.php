@@ -1468,25 +1468,63 @@ date('Y-m-d H:i:s'), date('Y-m-d H:i:s'), $user_idAdmin);
 // Get the last inserted product_variant_id
 //$productVariantId = $db->lastInsertId();
 
+function createSpecialOffer($db, $title, $description, $discountSum, $startDate, $endDate, $productVariantId, $isHomepage) {
+    $stmtSpecialOffer = $db->prepare("INSERT INTO special_offers (title, special_offer_description, is_homepage, discount_sum, special_offer_start_date, special_offer_end_date, product_variant_id) VALUES (:title, :special_offer_description, :is_homepage, :discount_sum, :startDate, :endDate, :productVariantId)");
+
+    $stmtSpecialOffer->bindParam(':title', $title, PDO::PARAM_STR);
+    $stmtSpecialOffer->bindParam(':special_offer_description', $description, PDO::PARAM_STR);
+    $stmtSpecialOffer->bindParam(':is_homepage', $isHomepage, PDO::PARAM_BOOL);
+    $stmtSpecialOffer->bindParam(':discount_sum', $discountSum, PDO::PARAM_INT);
+    $stmtSpecialOffer->bindParam(':startDate', $startDate, PDO::PARAM_STR);
+    $stmtSpecialOffer->bindParam(':endDate', $endDate, PDO::PARAM_STR);
+    $stmtSpecialOffer->bindParam(':productVariantId', $productVariantId, PDO::PARAM_INT);
+
+    $stmtSpecialOffer->execute();
+}
+
 $productVariantId = $lastInsertedProductVariant;
-$discountSum = 30;
-$specialOfferTitle = "Exclusive Deal";
-$specialOfferDescription = "Get a special discount!";
-$specialOfferStartDate = date('Y-m-d'); // Set the start date to the current date and time
-$specialOfferEndDate = date('Y-m-d', strtotime('+60 days')); // Set the end date 30 days from now
-$isHomepage = 1;
+$specialOffers = [
+    [
+        'title' => "Exclusive Discount",
+        'description' => "Get a special discount on selected items!",
+        'discountSum' => 30,
+        'startDate' => date('Y-m-d'),
+        'endDate' => date('Y-m-d', strtotime('+60 days')),
+        'productVariantId' => $productVariantId-342,
+        'isHomepage' => 1
+    ],
+    [
+        'title' => "Limited Time Offer",
+        'description' => "Hurry up! Limited time offer on popular products!",
+        'discountSum' => 20,
+        'startDate' => date('Y-m-d'),
+        'endDate' => date('Y-m-d', strtotime('+30 days')),
+        'productVariantId' => $productVariantId-555,
+        'isHomepage' => 0
+    ],
+    [
+        'title' => "Special Deal",
+        'description' => "Grab this special deal on new arrivals!",
+        'discountSum' => 15,
+        'startDate' => date('Y-m-d', strtotime('+10 days')), // Starts 10 days from now
+        'endDate' => date('Y-m-d', strtotime('+45 days')),
+        'productVariantId' => $productVariantId-780,
+        'isHomepage' => 0
+    ]
+];
 
-
-$stmtSpecialOffer = $db->prepare("INSERT INTO special_offers (title, special_offer_description, is_homepage, discount_sum, special_offer_start_date, special_offer_end_date, product_variant_id) VALUES (:title, :special_offer_description, :is_homepage, :discount_sum, :startDate, :endDate, :productVariantId)");
-
-$stmtSpecialOffer->bindParam(':title', $specialOfferTitle, PDO::PARAM_STR);
-$stmtSpecialOffer->bindParam(':special_offer_description', $specialOfferDescription, PDO::PARAM_STR);
-$stmtSpecialOffer->bindParam(':is_homepage', $isHomepage, PDO::PARAM_BOOL);
-$stmtSpecialOffer->bindParam(':discount_sum', $discountSum, PDO::PARAM_INT);
-$stmtSpecialOffer->bindParam(':startDate', $specialOfferStartDate, PDO::PARAM_STR);
-$stmtSpecialOffer->bindParam(':endDate', $specialOfferEndDate, PDO::PARAM_STR);
-$stmtSpecialOffer->bindParam(':productVariantId', $productVariantId, PDO::PARAM_INT);
-$stmtSpecialOffer->execute();
+foreach ($specialOffers as $offer) {
+    createSpecialOffer(
+        $db,
+        $offer['title'],
+        $offer['description'],
+        $offer['discountSum'],
+        $offer['startDate'],
+        $offer['endDate'],
+        $offer['productVariantId'],
+        $offer['isHomepage']
+    );
+}
 
 
 //Insert orders
