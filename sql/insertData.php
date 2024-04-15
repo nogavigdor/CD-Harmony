@@ -1518,7 +1518,7 @@ function insertOrderLine($db, $quantity, $price, $order_id, $product_variant_id)
 //first order
 
 $creationDate = date('Y-m-d H:i:s');
-$orderStatusId = 1;
+$orderStatusId = 3;
 $orderPaymentId = 2;
 $userId = $customerId;
 
@@ -1546,7 +1546,7 @@ insertOrderLine($db, $quantity, $price, $orderId1, $product_variant_id);
 //second order
 
 $creationDate = date('Y-m-d H:i:s');
-$orderStatusId = 1;
+$orderStatusId = 3;
 $orderPaymentId = 2;
 $userId = $customerId;
 

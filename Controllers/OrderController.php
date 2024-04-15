@@ -53,11 +53,14 @@ class OrderController {
                 return is_numeric($key);
             }, ARRAY_FILTER_USE_KEY);
 
-   
-  
+            //later on, when stripe webook is implemented, the payment status and order status will be dynamically updated
+            //by listening to the stripe webhook events. As for now, the payment status and order status are hardcoded
+            //once the order is placed - when stripe redicrect to the order confirmation page upon successful payment
+            $order_payment_id = 2; // 2 for 'Paid' (payment status)
+            $order_status_id = 3; // 3 for 'Completed' (delivery status)
            
             // Insert into orders - sending to model for transaction to be handled
-            $orderId = $this->orderModel->createOrder($userId, $productItems);
+            $orderId = $this->orderModel->createOrder($userId, $productItems, $order_status_id = 3, $order_payment_id = 2);
             
             $invoiceDetails = $this->orderModel->getInvoiceDetails($orderId);
             

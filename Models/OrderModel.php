@@ -17,7 +17,7 @@ use Exception;
 
         // Insert the order details into the database after 
         // an ordder has been placed
-        public function createOrder($userId, $items) {
+        public function createOrder($userId, $items, $order_status_id, $order_payment_id) {
             
             try {
                 // Start a transaction
@@ -29,8 +29,8 @@ use Exception;
                     VALUES (NOW(), :order_status_id, :order_payment_id, :user_id)
                 ");
                 $stmt->execute([
-                    'order_status_id' => 1, // 1 for 'Pending' (delivery statys)
-                    'order_payment_id' => 2, // 1 for 'Paid'
+                    'order_status_id' => $order_status_id, // 3 for 'Completed' (delivery statys)
+                    'order_payment_id' => $order_payment_id, // 1 for 'Paid'
                     'user_id' => $userId
                 ]);
 
