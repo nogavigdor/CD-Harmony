@@ -35,7 +35,7 @@ class OrderController {
         //If not logged in as a customer the user will be redirected to the login page
         if (!(SessionManager::isLoggedIn()&& SessionManager::isCustomer())) { 
             // User is not logged in, redirect to the login page
-            SessionManager::setSessionVariable('error_message', 'Please login in order to checkout.');
+            SessionManager::setSessionVariable('alert_message', 'Please login in order to checkout.');
             header('Location:'. BASE_URL.   '/login');
             exit;
         }
@@ -97,6 +97,7 @@ class OrderController {
                 
             sendMail($to, $subject, $message, $from, $headers);
             //if order is placed successfully
+            
              // Empty the cart
              SessionManager::unsetSessionVariable('cart');
 

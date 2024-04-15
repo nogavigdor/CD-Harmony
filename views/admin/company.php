@@ -69,30 +69,19 @@ document.querySelector('form').addEventListener('submit', async (e) => {
         }
 
         const responseData = await response.json(); // Parse the JSON response
-       // console.log(responseData)
+      
 
-        // Check if the response indicates success
         if (responseData.success) {
             // Show success message
             alert(responseData.message);
-       
         } else {
-            // Show error message
-            alert(responseData.message);
             // Display validation errors, if any
             if (responseData.errors) {
-               
+                let errorMessage = 'Validation failed:\n';
                 Object.keys(responseData.errors).forEach((key) => {
-                const errorMessage = responseData.errors[key];
-                const inputElement = document.querySelector(`[name="${key}"]`);
-                if (inputElement) {
-                        // Display the error message next to the input field
-                        const errorElement = document.createElement('span');
-                        errorElement.classList.add('text-red-500', 'text-sm');
-                        errorElement.textContent = errorMessage;
-                        inputElement.parentNode.insertBefore(errorElement, inputElement.nextSibling);
-    }
+                    errorMessage += `${responseData.errors[key]}\n`;
                 });
+                alert(errorMessage);
             }
         }
     } catch (error) {
@@ -100,6 +89,5 @@ document.querySelector('form').addEventListener('submit', async (e) => {
         alert('An error occurred while processing your request. Please try again later.');
     }
 });
-
 </script>
 <?php include 'admin-footer.php' ?>

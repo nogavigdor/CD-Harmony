@@ -93,13 +93,15 @@ class CheckoutController {
         }
     }
 
+    //for future implementation - not used in this project
+    //this function is used to handle the stripe webhook events
     public function stripeWebhook(){
         // Retrieve the request's body and parse it as JSON
         $input = file_get_contents('php://input');
         $event = json_decode($input);
 
         // Verify the webhook signature
-        $webhookSecret = STRIPE_WEBHOOK_SECRET; // You should store this securely
+        $webhookSecret = STRIPE_WEBHOOK_SECRET; 
         $signatureHeader = $_SERVER['HTTP_STRIPE_SIGNATURE'];
 
         try {
@@ -144,7 +146,8 @@ class CheckoutController {
     }
 
 
-
+//This checkout function is not used in this project.
+//It is used to handle the checkout process without using stripe
     public function checkout() {
  
         // Check if the user is logged and  a customer before checkout

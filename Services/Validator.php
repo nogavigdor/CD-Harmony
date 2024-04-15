@@ -161,4 +161,27 @@
                 }
                 return null; // Passed the check
             }
+
+            /*validate Danish phone numbers of the following format:
+            
+                +4512345678
+                004512345678
+                4512345678
+                12 34 56 78
+                1234 5678
+                12345678
+                12 345678
+            */
+            public function validatePhoneNumber($phoneNumber) {
+                $regexp = "/^(?:\+45|0045|45)?\s?(?:\d{8}|\d{2}\s?\d{2}\s?\d{2}\s?\d{2}|\d{4}\s?\d{4})$/";
+                //if not phone number was entered
+                if (empty($phoneNumber)) 
+                    return "Please write your phone number.";
+                //if the phone number is not in a valid format
+                elseif (!preg_match($regexp,$phoneNumber))
+                    return "This is an invalid phone number.";
+                // Passed all checks
+                else
+                return null;
+            }
         }

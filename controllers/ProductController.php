@@ -111,7 +111,7 @@ class ProductController
     }
 
     //presentation for the admin products page which can be sorted
-    public function getAllVariants($sortBy = null, $orderBy = DESC)
+    public function getAllVariants($sortBy = null, $orderBy = 'DESC')
     {
         try {
             if (SessionManager::isAdmin()) {

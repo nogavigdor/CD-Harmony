@@ -83,25 +83,45 @@ class CompanyController
                 // Validate postal code
                 if (empty($postalCodeId)) {
                     $errType['postal_code_id'] = 'Postal code is required';
-                } elseif ($this->companyModel->validatePostalCode($postalCodeId)) {
+                } elseif (!$this->companyModel->isPostalCode($postalCodeId)) {
                     $errType['postal_code_id'] = 'Please enter an existing postal code in Denmark';
                 }
-            
-                // Validate opening hours, email, and phone number similarly...
 
-                if (!empty($errType)) {
-                    echo "no errors";
-                    exit();
-                    return json_encode(['success' => false, 'message' => 'Validation failed', 'errors' => $errType]);
-
+                if (empty($openingHours)){
+                    $errType['opening_hours'] = 'Opening hours is required';
+                } elseif ($this->validator->validateTitle($openingHours)) {
+                    $errType['opening_hours'] = 'Opening hours should be up to 100 characters';
                 }
-             
+
+                if(empty($phoneNumber)){
+                    $errType['phone_number'] = 'Phone number is required';
+                } elseif ($this->validator->validatePhoneNumber($phoneNumber)) {
+                    $errType['phone_number'] = 'Please enter a valid phone number';
+                }
+
+                // Validate email
+                if (empty($email)) {
+                    $errType['email'] = 'Email is required';
+                } elseif ($this->validator->validateEmail($email)) {
+                    $errType['email'] = 'Please enter a valid email address';
+                }
+
+                //if there are any validation errors, return the errors
+                if (!empty($errType)) {
+                    echo json_encode(['success' => false, 'errors' => $errType]);
+                    return;
+                }
+                 
+                
                 // Update the company details
                 $success = $this->companyModel->updateCompanyDetails($companyId, $companyName, $street, $postalCodeId, $openingHours, $email, $phoneNumber);
+               
                 if ($success) {
-                    return json_encode(['success' => true, 'message' => 'Company details were updated successfully']);
+                    echo json_encode(['success' => true, 'message' => 'Company details were updated successfully']);
+                    return;
                 } else {
-                    return json_encode(['success' => false, 'message' => 'Company details could not be updated']);
+                    echo json_encode(['success' => false, 'message' => 'Company details could not be updated']);
+                    return;
                 }
             }
         } catch (\PDOException $e) {
