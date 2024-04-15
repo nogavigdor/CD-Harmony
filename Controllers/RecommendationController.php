@@ -17,20 +17,7 @@ class RecommendationController {
         $this->userModel = new UserModel();
     }
 
-    public function getRecommendations($userId) {
-      
-        if ($this->userModel->hasMadePurchase($userId)) {
-            // Use user behavior-based recommendation
-            return $this->recommendationModel->getRecommendationsBasedOnUserBehavior($userId);
-        } else {
-            // Use product-based recommendation
-            return $this->recommendationtModel->getRecommendationsBasedOnProduct();
-        }
-    }
-
-    public function getRecommendentProductsByTag($tag) {
-        return $this->recommendationModel->getProductsByTags($tag);
-    }
+   
 
     /**
      * Get recommended products for the product details page
@@ -42,5 +29,28 @@ class RecommendationController {
         $recommendedProductsByTags = $this->recommendationModel->getRecommendationBasedOnSharedTags($productId);
         return $recommendedProductsByTags;
     }
+
+    public function getRecommendentProductsByTag($tag) {
+        return $this->recommendationModel->getProductsByTags($tag);
+    }
+
+    /**
+     * For future implementation
+     * Recommend products based on user behavior
+     * Get recommended products for the home page
+     * @return array
+     */
+    public function getRecommendations($userId) {
+      
+        if ($this->userModel->hasMadePurchase($userId)) {
+            // Use user behavior-based recommendation
+            return $this->recommendationModel->getRecommendationsBasedOnUserBehavior($userId);
+        } else {
+            // Use product-based recommendation
+            return $this->recommendationtModel->getRecommendationsBasedOnProduct();
+        }
+    }
+
+
 
 }

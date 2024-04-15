@@ -89,7 +89,7 @@ class AdminController
               //if the user is not found or the password is incorrect redirect back to the admin login page      
         } else {
             $errorMessage = 'Please enter valid credentials.';
-            SessionManager::setSessionVariable('error_message', $errorMessage);
+            SessionManager::setSessionVariable('alert_message', $errorMessage);
             header('Location:'. BASE_URL. '/admin-login');
             exit();
       

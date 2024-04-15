@@ -378,7 +378,7 @@ class SpecialOfferController
        
             //if special offer is set to display on the homepage, it can't be deleted
             if ($isHomepage['is_homepage']) {
-              SessionManager::setSessionVariable('alert_message', 'Special Offer is on the homepage and cannot be deleted');
+              SessionManager::setSessionVariable('error_message', 'Special Offer is on the homepage and cannot be deleted');
                 header('Location: ' . BASE_URL . '/admin/special-offers');
                 exit();
             }

@@ -79,7 +79,7 @@ class UserController {
                 $errType['general'] = 'Email already exists. Please try again with a different email.'; 
                 //if the user was not created successfully, the user will be redirected to the signup page
                 SessionManager::setSessionVariable('output_errors', $errType);
-                SessionManager::setSessionVariable('error_message', $email . ' already exists. Please try to signup with a different email.');
+                SessionManager::setSessionVariable('alert_message', $email . ' already exists. Please try to signup with a different email.');
                 header("Location: " . BASE_URL . "/signup");
                 exit();
             }
@@ -90,7 +90,7 @@ class UserController {
         else //if there were errors, the user will be redirected to the signup page
         {
             $errType['general'] = 'Please correct your input fields and try again.';
-            SessionManager::setSessionVariable('error_message', 'Please correct your input fields and try again.');
+            SessionManager::setSessionVariable('alert_message', 'Please correct your input fields and try again.');
             //the error messages will be stored in the session variables
             SessionManager::setSessionVariable('output_errors',$errType);
             SessionManager::setSessionVariable('email_input', $email);
@@ -153,7 +153,7 @@ class UserController {
             //the user will see the input fields with the values he/she has entered
             $_SESSION['email_input'] = $_POST['email'];
             //sets the error message in the session variable
-            SessionManager::setSessionVariable('error_message', 'Please check your email or passwor and try to log in.');
+            SessionManager::setSessionVariable('alert_message', 'Please check your email or passwor and try to log in.');
           
             header("Location: " . BASE_URL . "/login");
             exit();
@@ -188,7 +188,7 @@ class UserController {
 
                 include 'views/acount.php';
             } else {
-                SessionManager::setSessionVariable('error_message', 'Please login to view your account.');  
+                SessionManager::setSessionVariable('alert_message', 'Please login to view your account.');  
                 header("Location: " . BASE_URL . "/login");
                 exit(); 
             }
@@ -204,7 +204,7 @@ class UserController {
                 $user = $this->userModel->getUserById($user_id);
                 include 'views/account-information.php';
             } else {
-                SessionManager::setSessionVariable('error_message', 'Please login to view your account.');  
+                SessionManager::setSessionVariable('alert_message', 'Please login to view your account.');  
                 header("Location: " . BASE_URL . "/login");
                 exit(); 
             }

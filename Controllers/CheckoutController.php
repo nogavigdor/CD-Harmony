@@ -28,7 +28,7 @@ class CheckoutController {
 
             if (!SessionManager::isCustomer()) {
                 // User is not logged in as a customer, redirect to the login page
-                SessionManager::setSessionVariable('error_message', 'Please login in order to checkout.');
+                SessionManager::setSessionVariable('alert_message', 'Please login in order to checkout.');
                 header('Location:'. BASE_URL. '/login');
                 exit;
             }
