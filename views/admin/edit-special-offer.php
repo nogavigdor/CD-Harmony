@@ -56,13 +56,13 @@ $csrfToken=SessionManager::generateCSRFToken();
                     <div class="mb-4">
                       
                         <p><?="Price: " . $offerDetails['price'] ?? ''; ?> DKK</p>
-                           
                 <!-- Discount Sum -->
                 <div class="mb-4">
+                    <input type="hidden" name="specialOfferId" id="specialOfferId" value="<?= $offer['special_offer_id'] ?? ''; ?>">
                     <label for="discount" class="block text-sm font-medium text-gray-700">Discount Sum:</label>
                     <input type="number" name="discount" id="discount" value="<?= $offer['discount_sum'] ?? ''; ?>"
                         class="h-8 w-full mt-1 p-2 block   rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                        <input type="hidden" name="specialOfferId" id="specialOfferId" value="<?= $offer['special_offer_id)'] ?? ''; ?>">    
+                           <input type="hidden" name="is_homepage" id="is_homepage" value="<?= $offer['is_homepage'] ?? ''; ?>">
                 <input class="btn" id="SubmitUpdateSpecialOfferForm" type="submit" value="Update Special Offer"/>
               
             </form>
@@ -80,6 +80,7 @@ $csrfToken=SessionManager::generateCSRFToken();
     let discount = document.getElementById('discount').value;
     let specialOfferId = document.getElementById('specialOfferId').value;
     let _method = document.getElementById('_method').value;
+    let isHomepage = document.getElementById('is_homepage').value;
     let formData = new FormData();
     formData.append('csrfToken', csrfToken);
     formData.append('specialOfferTitle', specialOfferTitle);
@@ -87,8 +88,10 @@ $csrfToken=SessionManager::generateCSRFToken();
     formData.append('endDate', endDate);
     formData.append('specialOfferDescription', specialOfferDescription);
     formData.append('discount', discount);
+    formData.append('isHomepage', isHomepage);
     formData.append('specialOfferId', specialOfferId);
     formData.append('_method', _method);
+
 
     try {
         const response = await fetch('<?php echo BASE_URL.'/admin/special-offer/update' ?>', {

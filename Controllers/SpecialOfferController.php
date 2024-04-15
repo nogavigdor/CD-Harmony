@@ -106,7 +106,7 @@ class SpecialOfferController
 
     public function addSpecialOffer() {
         try {
-            $this->db->beginTransaction();
+          
     
             // Verify if the user is logged in as an admin
             if (!SessionManager::isAdmin()) {
@@ -194,6 +194,8 @@ class SpecialOfferController
             //get all special offers for the product variant
             $specialOffers = $this->specialOfferModel->getSpecialOffersByVariantId($variantId);
 
+             //check if the new special offer overlaps with any existing special offer
+            //if it does, return an error - as a product variant can only have one special offer at a specific time.
             foreach ($specialOffers as $specialOffer) {
                 //the start date of the existing special offer
                 $start1 = $specialOffer['special_offer_start_date'];
@@ -225,12 +227,11 @@ class SpecialOfferController
                 throw new \Exception('There was a problem adding the special offer to the database');
             }
     
-            // Commit transaction
-            $this->db->commit();
+          
             echo json_encode(['status' => 'success', 'message' => 'Special Offer added successfully']);
     
         } catch (\PDOException $ex) {
-            $this->db->rollBack();
+          
             http_response_code(500);
             echo json_encode(['status' => 'error', 'message' => $ex->getMessage()]);
         } catch (\Exception $ex) {
@@ -253,7 +254,7 @@ class SpecialOfferController
 
     public function updateSpecialOffer() {
         try {
-          $this->db->beginTransaction();
+        
             
             // Retrieve form data and sanitize input
             $csrfToken = htmlspecialchars($_POST['csrfToken'] ?? '');
@@ -263,20 +264,24 @@ class SpecialOfferController
             $startDate = htmlspecialchars(trim($_POST['startDate'] ?? ''));
             $endDate = htmlspecialchars(trim($_POST['endDate'] ?? ''));
             $specialOfferId = htmlspecialchars(trim($_POST['specialOfferId'] ?? ''));
+            $isHomepage = htmlspecialchars(trim($_POST['isHomepage'] ?? ''));
             
             // Verify if the user is logged in as an admin
             if (!SessionManager::isAdmin()) {
-                throw new \Exception('Unauthorized access');
+                echo json_encode(['status' => 'error', 'message' => 'Unauthorized access']);
+                return;
             }
             
             // Validate the CSRF token on form submission
             if (!SessionManager::validateCSRFToken($csrfToken)) {
-                throw new \Exception('CSRF token validation failed');
+                echo json_encode(['status' => 'error', 'message' => 'CSRF token validation failed']);
+                return;
             }
             
             // Validate request method
             if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-                throw new \Exception('Invalid request method');
+                echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
+                return;
             }
             
             // Initialize an array to store errors
@@ -308,11 +313,12 @@ class SpecialOfferController
             if (empty($startDate)) {
                 $errors['startDate'] = 'Start date is required';
             }
+
             
             if (empty($endDate)) {
                 $errors['endDate'] = 'End date is required';
             }
-            
+         
             // Validate date range so that the start date is before or equals to the end date
             if ($startDate && $endDate) {
                 $dateRangeValidation = $this->validator->validateDateRange($startDate, $endDate);
@@ -320,6 +326,19 @@ class SpecialOfferController
                     $errors['dateRange'] = $dateRangeValidation;
                 }
             }
+        
+
+            //if isHomepage is set to 1 (on homepage), check if the current date is within the offer's date range
+            if ($isHomepage == 1) {
+                $currentDate = date('Y-m-d');
+                // Check if the current date falls within the offer's date range    
+                $dateInRange = ($currentDate >= $startDate && $currentDate <= $endDate);
+                if (!$dateInRange) {
+                    $errors['dateRange'] = 'The offer is displayed on the homepage. Therefore the date range should include the current date';
+                }
+            }
+
+            
     
             // Handle errors
               // Check for errors
@@ -328,24 +347,17 @@ class SpecialOfferController
                 echo json_encode($errors);
                 return;
             }
-            echo $specialOfferId;
-            exit();
+
+
             // update special offer in the database
             $success = $this->specialOfferModel->updateSpecialOffer($specialOfferId, $specialOfferTitle, $specialOfferDescription, $discount, $startDate, $endDate);
             if (!$success) {
                 throw new \Exception('There was a problem updating the special offer in the database');
             }
 
-             
-            $this->db->commit();
             echo json_encode(['status' => 'success', 'message' => 'Special Offer updated successfully']);
             
           
-            
-        } catch (\PDOException $ex) {
-           $this->db->rollBack();
-            error_log('PDO Exception: ' . $ex->getMessage());
-            echo 'An error occurred while processing your request';
         } catch (\Exception $ex) {
             error_log('Exception: ' . $ex->getMessage());
             echo 'An error occurred while processing your request';

@@ -101,7 +101,7 @@ $csrfToken=SessionManager::generateCSRFToken();
 
             if (data.status === 'success') {
                 alert('Special Offer was created successfully');
-                window.location.href = '<?php echo BASE_URL.'/admin/special-offers' ?>';
+                window.location.href = '<?php echo BASE_URL.'/admin/products' ?>';
             } else {
                 if (data && Object.keys(data).length > 0) {
                     let errorMessage = '';

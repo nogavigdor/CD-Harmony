@@ -279,6 +279,7 @@ public function isSpecialOffer($productVariantId){
               $query->bindParam(':special_offer_start_date', $startDate);
               $query->bindParam(':special_offer_end_date', $endDate);
               $result = $query->execute();
+
               return $result;
  
             } catch (\PDOException $e) {

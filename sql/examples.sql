@@ -7,7 +7,7 @@ LEFT JOIN orders_lines op ON c.product_id = op.product_id
 GROUP BY c.product_name
 ORDER BY sales_count DESC; 
 
---selects all the users who are customers and purchased 2 old cds of elton john (can be any album) 
+--selects all the users who are customers and purchased 2 used cds of elton john (can be any album) 
 
 SELECT u.*
 FROM users u

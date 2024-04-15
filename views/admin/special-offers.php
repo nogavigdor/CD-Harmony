@@ -100,7 +100,7 @@
             })
             .catch(error => {
                 console.error('Error:', error);
-                // You can add further error handling here if needed
+             
             });
         }
 
