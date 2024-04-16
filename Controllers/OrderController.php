@@ -67,7 +67,9 @@ class OrderController {
             $to = SessionManager::getSessionVariable('user')['email'];
             $subject = 'Order Confirmation';
             $from = ADMIN_EMAIL;
-            $headers = "From: " . ADMIN_EMAIL . "\r\n";
+            $fromName = 'CD Harmony';
+           // $headers = "From: " . ADMIN_EMAIL . "\r\n";
+            $headers = "From: $fromName <$from>\r\n";
             $message = 
            "<p><strong>Order ID:</strong> {$orderId}</p>
             <p><strong>Order Date:</strong> {$invoiceDetails[0]['order_date']}</p>

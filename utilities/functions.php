@@ -25,7 +25,8 @@ function sendMail($to, $subject, $message, $from='', $headers='') {
     try {
         //Server settings
         $mail = new PHPMailer(true);
-                                
+              
+        //SMTP configuration
         $mail->SMTPDebug = SMTP::DEBUG_SERVER;
         $mail->isSMTP();
         $mail->SMTPAuth = true;
@@ -38,14 +39,16 @@ function sendMail($to, $subject, $message, $from='', $headers='') {
         $mail->Username = SMTP_USERNAME;
         $mail->Password = SMTP_PASSWORD;   
         //$mail->setFrom($email, $first_name);
-        $mail->isHTML();
+      
+
+        //set sender and recipient
         $mail->From = $from;
-        $mail->addAddress($to, "Noga");
+        $mail->addAddress($to, "CD Harmony");
     
+        //set email content
+        $mail->isHTML();
         $mail->Subject = $subject;
-        $mail->Body = $message;
-                                        
-                                        
+        $mail->Body = $message;                                    
                                         
          $mail->send();
     } catch (Exception $e) {
