@@ -36,54 +36,6 @@ class SessionManager
         unset($_SESSION[$key]);
     }
     }
-    //returns true if the user is logged in
-    public static function isLoggedIn()
-    {
-        if (!isset($_SESSION['user']['logged_in'])) {
-            return false;
-        }
-        return self::getSessionVariable('user')['logged_in'];
-    }
-    //logs out the user
-    public static function logout()
-    {
-        // Check if the user is an admin or not
-        if (SessionManager::isAdmin()) {
-            self::unsetSessionVariable('user');
-            header("Location: " . BASE_URL . "/admin-login");
-            SessionManager::setSessionVariable('success_message', 'You have been logged out successfully.');
-        }
-        // If the user is not an admin, log out as a normal user
-        else {
-            self::unsetSessionVariable('user');
-            header("Location: " . BASE_URL . "/login");
-            SessionManager::setSessionVariable('success_message', 'You have been logged out successfully. See you soon!');
-        }
-    }
-
-    //returns true is the user is customer
-    public static function isCustomer()
-    {
-        if (!isset($_SESSION['user']['role'])) {
-            return false;
-        }
-        return self::getSessionVariable('user')['role'] == 3;
-    }
-
-    //returns true if the user is an admin
-    public static function isAdmin()
-    {
-     
-
-        
-        if (!isset($_SESSION['user']['role'])) {
-            return false;
-        }
-        
-        
-        return self::getSessionVariable('user')['role'] == 1;
-    }
-
 
 
     public static function getSessionId()
@@ -128,10 +80,14 @@ class SessionManager
             return true; // Token is valid
         } elseif ($csrfTokenData && $token !== $csrfTokenData['value']) {
             // Token doesn't match
-            SessionManager::setSessionVariable('output_alert', "The form could not be submitted due to a security issue. Please refresh the page and try again.");
+            SessionManager::setSessionVariable('error_message',
+             "The form could not be submitted due to a security issue. Please refresh the page and try again.");
         } else {
             // Token expired
-            SessionManager::setSessionVariable('output_alert', "Your session has expired, and the form is no longer valid. Please refresh the page and try submitting the form again. If the issue persists, log in again and retry.");
+            SessionManager::setSessionVariable('error_message',
+             "Your session has expired, and the form is no longer valid.
+              Please refresh the page and try submitting the form again.
+               If the issue persists, log in again and retry.");
         }
     
         return false; // Validation failed

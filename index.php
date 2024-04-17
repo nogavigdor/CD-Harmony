@@ -80,18 +80,21 @@ route('/cdharmony/cart/stripe-checkout', 'GET', function () {
     $controller->stripeCheckout();
 });
 
-//stripe webhook
+//stripe webhook - for handling stripe events - for future implementation
+/*
 route('/cdharmony/cart/stripe-webhook', 'GET', function () {
     $controller = new CheckoutController();
     $controller->stripeWebhook();
 });
+*/
 
-// Checkout cart
+// Checkout cart - was replace by stripeCheckout()
+/*
 route('/cdharmony/cart/checkout', 'POST', function () {
     $controller = new CheckoutController();
     $controller->checkout();
 });
-
+*/
 // View cart
 route('/cdharmony/cart', 'GET', function () {
     $controller = new CartController();
@@ -273,12 +276,12 @@ route('/cdharmony/admin/', 'GET', function () {
     $controller = new AdminController();
     $controller->adminView();
 });
-
+/*
 route('/cdharmony/admin/product/', 'GET', function () {
     $controller = new ProductController();
     $controller->showProductList();
 });
-
+*/
 route('/cdharmony/admin-login', 'GET', function() {
     $controller = new AdminController();
     $controller->adminLoginView();

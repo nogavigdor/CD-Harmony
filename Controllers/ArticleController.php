@@ -5,6 +5,7 @@ use Models\ArticleModel;
 use Models\UserModel;
 use Services\SessionManager;
 use Services\Validator;
+use Controllers\LoginController;
 
 class ArticleController 
 {
@@ -24,18 +25,18 @@ class ArticleController
 
     }
     
-
+/*This feature is not fully implemented yet. It is supposed to show articles by tag.
     public function showArticlesByTag($tag)
     {
         try {
             $articleModel = new ArticleModel(); 
-            $articles = $articlesModel->getArticlesByTag($tag); 
+            $articles = $articleModel->getArticlesByTag($tag); 
             include 'views/articles_section.php';
         } catch (\PDOException $ex) {
             error_log('PDO Exception: ' . $ex->getMessage());
         }
     }
-
+*/
 
     public function showRecentArticles()
     {
@@ -81,7 +82,7 @@ class ArticleController
     public function showArticleForm()
     {
         try {
-            if (!SessionManager::isAdmin()) {
+            if (!LoginController::isAdmin()) {
                  // User is not logged in as an admin, redirect to the home page
                  SessionManager::setSessionVariable('error_message', 'You are not authorized to view this page.');
                  header('Location:'. BASE_URL.   '/');
@@ -104,7 +105,7 @@ class ArticleController
                 exit();
             }
 
-            if (!SessionManager::isAdmin()) {
+            if (!LoginController::isAdmin()) {
                 // User is not logged in as an admin, redirect to the home page
                 SessionManager::setSessionVariable('error_message', 'You are not authorized to view this page.');
                 header('Location:'. BASE_URL.   '/');
@@ -169,7 +170,7 @@ class ArticleController
         try {
             
          
-            if (!SessionManager::isAdmin()) {
+            if (!LoginController::isAdmin()) {
                 // User is not logged in as an admin, redirect to the home page
                 SessionManager::setSessionVariable('error_message', 'You are not authorized to view this page.');
                 header('Location:'. BASE_URL.   '/');
@@ -199,7 +200,7 @@ class ArticleController
                 exit();
             }
 
-            if (!SessionManager::isAdmin()) {
+            if (!LoginController::isAdmin()) {
                 // User is not logged in as an admin, redirect to the home page
                 SessionManager::setSessionVariable('error_message', 'You are not authorized to view this page.');
                 header('Location:'. BASE_URL.   '/');
@@ -259,7 +260,7 @@ class ArticleController
     public function deleteArticle($id){
         try {
 
-            if (!SessionManager::isAdmin()) {
+            if (!LoginController::isAdmin()) {
                 // User is not logged in as an admin, redirect to the home page
                 SessionManager::setSessionVariable('error_message', 'You are not authorized to view this page.');
                 header('Location:'. BASE_URL.   '/');

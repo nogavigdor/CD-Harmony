@@ -4,6 +4,7 @@ namespace Controllers;
 use Models\UserModel;
 use Models\OrderModel;
 use Models\CartModel;
+use Controllers\LoginController;
 use \Services\Validator;
 use \Services\SessionManager;
 
@@ -184,7 +185,7 @@ class UserController {
 
     public function acountView(){
         try {
-            if (SessionManager::isLoggedIn()&&SessionManager::isCustomer()) {
+            if (LoginController::isLoggedIn()&&LoginController::isCustomer()) {
                 $user_id = SessionManager::getSessionVariable('user')['usr_id'];
                 //get all the orders of the logged in user
                 $ordersDetails = $this->orderModel->getOrderDetailsById($user_id);

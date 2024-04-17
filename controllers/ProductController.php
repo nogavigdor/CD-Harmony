@@ -14,6 +14,7 @@ use Services\SessionManager;
 use DataAccess\DBConnector;
 
 use Services\Validator;
+use Controllers\LoginController;
 
 use PDO;
 use Stripe\BillingPortal\Session;
@@ -114,7 +115,7 @@ class ProductController
     public function getAllVariants($sortBy = null, $orderBy = 'DESC')
     {
         try {
-            if (SessionManager::isAdmin()) {
+            if (LoginController::isAdmin()) {
                 return $this->productModel->getAllVariants($sortBy = 'variant_creation_date', $orderBy); // Call the method on the instance
             }else {
                 // Redirect to the login page in case the user is not logged as admin
@@ -141,7 +142,7 @@ class ProductController
 public function showAdminProducts($sortBy = 'product_variant_id', $orderedBy = 'DESC')
     {
         try {
-            if (!SessionManager::isAdmin()) {
+            if (!LoginController::isAdmin()) {
                 // Redirect to the homepage in case the user is not logged as admin
                 header('Location:' . BASE_URL);
                 exit();
@@ -176,7 +177,7 @@ public function showAdminProducts($sortBy = 'product_variant_id', $orderedBy = '
 public function showAddProductForm()
 {
     try {
-        if (SessionManager::isAdmin()) {
+        if (LoginController::isAdmin()) {
             // Load the view to display the product form
             include 'views/admin/add-product.php';
         } else {
@@ -196,7 +197,7 @@ public function showAddProductForm()
        try {
             $this->db->beginTransaction();
             //verifying if the user is logged as admin
-            if (!SessionManager::isAdmin()) {
+            if (!LoginController::isAdmin()) {
                 throw new \Exception('Unauthorized access');
             }
 
@@ -401,7 +402,7 @@ public function showAddProductForm()
     public function showEditProductForm($id)
     {
         try {
-            if (SessionManager::isAdmin()) {
+            if (LoginController::isAdmin()) {
                 // Get the product details from the database
               
                 $variantDetails = $this->productModel->getVariantDetails($id);
@@ -424,7 +425,7 @@ public function showAddProductForm()
         try {
             $this->db->beginTransaction();
             //verifying if the user is logged as admin
-            if (!SessionManager::isAdmin()) {
+            if (!LoginController::isAdmin()) {
                 throw new \Exception('Unauthorized access');
             }
 
@@ -649,7 +650,7 @@ public function showAddProductForm()
             }
 
             //verifying if the user is logged as admin
-            if (!SessionManager::isAdmin()) {
+            if (!LoginController::isAdmin()) {
                 // Send message to user about unauthorized access
                 SessionManager::setSessionVariable('error_message', 'Unauthorized access.');
                 header('Location:' . BASE_URL . '/admin/products');

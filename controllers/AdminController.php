@@ -6,6 +6,8 @@ use Models\ProductModel;
 use Models\ArticleModel;
 use Models\SpecialOfferModel;
 use Models\CompanyModel;
+use Stripe\BillingPortal\Session;
+
 class AdminController
 {
     public function __construct()
@@ -44,6 +46,12 @@ class AdminController
     //checks admin login and redirects to the admin page upon successful login
     public function adminLogin()
     {
+        //checks if the POST request is sent
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            SessionManager::setSessionVariable('error_message', 'Invalid request method.');
+            header('Location:'. BASE_URL. '/admin-login');
+            exit();
+        }
          // Validate the CSRF token on form submission - to ensure that only by authorized admin users
          if (!(SessionManager::validateCSRFToken($_POST['csrf_token']))) 
          {

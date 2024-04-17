@@ -1,5 +1,6 @@
 <?php
 namespace Controllers;
+use Controllers\LoginController;
 use Models\ProductModel;
 use Models\OrderModel;
 use Services\SessionManager;
@@ -26,7 +27,7 @@ class CheckoutController {
     public function stripeCheckout(){
         try{
 
-            if (!SessionManager::isCustomer()) {
+            if (!LoginController::isCustomer()) {
                 // User is not logged in as a customer, redirect to the login page
                 SessionManager::setSessionVariable('alert_message', 'Please login in order to checkout.');
                 header('Location:'. BASE_URL. '/login');
@@ -92,7 +93,7 @@ class CheckoutController {
             error_log('PDO Exception: ' . $ex->getMessage());
         }
     }
-
+/*
     //for future implementation - not used in this project
     //this function is used to handle the stripe webhook events
     public function stripeWebhook(){
@@ -111,9 +112,10 @@ class CheckoutController {
             exit();
         }
 
-        // Handle the event
+        // Handle the event - for future implementation
         //I've built it as switch statement in order to handle different type of events
         //in case I'll need to add more events in the future
+        
         switch ($event->type) {
             case 'payment_intent.refunded':
                 // A payment intent has been refunded
@@ -133,7 +135,7 @@ class CheckoutController {
         http_response_code(200);
 
     }
-
+*/
     public function checkoutView(){
 
         try{
@@ -146,12 +148,13 @@ class CheckoutController {
     }
 
 
-//This checkout function is not used in this project.
-//It is used to handle the checkout process without using stripe
+//This checkout function is not used in this project since the checkout is handled by stripe
+//It is used to handle the checkout process without using  stripe
+/*
     public function checkout() {
  
         // Check if the user is logged and  a customer before checkout
-        if (!SessionManager::isCustomer()) {
+        if (!LoginController::isCustomer()) {
             // User is not logged in as a customer, redirect to the login page
 ;
             SessionManager::setSessionVariable('error_message', 'Please login in order to checkout.');
@@ -186,5 +189,5 @@ class CheckoutController {
               
             }
         }
-
+*/
 }

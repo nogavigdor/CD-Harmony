@@ -3,6 +3,7 @@ namespace Controllers;
 use Models\ProductModel;
 use Models\OrderModel;
 use Services\SessionManager;
+use Controllers\LoginController;
 
 
 use PHPMailer\PHPMailer\PHPMailer;
@@ -33,7 +34,7 @@ class OrderController {
         
         // Check if the user is logged in as a customer before checkout
         //If not logged in as a customer the user will be redirected to the login page
-        if (!(SessionManager::isLoggedIn()&& SessionManager::isCustomer())) { 
+        if (!(LoginController::isLoggedIn()&& LoginController::isCustomer())) { 
             // User is not logged in, redirect to the login page
             SessionManager::setSessionVariable('alert_message', 'Please login in order to checkout.');
             header('Location:'. BASE_URL.   '/login');
@@ -129,7 +130,7 @@ public function showOrders()
 {
     try {
         // Checks if the user is logged in as an admin before showing the orders
-        if (!SessionManager::isAdmin()) {
+        if (!LoginController::isAdmin()) {
             // User is not logged in as an admin, redirect to the home page
             SessionManager::setSessionVariable('error_message', 'You are not authorized to view this page.');
             header('Location:'. BASE_URL.   '/login');
@@ -150,7 +151,7 @@ public function showInvoice($orderId)
 {
     try {
         // Checks if the user is logged in as an admin before showing the invoice
-        if (!SessionManager::isAdmin()) {
+        if (!LoginController::isAdmin()) {
             // User is not logged in as an admin, redirect to the home page
             SessionManager::setSessionVariable('error_message', 'You are not authorized to view this page.');
             header('Location:'. BASE_URL.   '/login');
@@ -179,7 +180,7 @@ public function showInvoice($orderId)
     {
         try {
             // Checks if the user is logged in as an admin before showing the invoice
-            if (!SessionManager::isAdmin()) {
+            if (!LoginController::isAdmin()) {
                 // User is not logged in as an admin, redirect to the home page
                 SessionManager::setSessionVariable('error_message', 'You are not authorized to view this page.');
                 header('Location:'. BASE_URL.   '/login');

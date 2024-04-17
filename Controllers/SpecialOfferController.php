@@ -4,6 +4,7 @@ use Services\SessionManager;
 use Services\Validator;
 use Models\SpecialOfferModel;
 use DataAccess\DBConnector;
+use Controllers\LoginController;
 
 
 class SpecialOfferController 
@@ -109,7 +110,7 @@ class SpecialOfferController
           
     
             // Verify if the user is logged in as an admin
-            if (!SessionManager::isAdmin()) {
+            if (!LoginController::isAdmin()) {
                 throw new \Exception('Unauthorized access');
             }
     
@@ -267,7 +268,7 @@ class SpecialOfferController
             $isHomepage = htmlspecialchars(trim($_POST['isHomepage'] ?? ''));
             
             // Verify if the user is logged in as an admin
-            if (!SessionManager::isAdmin()) {
+            if (!LoginController::isAdmin()) {
                 echo json_encode(['status' => 'error', 'message' => 'Unauthorized access']);
                 return;
             }
@@ -367,7 +368,7 @@ class SpecialOfferController
     public function deleteSpecialOffer() {
         try {
             // Verify if the user is logged in as an admin
-            if (!SessionManager::isAdmin()) {
+            if (!LoginController::isAdmin()) {
                 throw new \Exception('Unauthorized access');
             }
 

@@ -1,5 +1,7 @@
 <?php
-use Services\SessionManager; 
+use Controllers\LoginController;
+use Services\SessionManager;
+ 
 $session = new SessionManager();
 $session->startSession();
 $csrfToken=SessionManager::generateCSRFToken();
@@ -95,7 +97,7 @@ $csrfToken=SessionManager::generateCSRFToken();
 
                 <?php
                 // Login Button
-                if (SessionManager::isLoggedIn()&&SessionManager::isCustomer()) {  ?>
+                if (LoginController::isLoggedIn()&&LoginController::isCustomer()) {  ?>
        
                     
                    <!-- User Symbol -->
