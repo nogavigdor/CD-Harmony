@@ -43,12 +43,6 @@ class SessionManager
         return session_id();
     }
 
-    //returns the user id of the logged in user
-    public static function getLoggedInUserId()
-    {
-        return self::getSessionVariable('user')['id'];
-    }
-
     // generates a random string of 32 characters which is used as a CSRF token
     public static function generateCSRFToken() {
         $csrfToken = bin2hex(random_bytes(32));
