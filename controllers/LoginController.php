@@ -37,13 +37,15 @@ class LoginController
           if (self::isAdmin()) {
             SessionManager::unsetSessionVariable('user');
               header("Location: " . BASE_URL . "/admin-login");
-              SessionManager::setSessionVariable('success_message', 'You have been logged out successfully.');
+              SessionManager::setSessionVariable('success_message',
+               'You have been logged out successfully.');
           }
           // If the user is not an admin, log out as a normal user
           else {
               SessionManager::unsetSessionVariable('user');
               header("Location: " . BASE_URL . "/login");
-              SessionManager::setSessionVariable('success_message', 'You have been logged out successfully. See you soon!');
+              SessionManager::setSessionVariable('success_message',
+               'You have been logged out successfully. See you soon!');
           }
       }
   
