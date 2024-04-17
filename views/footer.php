@@ -10,12 +10,13 @@
  <div class="flex w-2/3 justify-between">
         <div>  <a href="<?php echo BASE_URL; ?>"><img src="<?php echo BASE_URL; ?>/src/assets/logo_no_background.png" alt="CD Harmony Logo" class="w-64"></a></div>
         <div class="flex flex-col">
-        <header class="footer-title">Company Details</header>
-        <p><?php echo $company->company_name; ?></p>
-        <p>Address: <?php echo $company->street." ".$company->postal_code_id." ".$company->city; ?></p>
-        <p>Email: <a href="mailto:<?php echo $company->email; ?>"><?php echo $company->email; ?></a></p>
-        <p>Phone Number: <?php echo $company->phone_number; ?></p>
-        <p>Opening Hours: <?php echo $company->opening_hours; ?></p>
+          <header class="footer-title">Company Details</header>
+          <p><?= htmlspecialchars($company->company_name) ?></p>
+          <p>Address: <?= htmlspecialchars($company->street . " " . $company->postal_code_id . " " . $company->city) ?></p>
+          <p>Email: <a href="mailto:<?= htmlspecialchars($company->email) ?>"><?= htmlspecialchars($company->email) ?></a></p>
+          <p>Phone Number: <?= htmlspecialchars($company->phone_number) ?></p>
+          <p>Opening Hours: <?= htmlspecialchars($company->opening_hours) ?></p>
+        </div>
     </div>
 
   </div>

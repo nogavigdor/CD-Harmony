@@ -14,19 +14,19 @@ $csrfToken=SessionManager::generateCSRFToken();
             <?php
             ?>
             <form action="<?= BASE_URL.'/admin/article/edit' ?>" method="POST" enctype="multipart/form-data" class="max-w-lg mx-auto p-4 bg-white shadow-md rounded-md">
-                <input type="hidden" name="csrf_token" id="csrf_token" value="<?= $csrfToken; ?>"> 
+            <input type="hidden" name="csrf_token" id="csrf_token" value="<?= $csrfToken ?>"> 
                 <h3 class="text-2xl font-semibold text-gray-700">Edit Article</h3>
                 <!-- User ID -->
                 <div class="mb-4">
                     <label for="userId" class="block text-base font-medium text-gray-700">Select User:</label>
                     <select name="userId" id="userId" class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                         <?php foreach ($usersAdminAndEditor as $user): ?>
-                            <option value="<?= $user['user_id']; ?>" <?= $user['user_id'] == $currentUser? 'selected' : '' ?>>
-                                <?= $user['first_name']." ".$user['last_name'] ?>
+                            <option value="<?= htmlspecialchars($user['user_id']); ?>" <?= $user['user_id'] == $currentUser? 'selected' : '' ?>>
+                                <?= htmlspecialchars($user['first_name']." ".$user['last_name']) ?>
                             </option>
                         <?php endforeach; ?>
-                        </select>
-                 </div>
+                    </select>
+                </div>
                 <!-- Article Title -->
                 <div class="mb-4">
                     <label for="articleTitle" class="block text-base font-medium text-gray-700">Article Title:</label>
@@ -47,7 +47,7 @@ $csrfToken=SessionManager::generateCSRFToken();
                 </div>
  
                 <input class="btn" id="SubmitUpdateArticleForm" type="submit" value="Update Article"/>
-                <input type="hidden" name="article_id" id="article_id" value="<?= $article->article_id ?? ''; ?>">
+                <input type="hidden" name="article_id" id="article_id" value="<?= htmlspecialchars($article->article_id ?? ''); ?>">
                 <input type="hidden" name="_method" id="_method" value="PUT">
             </form>
         </div>

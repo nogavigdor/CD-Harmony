@@ -30,23 +30,22 @@ $articles = $articleModel->getAllArticles();
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($articles as $article) { ?>
+                    <?php foreach ($articles as $article): ?>
                         <tr>
-                            <td class="px-6 py-4 whitespace-nowrap"><?= $article->article_id ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap"><?= $article->title ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap"><?= $article->publish_date ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap"><?= $article->update_date ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap"><?= $article->first_name . ' ' . $article->last_name ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($article->article_id) ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($article->title) ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($article->publish_date) ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($article->update_date) ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($article->first_name . ' ' . $article->last_name) ?></td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                           
-                            <a class="btn" href="<?= BASE_URL . '/admin/article/edit/' . $article->article_id ?>">edit</a>
-                            <form action="<?= BASE_URL . '/admin/article/delete/' . $article->article_id ?>" method="POST">
-                                <input type="hidden" name="_method" value="DELETE">
-                                <button type="submit" class="btn btn-danger">Delete</button>
-                            </form>
+                                <a class="btn" href="<?= htmlspecialchars(BASE_URL . '/admin/article/edit/' . $article->article_id) ?>">edit</a>
+                                <form action="<?= htmlspecialchars(BASE_URL . '/admin/article/delete/' . $article->article_id) ?>" method="POST">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
                             </td>
                         </tr>
-                    <?php } ?>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         <?php } else { ?>

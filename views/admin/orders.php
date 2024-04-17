@@ -38,15 +38,15 @@ use controllers\OrderController;
                 <tbody>
                     <?php foreach ($orders as $order) { ?>
                         <tr>
-                            <td class="px-6 py-4 whitespace-nowrap" ><?= $order['order_id'] ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap"><?= $order['order_date'] ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap"><?= $order['order_status'] ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap"><?= $order['order_payment'] ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap"><?= $order['customer_name'] ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap"><?= $order['customer_email'] ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap"><?= $order['order_subtotal'] ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap"><?= $order['order_discount'] ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap"><?= $order['order_grand_total'] ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($order['order_id']) ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($order['order_date']) ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($order['order_status']) ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($order['order_payment']) ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($order['customer_name']) ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($order['customer_email']) ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($order['order_subtotal']) ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($order['order_discount']) ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($order['order_grand_total']) ?></td>
                             <td class="px-6 py-4 whitespace-nowrap"><a href="<?= BASE_URL . '/admin/invoice/' . $order['order_id'] ?>" class="ml-4 text-green-600 hover:text-green-900">Generate Invoice</a></td>
                         </tr>
                     <?php } ?>

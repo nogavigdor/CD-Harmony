@@ -63,7 +63,7 @@ SessionManager::generateCSRFToken();
                   <div class="mb-4">
                     <label for="tags" class="block text-sm font-medium text-gray-700">Tags (please edit with comma and no space gaps):</label>
                     <textarea   class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                    name="tags" id="tags"><?= $variantDetails->tag_titles ?? ''; ?></textarea>
+                    name="tags" id="tags"><?= htmlspecialchars($variantDetails->tag_titles) ?? ''; ?></textarea>
                 <!-- Current Image Preview -->
                 <div class="mb-4">
                     <label for="currentImage" class="block text-sm font-medium text-gray-700">Current Image:</label>

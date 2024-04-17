@@ -87,18 +87,20 @@ use Services\SessionManager;
             </thead>
             <tbody>
             <?php foreach ($productsList as $product) { ?>
-              <tr>
-                <td><?= $product->product_id ?></td>
-                <td><?= $product->product_variant_id ?></td>
-                <td><?= $product->product_title ?></td>
-                <td><?= $product->artist_title ?></td>
-                <td><?= $product->variant_creation_date ?></td>
+            <tr>
+                <td><?= htmlspecialchars($product->product_id) ?></td>
+                <td><?= htmlspecialchars($product->product_variant_id) ?></td>
+                <td><?= htmlspecialchars($product->product_title) ?></td>
+                <td><?= htmlspecialchars($product->artist_title) ?></td>
+                <td><?= htmlspecialchars($product->variant_creation_date) ?></td>
                 
-                <td>  <a href="<?= BASE_URL . '/admin/product/edit/' . $product->product_id ?>" class="btn btn-primary">Edit</a>
-                      <a href="<?= BASE_URL . '/admin/product/delete/' . $product->product_id ?>" class="btn btn-danger">Delete</a>
-                    </td>
-              </tr>
-              <?php } ?>
+                <td>
+                    <a href="<?= htmlspecialchars(BASE_URL . '/admin/product/edit/' . $product->product_id) ?>" class="btn btn-primary">Edit</a>
+                    <a href="<?= htmlspecialchars(BASE_URL . '/admin/product/delete/' . $product->product_id) ?>" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+            <?php } ?>
+
             </tbody>
           </table>
             <?php } else { ?>

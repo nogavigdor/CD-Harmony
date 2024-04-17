@@ -88,33 +88,32 @@ use Services\SessionManager;
             </thead>
             <tbody>
             <?php foreach ($productsList as $product) { ?>
-              <tr>
-                <td><?= $product->product_id ?></td>
-                <td><?= $product->product_variant_id ?></td>
-                <td><?= $product->condition_title ?></td>
-                <td><?= $product->product_title ?></td>
-                <td><?= $product->artist_title ?></td>
-              
+                <tr>
+                    <td><?= htmlspecialchars($product->product_id) ?></td>
+                    <td><?= htmlspecialchars($product->product_variant_id) ?></td>
+                    <td><?= htmlspecialchars($product->condition_title) ?></td>
+                    <td><?= htmlspecialchars($product->product_title) ?></td>
+                    <td><?= htmlspecialchars($product->artist_title) ?></td>
                 
-                <td>  <a href="<?= BASE_URL . '/admin/product/edit/' . $product->product_variant_id ?>" class="btn btn-primary">Edit</a>
-                <form action="<?= BASE_URL . '/admin/products/' ?>" method="POST">
-                    <input type="hidden" name="_method" value="DELETE">
-                    <input type="hidden" name="csrf_token" value="<?= $csrfToken; ?>">
-                    <input type="hidden" name="product_variant_id" value="<?= $product->product_variant_id ?>">
-                    <input type="hidden" name="product_id" value="<?= $product->product_id ?>">
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                 </form>
-            
                     <td>
-                        <a class="btn btn-primary" href="<?= BASE_URL . '/admin/product/add/special-offer/' . $product->product_variant_id ?>">
+                        <a href="<?= htmlspecialchars(BASE_URL . '/admin/product/edit/' . $product->product_variant_id) ?>" class="btn btn-primary">Edit</a>
+                        <form action="<?= htmlspecialchars(BASE_URL . '/admin/products/') ?>" method="POST">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+                            <input type="hidden" name="product_variant_id" value="<?= htmlspecialchars($product->product_variant_id) ?>">
+                            <input type="hidden" name="product_id" value="<?= htmlspecialchars($product->product_id) ?>">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+
+                    <td>
+                        <a class="btn btn-primary" href="<?= htmlspecialchars(BASE_URL . '/admin/product/add/special-offer/' . $product->product_variant_id) ?>">
                             Add Special Offer
                         </a>
                     </td>
-                 
-              
-             
-              </tr>
-              <?php } ?>
+                </tr>
+            <?php } ?>
+
             </tbody>
           </table>
             <?php } else { ?>

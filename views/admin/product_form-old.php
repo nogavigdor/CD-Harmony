@@ -15,24 +15,24 @@ use Services\SessionManager;
         <?php
         ?>
         <form action="<?php echo BASE_URL.'/admin/product/create' ?>" method="POST" enctype="multipart/form-data" class="max-w-lg mx-auto p-4 bg-white shadow-md rounded-md">
-        <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">      
+        <input type="hidden" name="csrf_token" value="<?= $csrfToken; ?>">      
         <!-- Product Type Selection -->
         <div class="mb-4">
             <label for="productType" class="block text-sm font-medium text-gray-700">Choose Product Type:</label>
             <select name="productType" id="productType" required
                     class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                <option value="cd" <?php echo ($productDetails['product_type'] == 'cd') ? 'selected' : ''; ?>>CD</option>
-                <option value="electronic_device" <?php echo ($productDetails['product_type'] == 'electronic_device') ? 'selected' : ''; ?>>Electronic Device</option>
+                <option value="cd" <?= ($productDetails['product_type'] == 'cd') ? 'selected' : ''; ?>>CD</option>
+                <option value="electronic_device" <?= ($productDetails['product_type'] == 'electronic_device') ? 'selected' : ''; ?>>Electronic Device</option>
             </select>
         </div>
 
         <!-- CD Fields -->
-        <div id="cdFields" style="display: <?php echo ($productDetails['product_type'] == 'cd') ? 'block' : 'none'; ?>;">
+        <div id="cdFields" style="display: <?= htmlspecialchars(($productDetails['product_type'] == 'cd') ? 'block' : 'none'); ?>;">
             <!-- ... (existing CD fields) ... -->
         </div>
 
         <!-- Electronic Device Fields -->
-        <div id="electronicDeviceFields" style="display: <?php echo ($productDetails['product_type'] == 'electronic_device') ? 'block' : 'none'; ?>;">
+        <div id="electronicDeviceFields" style="display: <?= htmlspecialchars(($productDetails['product_type'] == 'electronic_device') ? 'block' : 'none'); ?>;">
             <!-- ... (existing electronic device fields) ... -->
         </div>
 
@@ -46,14 +46,14 @@ use Services\SessionManager;
         <!-- Other Common Fields -->
         <div class="mb-4">
             <label for="title" class="block text-sm font-medium text-gray-700">Title:</label>
-            <input type="text" name="title" id="title" value="<?php echo $productDetails['title'] ?? ''; ?>"
+            <input type="text" name="title" id="title" value="<?= htmlspecialchars($productDetails['title'] ?? ''); ?>"
                 class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
         </div>
 
         <div class="mb-4">
             <label for="description" class="block text-sm font-medium text-gray-700">Description:</label>
             <textarea name="description" id="description"
-                    class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"><?php echo $productDetails['description'] ?? ''; ?></textarea>
+                    class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"><?= htmlspecialchars($productDetails['description'] ?? ''); ?></textarea>
         </div>
 
         <!-- Add any other common fields here -->
