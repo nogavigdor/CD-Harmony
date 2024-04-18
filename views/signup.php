@@ -1,12 +1,12 @@
-    <?php
-    include 'header.php'; 
-    use Services\SessionManager; ?>    
+<?php include 'header.php'; 
+use \Services\SessionManager;
+$csrfToken = SessionManager::generateCSRFToken();?>
 <main class="container mx-auto my-auto px-4 flex flex-col  ">
     <div class=" w-full my-16 bg-white  rounded p-6 shadow-md lg:w-1/3 mx-auto">
         <h1 class="font-headline text-2xl font-semibold mb-6">Customer Signup Form</h1>
 
         <form id="registrationForm" method='POST' action='./signup' novalidate>
-        <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">        
+        <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">      
             <!-- Email -->
             <div class="mb-4 relative">
                 <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>

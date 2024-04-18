@@ -7,9 +7,11 @@ use Models\ArticleModel;
 use Models\SpecialOfferModel;
 use Models\CompanyModel;
 use Stripe\BillingPortal\Session;
+use Controllers\LoginController;
 
 class AdminController
 {
+    
     public function __construct()
     {
         $session = new SessionManager();
@@ -19,7 +21,7 @@ class AdminController
     public function adminView()
     {
            // Check if the user is logged in and if it has an admin role
-           if (self::authorizeAdmin()) {
+           if (loginController::isAdmin()) {
             // User is an admin, show the admin page
             include 'views/admin/adminView.php';
             } else {
@@ -32,7 +34,7 @@ class AdminController
    public function adminLoginView()
    {
           // Check if the user is logged in and if it has an admin role
-          if (self::authorizeAdmin()) {
+          if (LoginController::isAdmin()) {
            // User is an admin, redirect to the admin page
              header('Location:'. BASE_URL. '/admin');
              exit();
@@ -53,9 +55,9 @@ class AdminController
             exit();
         }
          // Validate the CSRF token on form submission - to ensure that only by authorized admin users
+         //(the appropriate alert message is set in the SessionManager class)
          if (!(SessionManager::validateCSRFToken($_POST['csrf_token']))) 
          {
-            SessionManager::setSessionVariable('error_message', 'CSRF token validation failed.');
             header('Location:'. BASE_URL. '/admin-login');
             exit();
          }

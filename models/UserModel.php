@@ -65,7 +65,7 @@ use PDO;
             }
         }   
         //checks if the login details mataches any of the existing users (customers)
-        public function getAccount($email, $role = 3) {
+        public function getAccount($email, $role) {
             try {   
           
                 // Fetching user data from the database based on the email

@@ -7,17 +7,17 @@ use Models\CartModel;
 use Controllers\LoginController;
 use \Services\Validator;
 use \Services\SessionManager;
+use Stripe\BillingPortal\Session;
 
 class UserController {
     
-   private $session;
-   private $userModel;
-   private $orderModel;
 
+    private $userModel;
+    private $orderModel;
+    private $session;
     public function __construct() {
-        $session = new SessionManager();
-        $session->startSession();
-        $this->session = $session;
+        $this->session = new SessionManager();
+        $this->session->startSession();
         $this->userModel = new UserModel();
         $this->orderModel = new OrderModel();
         
@@ -25,10 +25,10 @@ class UserController {
     
     public function createAccount() {
     try {
-        // Check if CSRF token is set and if it matches the one stored in the session
-        if (!isset($_POST['csrf_token']) || !SessionManager::validateCSRFToken($_POST['csrf_token'])) {
-            // CSRF token is not valid, stop the execution
-            die('Invalid CSRF token');
+       
+           // Check if CSRF token is set and if it matches the unexpired one stored in the session 
+           if (!SessionManager::validateCSRFToken($_POST['csrf_token'])) {
+            header("Location: " . BASE_URL . "/signup");
         }
            //removes any while spaces from the begining and the end of the string 
         //and converts any special characters to HTML entities
@@ -119,9 +119,8 @@ class UserController {
     public function authenticateUser() {
     try {
         // Check if CSRF token is set and if it matches the one stored in the session
-        if (!isset($_POST['csrf_token']) || !SessionManager::validateCSRFToken($_POST['csrf_token'])) {
-            // CSRF token is not valid, stop the execution
-            die('Invalid CSRF token');
+        if (!SessionManager::validateCSRFToken($_POST['csrf_token'])) {
+            header("Location: " . BASE_URL . "/login");
         }
         //removes any while spaces from the begining and the end of the string  
         //and converts any special characters to HTML entities

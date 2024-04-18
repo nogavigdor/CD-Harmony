@@ -42,7 +42,7 @@ class ArticleModel
          //s   var_dump($query->queryString);
         //var_dump($tag);
             return $query->fetchAll(PDO::FETCH_OBJ);
-        } catch (\PDOException $ex) {
+        } catch (\PDOException $e) {
             die("Connection failed: " . $e->getMessage());
         } 
     }
@@ -71,7 +71,7 @@ class ArticleModel
         $result = $query->fetch(\PDO::FETCH_OBJ);
 
         return $result;
-    } catch (\PDOException $ex) {
+    } catch (\PDOException $e) {
         die("Connection failed: " . $e->getMessage());
     } 
 
@@ -101,7 +101,7 @@ public function getAllArticles() {
      //s   var_dump($query->queryString);
     //var_dump($tag);
         return $query->fetchAll(PDO::FETCH_OBJ);
-    } catch (\PDOException $ex) {
+    } catch (\PDOException $e) {
         die("Connection failed: " . $e->getMessage());
     }
 }
@@ -137,7 +137,7 @@ public function addArticle($title, $content, $publish_date, $update_date, $user_
         $query->bindParam(':user_id', $user_id, \PDO::PARAM_INT);
         $query->execute();
         return $this->db->lastInsertId();
-    } catch (\PDOException $ex) {
+    } catch (\PDOException $e) {
         die("Connection failed: " . $e->getMessage());
     }
 

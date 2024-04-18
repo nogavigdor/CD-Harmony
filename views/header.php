@@ -112,7 +112,7 @@ $csrfToken=SessionManager::generateCSRFToken();
 
                 <!-- User Menu -->
                 <div id="menu" class="hidden absolute top-[50px]  right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2">
-                    <a href="<?= BASE_URL . '/acount';?>" class="block px-4 py-2 text-gray-800 hover:bg-orange-200 hover:text-gray-600">Account</a>
+                    <a href="<?= BASE_URL . '/acount';?>" class="block px-4 py-2 text-gray-800 hover:bg-orange-200 hover:text-gray-600">Acount</a>
                     <a href="<?= BASE_URL . '/logout'; ?>"class="block px-4 py-2 text-gray-800 hover:bg-orange-200 hover:text-gray-600">Logout</a>
                 </div>
                 <?php   } else {
