@@ -18,7 +18,6 @@
         curl_close($ch);
         $arrResponse = json_decode($response, true);
  
-        var_dump($arrResponse);
         // verify the response
         if($arrResponse["success"] == true && $arrResponse["action"] == $action && $arrResponse["score"] >= 0.5) {
         // valid submission
@@ -27,8 +26,6 @@
         
         } else {
         // spam submission
-        echo "I'm after the reCAPTCHA validation is false";
-        var_dump($arrResponse);
         echo $arrResponse["success"];
         echo $arrResponse["action"];
         echo $arrResponse["score"];
