@@ -3,7 +3,7 @@
 <main class='content bg-primary'>
 <?php
 use Services\SessionManager;
-$csrfToken = SessionManager::generateCSRFToken()
+
 ?>
 
 

@@ -158,7 +158,7 @@ class UserController {
             //the user will see the input fields with the values he/she has entered
             $_SESSION['email_input'] = $_POST['email'];
             //sets the error message in the session variable
-            SessionManager::setSessionVariable('alert_message', 'Please check your email or passwor and try to log in.');
+            SessionManager::setSessionVariable('alert_message', 'Please enter a vaild email and password.');
           
             header("Location: " . BASE_URL . "/login");
             exit();

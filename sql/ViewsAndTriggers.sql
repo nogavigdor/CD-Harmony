@@ -1,40 +1,4 @@
 
-/*Queries Examples*/
-/*
-    This query retrieves the sales count for each product title by joining the products,
-    product_variants, and orders_lines tables. It calculates the total sales count by
-    summing up the quantities of each product variant sold. The results are grouped by
-    product title and ordered in descending order of sales count.
-*/
-
-SELECT p.title AS product_title, SUM(ol.quantity) AS sales_count
-FROM products p
-LEFT JOIN product_variants pv ON p.product_id = pv.product_id
-LEFT JOIN orders_lines ol ON pv.product_variant_id = ol.product_variant_id
-GROUP BY p.title
-ORDER BY sales_count DESC;
-
-/*
-This query displays thee total orders and total amount spent for each usser who is a cusomer
-*/
-SELECT 
-    u.user_id,
-    CONCAT(u.first_name, ' ', u.last_name) AS customer_name,
-    u.email,
-    COUNT(o.order_id) AS total_orders,
-    SUM(pv.price * ol.quantity) AS total_amount_spent
-FROM 
-    users u
-LEFT JOIN 
-    orders o ON u.user_id = o.user_id
-LEFT JOIN 
-    orders_lines ol ON o.order_id = ol.order_id
-LEFT JOIN 
-    product_variants pv ON ol.product_variant_id = pv.product_variant_id
-WHERE 
-    u.role_id = 3
-GROUP BY 
-    u.user_id, customer_name, u.email;
 
 /***************************************************************************************
 These are six views which I'm use in my database - and are implemented in my models 

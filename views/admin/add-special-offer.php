@@ -1,6 +1,6 @@
 <?php use Controllers\ProcductController;
 use Services\SessionManager;
-$csrfToken=SessionManager::generateCSRFToken();
+
 ?>
 <?php include 'admin-header.php' ?>
 
