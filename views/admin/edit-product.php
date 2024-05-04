@@ -1,6 +1,6 @@
 <?php use Controllers\ProductController;
 use Services\SessionManager;
-SessionManager::generateCSRFToken();
+
 ?>
 <?php include 'admin-header.php' ?>
 
