@@ -716,7 +716,18 @@ namespace Models;
         return $query->fetchColumn() > 0;
     }
     
-  
-
+    //Helper method to get the product IDs for the product variants in the cart
+    //used later to retrieve the product details
+    public function getProductIdsByProductVariantIds($productVariantIdsStr) {
+        $sql = "
+            SELECT product_id
+            FROM product_variants
+            WHERE product_variant_id IN ($productVariantIdsStr)
+        ";
+    
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
    }

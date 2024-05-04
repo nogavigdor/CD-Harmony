@@ -6,6 +6,7 @@
     //Displays recommended products on the product details page
     $controller = new Controllers\RecommendationController();
     $recommendedProducts = $controller->getRecommendationsOnCartPage();
+
     foreach ($recommendedProducts as $recommendedProduct) {
         ?>
         <div class="w-full md:w-1/3">

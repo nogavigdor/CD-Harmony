@@ -49,20 +49,38 @@ class RecommendationController {
         exit('Cart not found');
     }
 
-// Extract product variant IDs from the cart (only the product variant Ids, without additional keys)
-foreach ($cart as $product_variant_id => $cartItem) {
-    // Check if the current item is one of the product items
-    if (is_numeric($product_variant_id)) {
-        // Add the product variant ID to the array
-        $productVariantIds[] = $product_variant_id;
-    }
-}
+    // Extract product variant IDs from the cart (only the product variant Ids, without additional keys)
+    foreach ($cart as $product_variant_id => $cartItem) {
+        // Check if the current item is one of the product items
+        if (is_numeric($product_variant_id)) {
+            // Add the product variant ID to the array
+            $productVariantIds[] = $product_variant_id;
+        
+        }
+    } 
+    // Build a comma-separated list of product variant IDs for the SQL query
+    $productVariantIdsStr = implode(',', $productVariantIds);
+
+    // Get the product IDs for the product variants in the cart
+    //the parameter is an array of product variant IDs
+    //the method returns an array of product IDs
+
+
+    $productIds = $this->productModel->getProductIdsByProductVariantIds($productVariantIdsStr);
+
+
+
+    // Extracting product IDs from the array of arrays returned by fetchAll(PDO::FETCH_ASSOC)
+    $productIds = array_column($productIds, 'product_id');
     // Build a comma-separated list of product IDs for the SQL query
-    $productIdsStr = implode(',', $productVariantIds);
+    $productIdsStr = implode(',', $productIds);
+
 
 
         $recommendedProductsByTags = $this->recommendationModel->getRecommendationBasedOnSharedTagsInCart($productIdsStr);
+
         return $recommendedProductsByTags;
+
     }
 
 

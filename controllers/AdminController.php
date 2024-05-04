@@ -63,7 +63,20 @@ class AdminController
     
         // Verify user credentials
         if ($user && password_verify($password, $user['user_password'])) {
-            // Set user data in session
+            $userData = array(
+                'logged_in' => true,
+                'id' => $user['user_id'],
+                'email' => $user['email'],
+                'role' => $user['role_id'],
+                'first_name' => isset($user['first_name']) ? $user['first_name'] : "",
+            );
+
+               //sets the user data in the session variable
+               SessionManager::setSessionVariable('user', $userData);    
+               $successMessage = "Hi " . $user['first_name']. ' you are now logged in as admin';
+
+            //sets the success message in the session variable
+            SessionManager::setSessionVariable('success_message', $successMessage);  
             // Redirect to the admin page
             header('Location:'. BASE_URL. '/admin');
             exit();

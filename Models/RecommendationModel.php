@@ -80,37 +80,36 @@ class RecommendationModel {
 
       //Get products that have the same tags as the products in the cart
     //ordered by the biggest number of common tags
-    public function getRecommendationBasedOnSharedTagsIncart($productIdsStr) {
-          // Define the limit for the number of recommendations
-    $limit = 3;
-
-    // Prepare the query to retrieve recommendations
-    $query = "
-        SELECT p.product_id, p.title AS product_title, p.product_description, a.title as artist_title,
-        COUNT(pt.tag_id) as common_tag_count, GROUP_CONCAT(t.title) as common_tags, ip.image_name
-        FROM products p
-        INNER JOIN products_tags pt ON p.product_id = pt.product_id
-        INNER JOIN tags t ON t.tag_id = pt.tag_id
-        INNER JOIN images_for_products ip ON ip.product_id = p.product_id
-        INNER JOIN cds c ON c.product_id = p.product_id
-        INNER JOIN artists a ON a.artist_id = c.artist_id
-        WHERE pt.tag_id IN (
-            SELECT tag_id
-            FROM products_tags
-            WHERE product_id IN ($productIdsStr)
-        )
-        AND p.product_id NOT IN ($productIdsStr)  -- Exclude products already in the cart
-        GROUP BY p.product_id
-        ORDER BY common_tag_count DESC
-        LIMIT :limit
-    ";
-
-    // Prepare and execute the query
-    $stmt = $this->db->prepare($query);
-    $stmt->bindParam(':limit', $limit, \PDO::PARAM_INT);
-    $stmt->execute();
-    $products = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-    return $products;
-}
+    //the parater is a string of one or more product  IDs seperated by commas
+    public function getRecommendationBasedOnSharedTagsInCart($productIds) {
+        // Gets the number of tags and creates a placeholder string for the query
+            $limit = 3;
+            $query = "
+            SELECT p.product_id, p.title AS product_title, p.product_description, a.title as artist_title,
+            COUNT(pt.tag_id) as common_tag_count, GROUP_CONCAT(t.title) as common_tags, ip.image_name
+            FROM products p
+            INNER JOIN products_tags pt ON p.product_id = pt.product_id
+            INNER JOIN tags t ON t.tag_id = pt.tag_id
+            INNER JOIN images_for_products ip ON ip.product_id = p.product_id
+            INNER JOIN cds c ON c.product_id = p.product_id
+            INNER JOIN artists a ON a.artist_id = c.artist_id
+            WHERE pt.tag_id IN (
+                SELECT tag_id
+                FROM products_tags
+                WHERE product_id IN ($productIds)
+            )
+            AND p.product_id NOT IN ($productIds)
+            GROUP BY p.product_id
+            ORDER BY common_tag_count DESC
+            LIMIT :limit
+        ";
+        
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':limit', $limit, \PDO::PARAM_INT);
+            $stmt->execute();
+            $products = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    
+            return $products;
+        }
+    
 }
