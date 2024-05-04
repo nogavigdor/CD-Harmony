@@ -72,21 +72,12 @@ class SessionManager
         // Check if the token exists and is valid (value matched and not expired)
         if ($csrfTokenData && $token === $csrfTokenData['value'] && time() < $csrfTokenData['expiration_time']) {
             return true; // Token is valid
-        } elseif ($csrfTokenData && $token !== $csrfTokenData['value']) {
-            // Token doesn't match
-            SessionManager::setSessionVariable('error_message',
-             "The form could not be submitted due to a security issue. Please refresh the page and try again.");
-        } else {
-            // Token expired
-            SessionManager::setSessionVariable('error_message',
-             "Your session has expired, and the form is no longer valid.
-              Please refresh the page and try submitting the form again.
-               If the issue persists, log in again and retry.");
-        }
-    
+        } else{
+         // Token doesn't match
+        
         return false; // Validation failed
-    }
-
+         }
+        }
     
     //Destroys the current session
     public static function destroySession()

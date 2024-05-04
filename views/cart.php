@@ -7,7 +7,7 @@
 
     <!-- Main content section -->
     <main class="container mx-auto p-4 bg-white mt-8 min-h-screen">
-        <h1 class="text-2xl headline text-secondary font-bold mb-4">Your Cart</h1>
+        <h1 class="text-4xl headline text-secondary font-bold mb-4">Your Cart</h1>
       
         <?php 
         // Iterate through cart items and display each one
@@ -142,12 +142,16 @@
 
               
         } 
+        // Includes the recommendation section
+        if(SessionManager::isVar('cart')){
+            include './partials/recommendations-cart.php'; 
+        }
+      
         ?>
        
      
        
-  
-    
+       
         </main>
         <script>
             const baseURL = window.location.origin; 

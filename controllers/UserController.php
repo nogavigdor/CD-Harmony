@@ -4,43 +4,39 @@ namespace Controllers;
 use Models\UserModel;
 use Models\OrderModel;
 use Models\CartModel;
-use Controllers\LoginController;
 use \Services\Validator;
 use \Services\SessionManager;
-use Stripe\BillingPortal\Session;
+use Controllers\LoginController;
 
 class UserController {
     
+   private $session;
+   private $userModel;
+   private $orderModel;
+   private $loginController;
 
-    private $userModel;
-    private $orderModel;
-    private $session;
     public function __construct() {
         $this->session = new SessionManager();
         $this->session->startSession();
         $this->userModel = new UserModel();
         $this->orderModel = new OrderModel();
+        $this->loginController = new LoginController();
         
     }
     
     public function createAccount() {
     try {
-       
-           // Check if CSRF token is set and if it matches the unexpired one stored in the session 
-           if (!SessionManager::validateCSRFToken($_POST['csrf_token'])) {
-            header("Location: " . BASE_URL . "/signup");
+        // Check if CSRF token is set and if it matches the one stored in the session
+        if (!isset($_POST['csrf_token']) || !SessionManager::validateCSRFToken($_POST['csrf_token'])) {
+            // CSRF token is not valid, stop the execution
+            die('Invalid CSRF token');
         }
            //removes any while spaces from the begining and the end of the string 
         //and converts any special characters to HTML entities
         if (isset($_POST['first_name']))
           $first_name =htmlspecialchars(trim( $_POST['first_name']));
-        else
-          $first_name = "";
         if (isset($_POST['last_name']))
           $last_name = htmlspecialchars(trim( $_POST['last_name']));
-        else
-            $last_name = "";
-        
         if (isset($_POST['email']))
             $email = htmlspecialchars(trim($_POST['email']));
         if (isset($_POST['password']))
@@ -85,7 +81,7 @@ class UserController {
                 $errType['general'] = 'Email already exists. Please try again with a different email.'; 
                 //if the user was not created successfully, the user will be redirected to the signup page
                 SessionManager::setSessionVariable('output_errors', $errType);
-                SessionManager::setSessionVariable('alert_message', $email . ' already exists. Please try to signup with a different email.');
+                SessionManager::setSessionVariable('error_message', $email . ' already exists. Please try to signup with a different email.');
                 header("Location: " . BASE_URL . "/signup");
                 exit();
             }
@@ -96,7 +92,7 @@ class UserController {
         else //if there were errors, the user will be redirected to the signup page
         {
             $errType['general'] = 'Please correct your input fields and try again.';
-            SessionManager::setSessionVariable('alert_message', 'Please correct your input fields and try again.');
+            SessionManager::setSessionVariable('error_message', 'Please correct your input fields and try again.');
             //the error messages will be stored in the session variables
             SessionManager::setSessionVariable('output_errors',$errType);
             SessionManager::setSessionVariable('email_input', $email);
@@ -119,8 +115,10 @@ class UserController {
     public function authenticateUser() {
     try {
         // Check if CSRF token is set and if it matches the one stored in the session
-        if (!SessionManager::validateCSRFToken($_POST['csrf_token'])) {
+        if ( !SessionManager::validateCSRFToken($_POST['csrf_token'])) {
+            // CSRF token is not valid, redirect back to login page
             header("Location: " . BASE_URL . "/login");
+            
         }
         //removes any while spaces from the begining and the end of the string  
         //and converts any special characters to HTML entities
@@ -150,15 +148,23 @@ class UserController {
 
             $success_message = "Hi " . $user['first_name']. ', you are now logged in';
             SessionManager::setSessionVariable('success_message', $success_message);
-            
+            //if the user was redirected to the login page from the cart page while trying to checkout
+            // after pressing the checkout button
+            if(SessionManager::IsVar('shopper_return_url')){
+                $stripe_checkout_url = SessionManager::getSessionVariable('shopper_return_url');
+                SessionManager::unsetSessionVariable('shopper_return_url');
+                //the user will be redirected to the stripe checout page 
+                header("Location: $stripe_checkout_url");
+                exit();
+            }
             header("Location: " . BASE_URL . "/");
             exit();
         } else {
             //sets the input fields in the session variable so when redirected to the login page 
             //the user will see the input fields with the values he/she has entered
             $_SESSION['email_input'] = $_POST['email'];
-            //sets the error message in the session variable
-            SessionManager::setSessionVariable('alert_message', 'Please check your email or passwor and try to log in.');
+            //sets the error message in the session variableSS
+            SessionManager::setSessionVariable('error_message', 'Please check your email or passwor and try to log in.');
           
             header("Location: " . BASE_URL . "/login");
             exit();
@@ -184,7 +190,7 @@ class UserController {
 
     public function acountView(){
         try {
-            if (LoginController::isLoggedIn()&&LoginController::isCustomer()) {
+            if (loginController::isLoggedIn()&&loginController::isCustomer()) {
                 $user_id = SessionManager::getSessionVariable('user')['usr_id'];
                 //get all the orders of the logged in user
                 $ordersDetails = $this->orderModel->getOrderDetailsById($user_id);
@@ -193,7 +199,7 @@ class UserController {
 
                 include 'views/acount.php';
             } else {
-                SessionManager::setSessionVariable('alert_message', 'Please login to view your account.');  
+                SessionManager::setSessionVariable('error_message', 'Please login to view your account.');  
                 header("Location: " . BASE_URL . "/login");
                 exit(); 
             }
@@ -202,6 +208,20 @@ class UserController {
             }
     }
 
-  
+    public function accountInformationView(){
+        try {
+            if (SessionManager::isLoggedIn()&&SessionManager::isCustomer()) {
+                $user_id = SessionManager::getSessionVariable('user')['usr_id'];
+                $user = $this->userModel->getUserById($user_id);
+                include 'views/account-information.php';
+            } else {
+                SessionManager::setSessionVariable('error_message', 'Please login to view your account.');  
+                header("Location: " . BASE_URL . "/login");
+                exit(); 
+            }
+            } catch (\PDOException $ex) {
+                error_log('PDO Exception: ' . $ex->getMessage());
+            }
+    }
     
 }

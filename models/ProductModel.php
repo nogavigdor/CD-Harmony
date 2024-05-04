@@ -55,29 +55,34 @@ namespace Models;
         public function getProductsByTag($tag, $offset, $limit) {
             try {
                 $sql = '
-                    SELECT
-                        p.product_id,
-                        pv.product_variant_id,
-                        p.title as product_title,
-                        a.title AS artist_title,
-                        t.title AS tag_title,
-                        ip.image_name,
-                        SUM(CASE WHEN pv.condition_id = 1 THEN pv.quantity_in_stock ELSE 0 END) AS new_quantity,
-                        SUM(CASE WHEN pv.condition_id = 2 THEN pv.quantity_in_stock ELSE 0 END) AS used_quantity,
-                        MAX(CASE WHEN pv.condition_id = 1 THEN pv.price END) AS new_price,
-                        MAX(CASE WHEN pv.condition_id = 2 THEN pv.price END) AS used_price
-                    FROM
-                        products p
-                    INNER JOIN products_tags pt ON pt.product_id = p.product_id
-                    INNER JOIN tags t ON t.tag_id = pt.tag_id
-                    INNER JOIN cds c ON c.product_id = p.product_id
-                    INNER JOIN artists a ON a.artist_id = c.artist_id
-                    LEFT JOIN product_variants pv ON pv.product_id = p.product_id
-                    INNER JOIN images_for_products ip ON ip.product_id = p.product_id
-                    WHERE t.title LIKE :tag
-                    GROUP BY p.product_id
-                    LIMIT :offset, :limit
-                ';
+                SELECT
+                    p.product_id,
+                    pv.product_variant_id,
+                    p.title as product_title,
+                    a.title AS artist_title,
+                    t.title AS tag_title,
+                    ip.image_name,
+                    so.discount_sum,
+                    so.special_offer_start_date,
+                    so.special_offer_end_date,
+                    SUM(CASE WHEN pv.condition_id = 1 THEN pv.quantity_in_stock ELSE 0 END) AS new_quantity,
+                    SUM(CASE WHEN pv.condition_id = 2 THEN pv.quantity_in_stock ELSE 0 END) AS used_quantity,
+                    MAX(CASE WHEN pv.condition_id = 1 THEN pv.price END) AS new_price,
+                    MAX(CASE WHEN pv.condition_id = 2 THEN pv.price END) AS used_price
+                FROM
+                    products p
+                INNER JOIN products_tags pt ON pt.product_id = p.product_id
+                INNER JOIN tags t ON t.tag_id = pt.tag_id
+                INNER JOIN cds c ON c.product_id = p.product_id
+                INNER JOIN artists a ON a.artist_id = c.artist_id
+                LEFT JOIN product_variants pv ON pv.product_id = p.product_id
+                INNER JOIN images_for_products ip ON ip.product_id = p.product_id
+                LEFT JOIN special_offers so ON so.product_variant_id = pv.product_variant_id
+                WHERE t.title LIKE :tag
+                GROUP BY p.product_id
+                LIMIT :offset, :limit
+            ';
+            
                 
                 $query = $this->db->prepare($sql);
                 $query->bindParam(':tag', $tag, PDO::PARAM_STR);

@@ -71,6 +71,11 @@ class LoginController
           
           return SessionManager::getSessionVariable('user')['role'] == 1;
       }
+
+      public function getLoggedInUserId()
+      {
+          return SessionManager::getSessionVariable('user')['id'] ?? null;
+      }
   
 
 

@@ -30,6 +30,9 @@ class CheckoutController {
             if (!LoginController::isCustomer()) {
                 // User is not logged in as a customer, redirect to the login page
                 SessionManager::setSessionVariable('alert_message', 'Please login in order to checkout.');
+               ///Assigning the requestsd stripe checkout url to the session variable to redirect the user
+               // to the same page (stripe checkout page) after login
+                SessionManager::setSessionVariable('shopper_return_url', "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
                 header('Location:'. BASE_URL. '/login');
                 exit;
             }
@@ -41,7 +44,7 @@ class CheckoutController {
             $total = 0;
    
            
-            // Convert price from string to float
+            // Going through the cart items and creating the line items for the Stripe checkout
             foreach ($cart as $product_variant_id => $cartItem) {
                  // Check if the current item is one of the additional keys
                 if (!is_numeric($product_variant_id)) {

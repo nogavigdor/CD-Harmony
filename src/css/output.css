@@ -4973,6 +4973,10 @@ details.collapse summary::-webkit-details-marker {
   height: 100vh;
 }
 
+.h-44 {
+  height: 11rem;
+}
+
 .min-h-screen {
   min-height: 100vh;
 }

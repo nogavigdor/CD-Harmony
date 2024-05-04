@@ -90,9 +90,8 @@ class CartController {
         
         // Save the cart in the session
         SessionManager::setSessionVariable('cart', $cart);
-        //header('Location:'. BASE_URL. '/cart');
-        //exit();
-        //here please calsulate the total quantity of product that you have in session
+     
+        //Calculates the total quantity of product that you have in session
         $cart = SessionManager::getSessionVariable('cart');
         $total_qty=0;
         foreach ($cart as $productVarId => $cartItem) {

@@ -43,8 +43,8 @@
                                             ?>
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($offerDetails['product_variant_id']) ?></td>
-                                <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($offerDetails['product_title']) ?></td>
-                                <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($offer['title']) ?></td>
+                                <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars_decode($offerDetails['product_title']) ?></td>
+                                <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars_decode($offer['title']) ?></td>
                                 <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($offer['special_offer_start_date']) ?></td>
                                 <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($offer['special_offer_end_date']) ?></td>
                                 <td class="px-6 py-4 whitespace-nowrap">

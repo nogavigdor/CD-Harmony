@@ -13,14 +13,14 @@
     <!-- Article image  place holder -->
     </div>
     <div>   
-    <h2 class="text-2xl text-purple-800 font-semibold mt-2"><?= htmlspecialchars($article->title) ?></h2>
+    <h2 class="text-2xl text-purple-800 font-semibold mt-2"><?= htmlspecialchars_decode($article->title) ?></h2>
     <div class="flex justify-between w-full">
         <div class="text-lg font-semibold"><?= 'Author: '.htmlspecialchars($article->first_name).' '.htmlspecialchars($article->last_name) ?></div>
         <div class="text-lg font-semibold"><?= 'Published: '.htmlspecialchars($article->publish_date) ?></div>
     </div>
     
         <div class="mt-4">
-           <p class="leading-8"><?= htmlspecialchars($article->content) ?></p>
+           <p class="leading-8"><?= htmlspecialchars_decode($article->content) ?></p>
         </div>
      
         </div>

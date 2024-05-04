@@ -13,6 +13,7 @@ class ArticleController
     private $userModel;
     private $sessionManager;
     private $validator;
+    private $loginController;
 
     public function __construct() {
         // Create an instance of the ArticleModel class
@@ -21,6 +22,7 @@ class ArticleController
         $this->validator = new Validator();
         $this->sessionManager = new SessionManager();
         $this->sessionManager->startSession();
+        $this->loginController = new LoginController();
 
 
     }
@@ -179,7 +181,7 @@ class ArticleController
             // Load the view to display the form for editing an article
             $article = $this->articleModel->getArticleDetails($id);
             $usersAdminAndEditor = $this->userModel->getAdminANDEditorUsers();
-            $currentUser=$this->sessionManager->getloggedInUserId(); 
+            $currentUser=$this->loginController->getLoggedInUserId(); 
             include 'views/admin/edit-article.php';
         } catch (\PDOException $ex) {
             error_log('PDO Exception: ' . $ex->getMessage());
@@ -281,6 +283,7 @@ class ArticleController
             error_log('PDO Exception: ' . $ex->getMessage());
         }
     }
+
 
 
 }

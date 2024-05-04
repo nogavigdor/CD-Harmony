@@ -27,10 +27,14 @@ use Controllers\ProductController;
                     if (isset($variants['new'])){
                        if($variants['new']['discount']>0){
                         ?>   
-                     <div class="badge w-72 h-16 absolute top-0 left-0 transform -translate-y-4 -translate-x-4 flex bg-base-100 border-secondary border-4 rounded-lg">
-                      <span class="p-4 font-bold text-xl text-secondary">
+                     <div class="badge w-76 h-40 absolute top-0 left-0 transform -translate-y-4 -translate-x-4 flex bg-base-100 border-secondary border-4 rounded-lg">
+                      <span class="p-4 font-semibold text-lg text-secondary">
                         <?php
-                        echo 'Special offer for new version!';
+                       echo 'Special offer for new version! <br>';
+                       echo 'Before: '.$variants['new']['price'].' DKK <br>';
+                       $after_discount=$variants['new']['price']-$variants['new']['discount'];
+                       echo 'After: ' . $after_discount . ' DKK';
+
                         ?>
                         </span>
                     </div>
@@ -40,10 +44,14 @@ use Controllers\ProductController;
 
                     if (isset($variants['used'])) { 
                       if ($variants['used']['discount']>0){   ?>   
-                     <div class="badge w-72 h-16 absolute top-0 left-0 transform -translate-y-4 -translate-x-4 flex bg-base-100 border-secondary border-4 rounded-lg">
+                     <div class="badge h-32 absolute top-0 left-0 transform -translate-y-4 -translate-x-4 flex bg-base-100 border-secondary border-4 rounded-lg">
                       <span class="p-4 font-bold text-xl text-secondary">
                     <?php
-                        echo 'Special offer for used version!';
+                        echo 'Special offer for used version! <br>';
+                        echo 'Before: '.$variants['used']['price'].' DKK <br>';
+                        $after_discount=$variants['used']['price']-$variants['used']['discount'];
+                        echo 'After: ' . $after_discount . ' DKK';
+
                      ?>
                      </span>
                     </div>
@@ -115,9 +123,9 @@ use Controllers\ProductController;
              
                     </div>
                       <div class="flex flex-col mt-8 md:w-1/2">      
-                            <p class="headline text-primary text-2xl mt-2"><?= htmlspecialchars($product->product_title) ?></p>
-                            <p class="text-xl text-primary mt-2    "><?= htmlspecialchars($product->artist_title) ?></p>
-                            <p class="mt-2"><?= htmlspecialchars($product->product_description) ?></p>
+                            <p class="headline text-primary text-2xl mt-2"><?= htmlspecialchars_decode($product->product_title) ?></p>
+                            <p class="text-xl text-primary mt-2    "><?= htmlspecialchars_decode($product->artist_title) ?></p>
+                            <p class="mt-2"><?= htmlspecialchars_decode($product->product_description) ?></p>
                         
                       </div> 
                 </div>

@@ -1318,7 +1318,7 @@ function insertUser($db, $first_name, $last_name, $email, $user_password, $creat
 
 // Set parameter values for Admin
 
-$setPassAdmin = 'AdminPassword';
+$setPassAdmin = '123';
 $iterationsAdmin = ['cost' => 15];
 $HpassAdmin = password_hash($setPassAdmin, PASSWORD_BCRYPT, $iterationsAdmin);
 $first_nameAdmin = 'Noga';
@@ -1333,7 +1333,7 @@ insertUser($db, $first_nameAdmin, $last_nameAdmin, $emailAdmin, $HpassAdmin, $cr
 $user_idAdmin = $db->lastInsertId();
 
 // set parameter values for editor
-$setPassEditor = "EditorPassword";
+$setPassEditor = "123";
 $iterationsEditor = ['cost' => 15];
 $HpassEditor = password_hash($setPassEditor, PASSWORD_BCRYPT, $iterationsEditor);
 $first_nameEditor = 'Jorgen';
@@ -1346,7 +1346,7 @@ insertUser($db, $first_nameEditor, $last_nameEditor, $emailEditor, $HpassEditor,
 
 
 // Insert a customer to users
-$setPassCustomer = 'CustomerPassword';
+$setPassCustomer = '123';
 $iterationsCustomer = ['cost' => 15];
 $HpassCustomer = password_hash($setPassCustomer, PASSWORD_BCRYPT, $iterationsCustomer);
 

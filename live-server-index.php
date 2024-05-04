@@ -24,7 +24,7 @@ use Controllers\TestController;
 //require './PHPMailer-master/src/PHPMailer.php';
 //require './PHPMailer-master/src/SMTP.php';
 
-//define("BASE_URL", "http://localhost/cdharmony");
+//define("BASE_URL", "http://localhost/cdharmony2");
 require_once "./config/constants.php";
 require_once "./utilities/functions.php";
 require_once "router.php";

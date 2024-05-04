@@ -13,7 +13,7 @@
                      </div>
                  <?php endif; ?>
                 <div class="p-2">
-                <h2 class="text-lg text-gray-900 font-semibold"><?= htmlspecialchars($article->title) ?></h2>
+                <h2 class="text-lg text-gray-900 font-semibold"><?= htmlspecialchars_decode($article->title) ?></h2>
                 
                 <div class="mt-2">
                     <div class="mt-2 flex justify-start absolute bottom-0 right-2    w-1/3">
