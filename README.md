@@ -3,7 +3,8 @@
 CDs store
 
 This is a second semester project in web development.
-A music cd webship which sells new and used cds.
+A music cd webshop which sells new and used cds.
+Website link: cdharmony.noga.digital
 
 Installation Guide:
 In order to install dependencies please run in the command line:
